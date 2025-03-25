@@ -1,0 +1,386 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+I'll scrape the content from both URLs and provide them as separate markdown documents.
+
+Now I'll present the content from both URLs as separate markdown documents:
+
+# Document 1: QuickBooks Online API - Purchase Entity Documentation
+
+# Purchase
+
+A Purchase object represents an expense, such as a purchase made from a vendor. Of note,
+
+- You must specify an AccountRef for all purchases.
+- The TotalAmt attribute must add up to sum of Line.Amount attributes.
+
+There are three types of purchases: Cash, Check, and Credit Card.
+
+- **Cash Purchase**: Contains information regarding a payment made in cash.
+- **Check Purchase**: Contains information regarding a payment made by check.
+- **Credit Card Purchase**: Contains information regarding a payment made by credit card or refunded/credited back to a credit card.
+
+For example, to create a transaction that sends a check to a vendor, create a Purchase object with PaymentType set to Check.
+
+## The Purchase Object
+
+### Required Attributes
+
+- **Id**: Unique identifier for this object (required for update, read-only, system defined)
+- **Line [0..n]**: Individual line items of a transaction. Valid Line types include ItemBasedExpenseLine and AccountBasedExpenseLine
+- **PaymentType**: Type can be Cash, Check, or CreditCard
+- **AccountRef**: Specifies the account reference to which this purchase is applied based on the PaymentType
+- **SyncToken**: Version number of the object (required for update, read-only, system defined)
+
+### Conditionally Required
+
+- **CurrencyRef**: Reference to the currency in which all amounts are expressed. Required if multicurrency is enabled.
+
+### Optional Attributes
+
+- **TxnDate**: The transaction date (defaults to current date if not supplied)
+- **PrintStatus**: Applicable only for Check payments. Valid values: NotSet, NeedToPrint, PrintComplete
+- **RemitToAddr**: Address to which the payment should be sent (applicable only for Check)
+- **TxnSource**: Used internally to specify originating source of a credit card transaction
+- **LinkedTxn [0..n]**: Zero or more transactions linked to this object
+- **GlobalTaxCalculation**: Method in which tax is applied (TaxExcluded, TaxInclusive, NotApplicable)
+- **TransactionLocationType**: The account location (WithinFrance, FranceOverseas, OutsideFranceWithEU, OutsideEU)
+- **MetaData**: Descriptive information about the object (read-only)
+- **DocNumber**: Reference number for the transaction
+- **PrivateNote**: User-entered, organization-private note about the transaction
+- **Credit**: False—it represents a charge. True—it represents a refund. Valid only for CreditCard payment type
+- **TxnTaxDetail**: Information for taxes charged on the transaction as a whole
+- **PaymentMethodRef**: Reference to a PaymentMethod associated with this transaction
+- **PurchaseEx**: For internal use
+- **ExchangeRate**: The number of home currency units it takes to equal one unit of currency specified by CurrencyRef
+- **DepartmentRef**: A reference to a Department object specifying the location of the transaction
+- **EntityRef**: Specifies the party with whom an expense is associated (Customer, Vendor, or Employee)
+- **IncludeInAnnualTPAR**: Include the supplier in the annual TPAR
+- **TotalAmt**: Indicates the total amount of the transaction (read-only, system defined)
+- **RecurDataRef**: A reference to the Recurring Transaction (read-only)
+
+## API Operations
+
+### Create a Purchase
+
+```
+POST /v3/company/<realmID>/purchase
+Content-Type: application/json
+```
+
+Minimum required fields:
+- PaymentType
+- AccountRef
+- Line (with at least one line item)
+- CurrencyRef (if multicurrency is enabled)
+
+### Delete a Purchase
+
+```
+POST /v3/company/<realmID>/purchase?operation=delete
+Content-Type: application/json
+```
+
+Required fields:
+- Id
+- SyncToken
+
+### Query Purchases
+
+```
+GET /v3/company/<realmID>/query?query=<selectStatement>
+Content-Type: application/text
+```
+
+Example query:
+```
+select * from Purchase where TotalAmt < '100.00'
+```
+
+### Read a Purchase
+
+```
+GET /v3/company/<realmID>/purchase/<purchaseId>
+```
+
+### Full Update a Purchase
+
+```
+POST /v3/company/<realmID>/purchase
+Content-Type: application/json
+```
+
+All writable fields must be included in the request body. Fields omitted will be set to NULL.
+
+## Sample Purchase Object
+
+```json
+{
+  "Purchase": {
+    "SyncToken": "0",
+    "domain": "QBO",
+    "PurchaseEx": {
+      "any": [
+        {
+          "name": "{http://schema.intuit.com/finance/v3}NameValue",
+          "nil": false,
+          "value": {
+            "Name": "TxnType",
+            "Value": "54"
+          },
+          "declaredType": "com.intuit.schema.finance.v3.NameValue",
+          "scope": "javax.xml.bind.JAXBElement$GlobalScope",
+          "globalScope": true,
+          "typeSubstituted": false
+        }
+      ]
+    },
+    "TxnDate": "2015-07-27",
+    "TotalAmt": 10.0,
+    "PaymentType": "Cash",
+    "sparse": false,
+    "Line": [
+      {
+        "DetailType": "AccountBasedExpenseLineDetail",
+        "Amount": 10.0,
+        "ProjectRef": {
+          "value": "39298034"
+        },
+        "Id": "1",
+        "AccountBasedExpenseLineDetail": {
+          "TaxCodeRef": {
+            "value": "NON"
+          },
+          "AccountRef": {
+            "name": "Meals and Entertainment",
+            "value": "13"
+          },
+          "BillableStatus": "NotBillable"
+        }
+      }
+    ],
+    "AccountRef": {
+      "name": "Checking",
+      "value": "35"
+    },
+    "CustomField": [],
+    "Id": "252",
+    "MetaData": {
+      "CreateTime": "2015-07-27T10:37:26-07:00",
+      "LastUpdatedTime": "2015-07-27T10:37:26-07:00"
+    }
+  }
+}
+```
+
+# Document 2: QuickBooks Online API - PurchaseOrder Entity Documentation
+
+# PurchaseOrder
+
+The PurchaseOrder object is a non-posting transaction representing a request to purchase goods or services from a third party.
+
+## The PurchaseOrder Object
+
+### Required Attributes
+
+- **Id**: Unique identifier for this object (required for update, read-only, system defined)
+- **APAccountRef**: Specifies to which AP account the bill is credited
+- **VendorRef**: Reference to the vendor for this transaction
+- **Line [0..n]**: Individual line items of a transaction. Valid Line types include ItemBasedExpenseLine and AccountBasedExpenseLine
+- **SyncToken**: Version number of the object (required for update, read-only, system defined)
+
+### Conditionally Required
+
+- **CurrencyRef**: Reference to the currency in which all amounts are expressed. Required if multicurrency is enabled.
+- **GlobalTaxCalculation**: Method in which tax is applied (TaxExcluded, TaxInclusive, NotApplicable). Required for non-US companies.
+
+### Optional Attributes
+
+- **TxnDate**: The transaction date (defaults to current date if not supplied)
+- **CustomField**: Up to three custom fields for the transaction
+- **POEmail**: Used to specify the vendor e-mail address where the purchase request is sent
+- **ClassRef**: Reference to the Class associated with the transaction
+- **SalesTermRef**: Reference to the sales term associated with the transaction
+- **LinkedTxn [0..n]**: Zero or more Bill objects linked to this purchase order
+- **Memo**: A message for the vendor. This text appears on the Purchase Order object sent to the vendor
+- **POStatus**: Purchase order status. Valid values are: Open and Closed
+- **TransactionLocationType**: The account location (WithinFrance, FranceOverseas, OutsideFranceWithEU, OutsideEU)
+- **DueDate**: Date when the payment of the transaction is due
+- **MetaData**: Descriptive information about the object (read-only)
+- **DocNumber**: Reference number for the transaction
+- **PrivateNote**: User-entered, organization-private note about the transaction
+- **ShipMethodRef**: Reference to the user-defined ShipMethod associated with the transaction
+- **TxnTaxDetail**: Information for taxes charged on the transaction as a whole
+- **ShipTo**: Reference to the customer to whose shipping address the order will be shipped
+- **ExchangeRate**: The number of home currency units it takes to equal one unit of currency specified by CurrencyRef
+- **ShipAddr**: Address to which the vendor shipped or will ship any goods associated with the purchase
+- **VendorAddr**: Address to which the payment should be sent
+- **EmailStatus**: Email status of the purchase order (NotSet, NeedToSend, EmailSent)
+- **TotalAmt**: Indicates the total amount of the transaction (read-only, system defined)
+- **RecurDataRef**: A reference to the Recurring Transaction (read-only)
+
+## API Operations
+
+### Create a Purchase Order
+
+```
+POST /v3/company/<realmID>/purchaseorder
+Content-Type: application/json
+```
+
+Minimum required fields:
+- APAccountRef
+- VendorRef
+- Line (with at least one line item)
+- CurrencyRef (if multicurrency is enabled)
+
+### Delete a Purchase Order
+
+```
+POST /v3/company/<realmID>/purchaseorder?operation=delete
+Content-Type: application/json
+```
+
+Required fields:
+- Id
+- SyncToken
+
+### Get a Purchase Order as PDF
+
+```
+GET /v3/company/<realmID>/purchaseorder/<purchaseorderId>/pdf
+Content-Type: application/pdf
+```
+
+### Query Purchase Orders
+
+```
+GET /v3/company/<realmID>/query?query=<selectStatement>
+Content-Type: application/text
+```
+
+Example query:
+```
+select * from PurchaseOrder where Id = '259'
+```
+
+### Read a Purchase Order
+
+```
+GET /v3/company/<realmID>/purchaseorder/<purchaseorderId>
+```
+
+### Send a Purchase Order
+
+```
+POST /v3/company/<realmID>/purchaseorder/<purchaseorderId>/send
+```
+
+OR
+
+```
+POST /v3/company/<realmID>/purchaseorder/<purchaseorderId>/send?sendTo=<emailAddr>
+Content-Type: application/octet-stream
+```
+
+This sets the PurchaseOrder.EmailStatus parameter to EmailSent and updates the recipient email address.
+
+### Full Update a Purchase Order
+
+```
+POST /v3/company/<realmID>/purchaseorder
+Content-Type: application/json
+```
+
+All writable fields must be included in the request body. Fields omitted will be set to NULL.
+
+## Sample PurchaseOrder Object
+
+```json
+{
+  "PurchaseOrder": {
+    "DocNumber": "1005",
+    "SyncToken": "0",
+    "POEmail": {
+      "Address": "send_email@intuit.com"
+    },
+    "APAccountRef": {
+      "name": "Accounts Payable (A/P)",
+      "value": "33"
+    },
+    "CurrencyRef": {
+      "name": "United States Dollar",
+      "value": "USD"
+    },
+    "TxnDate": "2015-07-28",
+    "TotalAmt": 25.0,
+    "ShipAddr": {
+      "Line4": "Half Moon Bay, CA 94213",
+      "Line3": "65 Ocean Dr.",
+      "Id": "121",
+      "Line1": "Grace Pariente",
+      "Line2": "Cool Cars"
+    },
+    "domain": "QBO",
+    "Id": "257",
+    "POStatus": "Open",
+    "sparse": false,
+    "EmailStatus": "NotSet",
+    "VendorRef": {
+      "name": "Hicks Hardware",
+      "value": "41"
+    },
+    "Line": [
+      {
+        "DetailType": "ItemBasedExpenseLineDetail",
+        "Amount": 25.0,
+        "ProjectRef": {
+          "value": "39298034"
+        },
+        "Id": "1",
+        "ItemBasedExpenseLineDetail": {
+          "ItemRef": {
+            "name": "Garden Supplies",
+            "value": "38"
+          },
+          "CustomerRef": {
+            "name": "Cool Cars",
+            "value": "3"
+          },
+          "Qty": 1,
+          "TaxCodeRef": {
+            "value": "NON"
+          },
+          "BillableStatus": "NotBillable",
+          "UnitPrice": 25
+        }
+      }
+    ],
+    "CustomField": [
+      {
+        "DefinitionId": "1",
+        "Type": "StringType",
+        "Name": "Crew #"
+      },
+      {
+        "DefinitionId": "2",
+        "Type": "StringType",
+        "Name": "Sales Rep"
+      }
+    ],
+    "VendorAddr": {
+      "Line4": "Middlefield, CA 94303",
+      "Line3": "42 Main St.",
+      "Id": "120",
+      "Line1": "Geoff Hicks",
+      "Line2": "Hicks Hardware"
+    },
+    "MetaData": {
+      "CreateTime": "2015-07-28T16:01:47-07:00",
+      "LastUpdatedTime": "2015-07-28T16:01:47-07:00"
+    }
+  }
+}
+```
