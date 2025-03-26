@@ -17,6 +17,7 @@ import {
   FileText,
   Newspaper,
 } from 'lucide-react'
+import {SignedIn, SignedOut, SignInButton, UserButton} from '@clerk/nextjs'
 
 export const FullNav = () => {
   type Props = {
@@ -75,6 +76,12 @@ export const FullNav = () => {
           )}
         </button>
       ))}
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </ul>
   )
 }

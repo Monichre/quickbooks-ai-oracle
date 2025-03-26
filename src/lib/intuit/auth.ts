@@ -1,13 +1,6 @@
 "use server";
-// import { cookies } from "next/headers";
-import { encrypt, decrypt } from "./encryption";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { oauthClient } from "@/lib/intuit/client";
-
-// Constants
-const TOKEN_COOKIE_NAME = "qb_tokens";
-const TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
-
-// Initialize OAuth client
 
 export type IntuitTokens = {
 	access_token: string;
@@ -21,9 +14,7 @@ export type IntuitTokens = {
 // Get the authorization URL
 export async function getAuthorizationUrl() {
 	return await oauthClient.authorizeUri({
-		scope: (process.env.QB_SCOPES || "com.intuit.quickbooks.accounting").split(
-			",",
-		),
+		scope: "com.intuit.quickbooks.accounting".split(","),
 		state: generateRandomState(),
 	});
 }
@@ -33,63 +24,46 @@ function generateRandomState() {
 	return Math.random().toString(36).substring(2, 15);
 }
 
-// Store tokens securely in cookies
+// Store tokens in Clerk user public metadata
 export async function storeTokens(tokens: IntuitTokens) {
-	// Add creation timestamp
 	const tokensWithTimestamp = {
 		...tokens,
 		createdAt: Date.now(),
 	};
 
-	const encryptedTokens = encrypt(JSON.stringify(tokensWithTimestamp));
+	const { userId } = await auth();
+	if (!userId) throw new Error("No authenticated user");
 
-	// Store in HTTP-only cookie via API route
-	await fetch("/api/auth/set-cookie", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
+	// Use clerkClient pattern from docs
+	const client = await clerkClient();
+	await client.users.updateUser(userId, {
+		publicMetadata: {
+			qbTokens: tokensWithTimestamp,
 		},
-		body: JSON.stringify({
-			name: TOKEN_COOKIE_NAME,
-			value: encryptedTokens,
-			maxAge: TOKEN_COOKIE_MAX_AGE,
-		}),
 	});
 }
 
-// Retrieve tokens from cookies
+// Retrieve tokens from Clerk user metadata
 export async function getTokens(): Promise<IntuitTokens | null> {
-	try {
-		// Get cookie via API route
-		const response = await fetch(
-			`/api/auth/get-cookie?name=${TOKEN_COOKIE_NAME}`,
-		);
-		if (!response.ok) return null;
+	const { userId } = await auth();
+	if (!userId) return null;
 
-		const { value } = await response.json();
-		if (!value) return null;
-
-		const decryptedTokens = decrypt(value);
-		return JSON.parse(decryptedTokens) as IntuitTokens;
-	} catch (error) {
-		console.error("Error getting tokens:", error);
-		return null;
-	}
+	const client = await clerkClient();
+	const user = await client.users.getUser(userId);
+	const tokens = user.publicMetadata.qbTokens as IntuitTokens | undefined;
+	return tokens || null;
 }
 
-// Refresh tokens if needed
+// Refresh tokens if needed (15 minutes before expiry)
 export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
-	// Check if tokens need to be refreshed (15 minutes before expiry)
 	function tokensNeedRefresh(tokens: IntuitTokens): boolean {
 		if (!tokens.createdAt) return true;
-
 		const expiryTime = tokens.createdAt + tokens.expires_in * 1000;
-		const refreshWindow = 15 * 60 * 1000; // 15 minutes in milliseconds
+		const refreshWindow = 15 * 60 * 1000; // 15 minutes
 		return Date.now() > expiryTime - refreshWindow;
 	}
 
 	const tokens = await getTokens();
-
 	if (!tokens) return null;
 
 	if (tokensNeedRefresh(tokens)) {
@@ -105,22 +79,26 @@ export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
 			return null;
 		}
 	}
-
 	return tokens;
 }
 
-// Revoke tokens
+// Revoke tokens and remove them from Clerk user metadata
 export async function revokeTokens(): Promise<boolean> {
 	const tokens = await getTokens();
-
 	if (!tokens) return false;
 
 	try {
 		await oauthClient.revoke({ token: tokens.access_token });
 
-		// Delete cookie via API route
-		await fetch(`/api/auth/delete-cookie?name=${TOKEN_COOKIE_NAME}`, {
-			method: "DELETE",
+		const { userId } = await auth();
+		if (!userId) return false;
+
+		// Use clerkClient pattern from docs
+		const client = await clerkClient();
+		await client.users.updateUser(userId, {
+			publicMetadata: {
+				qbTokens: null,
+			},
 		});
 
 		return true;
@@ -130,7 +108,7 @@ export async function revokeTokens(): Promise<boolean> {
 	}
 }
 
-// Check if the user is authenticated with Intuit
+// Check if the user is authenticated with Intuit (i.e. tokens exist and are current)
 export async function isAuthenticated(): Promise<boolean> {
 	const tokens = await refreshTokensIfNeeded();
 	return !!tokens;

@@ -10,7 +10,7 @@ export const ConnectToQuickbooks = () => {
     try {
       setIsConnecting(true)
       // Redirect to our authorize endpoint
-      window.location.href = '/api/intuit/authorize'
+      window.location.href = '/api/intuit/auth'
     } catch (error) {
       console.error('Error connecting to QuickBooks:', error)
       setIsConnecting(false)
@@ -19,13 +19,12 @@ export const ConnectToQuickbooks = () => {
 
   return (
     <Button
+      variant='outline'
       onClick={handleConnect}
       disabled={isConnecting}
-      className='bg-blue-600 hover:bg-blue-700 text-white'
+      className='bg-white text-black display-block mx-auto w-full'
     >
       {isConnecting ? 'Connecting...' : 'Connect to QuickBooks'}
     </Button>
   )
 }
-
-export default ConnectToQuickbooks

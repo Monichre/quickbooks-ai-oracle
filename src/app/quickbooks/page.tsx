@@ -1,117 +1,71 @@
 import {ConnectToQuickbooks} from '@/components/connect-to-quickbooks'
+import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import {isAuthenticated} from '@/lib/intuit/auth'
-import {getPurchases, getVendors} from '@/lib/intuit/intuit-api'
-import {cookies} from 'next/headers'
+import Link from 'next/link'
 
 export default async function QuickbooksPage() {
-  // Check if authenticated with QuickBooks
+  // Check if the user is authenticated with QuickBooks
   const authenticated = await isAuthenticated()
-
-  // If not authenticated, show connect button
-  if (!authenticated) {
-    return (
-      <div className='flex flex-col items-center justify-center min-h-[50vh] p-6'>
-        <h1 className='text-3xl font-bold mb-8'>Connect to QuickBooks</h1>
-        <p className='mb-8 text-gray-700 text-center max-w-md'>
-          Connect your QuickBooks account to enable seamless integration with
-          your accounting data.
-        </p>
-        <ConnectToQuickbooks />
-      </div>
-    )
-  }
-
-  // Try to fetch some data from QuickBooks
-  let vendorsData = null
-  let purchasesData = null
-  let error = null
-
-  try {
-    // Fetch vendors and purchases in parallel
-    const [vendors, purchases] = await Promise.all([
-      getVendors(),
-      getPurchases(),
-    ])
-
-    vendorsData = vendors.QueryResponse.Vendor
-    purchasesData = purchases.QueryResponse.Purchase
-  } catch (err) {
-    console.error('Error fetching QuickBooks data:', err)
-    error = err instanceof Error ? err.message : 'Unknown error'
-  }
-
-  // Display the authenticated view with data
   return (
-    <div className='container mx-auto p-6'>
-      <div className='flex justify-between items-center mb-8'>
-        <h1 className='text-3xl font-bold'>QuickBooks Integration</h1>
-        <form action='/api/intuit/logout' method='post'>
-          <button
-            type='submit'
-            className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
-          >
-            Disconnect QuickBooks
-          </button>
-        </form>
-      </div>
+    <div className='container mx-auto py-10'>
+      <h1 className='text-3xl font-bold mb-6'>QuickBooks Integration</h1>
 
-      {error && (
-        <div className='bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-6'>
-          <p>Error: {error}</p>
-        </div>
-      )}
+      <div className='grid gap-6'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Connection Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {authenticated ? (
+              <div className='flex flex-col gap-4'>
+                <div className='flex items-center gap-2'>
+                  <div className='h-3 w-3 rounded-full bg-green-500' />
+                  <p className='text-green-500 font-medium'>
+                    Connected to QuickBooks
+                  </p>
+                </div>
+                <Link href='/dashboard'>
+                  <Button variant='default'>Go to Dashboard</Button>
+                </Link>
+              </div>
+            ) : (
+              <ConnectToQuickbooks />
+            )}
+          </CardContent>
+        </Card>
 
-      <div className='grid md:grid-cols-2 gap-6'>
-        {/* Vendors section */}
-        <div className='bg-white shadow rounded-lg p-6'>
-          <h2 className='text-xl font-semibold mb-4'>Vendors</h2>
-          {vendorsData && vendorsData.length > 0 ? (
-            <ul className='divide-y'>
-              {vendorsData.map((vendor) => (
-                <li key={vendor.Id} className='py-3'>
-                  <p className='font-medium'>{vendor.DisplayName}</p>
-                  {vendor.CompanyName && (
-                    <p className='text-sm text-gray-600'>
-                      {vendor.CompanyName}
-                    </p>
-                  )}
-                  {vendor.PrimaryEmailAddr && (
-                    <p className='text-sm text-gray-500'>
-                      {vendor.PrimaryEmailAddr.Address}
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className='text-gray-500'>No vendors found</p>
-          )}
-        </div>
-
-        {/* Purchases section */}
-        <div className='bg-white shadow rounded-lg p-6'>
-          <h2 className='text-xl font-semibold mb-4'>Recent Purchases</h2>
-          {purchasesData && purchasesData.length > 0 ? (
-            <ul className='divide-y'>
-              {purchasesData.map((purchase) => (
-                <li key={purchase.Id} className='py-3'>
-                  <div className='flex justify-between'>
-                    <p className='font-medium'>
-                      {purchase.PaymentType} - $
-                      {purchase.Line.reduce(
-                        (sum, line) => sum + line.Amount,
-                        0
-                      ).toFixed(2)}
-                    </p>
-                    <p className='text-sm text-gray-500'>{purchase.TxnDate}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className='text-gray-500'>No purchases found</p>
-          )}
-        </div>
+        {authenticated && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className='grid gap-4'>
+                <Link href='/dashboard'>
+                  <Button variant='outline' className='w-full justify-start'>
+                    View Dashboard
+                  </Button>
+                </Link>
+                <Link href='/dashboard/customers'>
+                  <Button variant='outline' className='w-full justify-start'>
+                    Manage Customers
+                  </Button>
+                </Link>
+                <Link href='/dashboard/vendors'>
+                  <Button variant='outline' className='w-full justify-start'>
+                    Manage Vendors
+                  </Button>
+                </Link>
+                <Link href='/dashboard/purchases'>
+                  <Button variant='outline' className='w-full justify-start'>
+                    View Purchases
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )

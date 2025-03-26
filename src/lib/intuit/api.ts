@@ -1,5 +1,16 @@
 import { refreshTokensIfNeeded } from "./auth";
 
+// Check for required environment variables
+if (!process.env.QB_ENVIRONMENT) {
+	console.warn("QB_ENVIRONMENT is not set. Defaulting to 'sandbox'.");
+}
+
+if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_SANDBOX_COMPANY_ID) {
+	console.error(
+		"Missing company ID! Please set QB_COMPANY_ID or INTUIT_SANDBOX_COMPANY_ID",
+	);
+}
+
 // Base URL for QuickBooks API
 const baseUrl =
 	process.env.QB_ENVIRONMENT === "sandbox"
@@ -7,7 +18,13 @@ const baseUrl =
 		: "https://quickbooks.api.intuit.com/v3/company/";
 
 // Company ID from env
-const companyId = process.env.INTUIT_SANDBOX_COMPANY_ID;
+const companyId =
+	process.env.QB_COMPANY_ID || process.env.INTUIT_SANDBOX_COMPANY_ID;
+
+// Validate company ID before any requests
+if (!companyId) {
+	throw new Error("QuickBooks company ID not found in environment variables");
+}
 
 /**
  * Makes authenticated requests to the QuickBooks API
@@ -24,12 +41,19 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	// Refresh tokens if needed
 	const tokens = await refreshTokensIfNeeded();
 
+	console.log("🚀 ~ tokens:", tokens);
+
 	if (!tokens) {
 		throw new Error("Not authenticated with QuickBooks");
 	}
 
 	// Full API URL
 	const url = `${baseUrl}${companyId}/${endpoint}`;
+
+	console.log(`Making QuickBooks API request to: ${url}`);
+	console.log(`Using token: ${tokens.access_token.substring(0, 10)}...`);
+	console.log(`Company ID: ${companyId}`);
+	console.log(`Environment: ${process.env.QB_ENVIRONMENT || "undefined"}`);
 
 	// API request options
 	const options: RequestInit = {
@@ -49,9 +73,20 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	// Make the request
 	const response = await fetch(url, options);
 
+	console.log("🚀 ~ response:", response);
+
 	// Handle non-successful responses
 	if (!response.ok) {
 		const errorData = await response.json().catch(() => null);
+
+		// Log detailed error information
+		console.error("QuickBooks API error details:", {
+			status: response.status,
+			statusText: response.statusText,
+			url,
+			errorData,
+			headers: Object.fromEntries(response.headers.entries()),
+		});
 
 		throw new Error(
 			`QuickBooks API error: ${response.status} ${response.statusText}`,
