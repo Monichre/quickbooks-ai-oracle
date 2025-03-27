@@ -35,3 +35,9 @@
       "sub"
    ]
 }
+
+Content type:text/plain
+Production Base URL:<https://quickbooks.api.intuit.com>
+Sandbox Base URL:<https://sandbox-quickbooks.api.intuit.com>
+
+Production Base URL:<https://quickbooks.api.intuit.com>

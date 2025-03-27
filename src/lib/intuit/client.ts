@@ -5,4 +5,5 @@ export const oauthClient = new OAuthClient({
 	clientSecret: process.env.INTUIT_CLIENT_SECRET,
 	environment: "sandbox", // process.env.INTUIT_SANDBOX_ID,
 	redirectUri: process.env.INTUIT_REDIRECT_URI,
+	logging: true,
 });

@@ -1,6 +1,7 @@
 "use server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { oauthClient } from "@/lib/intuit/client";
+import OAuthClient from "intuit-oauth";
 
 export type IntuitTokens = {
 	access_token: string;
@@ -14,8 +15,15 @@ export type IntuitTokens = {
 // Get the authorization URL
 export async function getAuthorizationUrl() {
 	return await oauthClient.authorizeUri({
-		scope: "com.intuit.quickbooks.accounting".split(","),
-		state: generateRandomState(),
+		scope: [
+			OAuthClient.scopes.Accounting,
+			OAuthClient.scopes.OpenId,
+			OAuthClient.scopes.Profile,
+			OAuthClient.scopes.Email,
+			OAuthClient.scopes.Phone,
+			OAuthClient.scopes.Address,
+		],
+		state: "test ",
 	});
 }
 
@@ -51,6 +59,9 @@ export async function getTokens(): Promise<IntuitTokens | null> {
 	const client = await clerkClient();
 	const user = await client.users.getUser(userId);
 	const tokens = user.publicMetadata.qbTokens as IntuitTokens | undefined;
+
+	console.log("🚀 ~ getTokens ~ tokens:", tokens);
+
 	return tokens || null;
 }
 
@@ -64,6 +75,9 @@ export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
 	}
 
 	const tokens = await getTokens();
+
+	console.log("🚀 ~ refreshTokensIfNeeded ~ tokens:", tokens);
+
 	if (!tokens) return null;
 
 	if (tokensNeedRefresh(tokens)) {
@@ -81,7 +95,25 @@ export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
 	}
 	return tokens;
 }
+// const refreshTokens = async () => {
+// 	const tokensNeedRefresh = oauthClient.isAccessTokenValid();
+// 	// const tokens = await getTokens();
+// 	// if (!tokens) return null;
 
+// 	if (tokensNeedRefresh) {
+// 		try {
+// 			const refreshResponse = await oauthClient.refresh().then(authResponse => authResponse.getToken())
+// 			// const newTokens = refreshResponse.getJson();
+// 			// await storeTokens(newTokens);
+// 			// return newTokens;
+// 		} catch (error) {
+// 			console.error("Error refreshing tokens:", error);
+// 			return null;
+// 		}
+// 	}
+// 	return tokens;
+// // }
+// }
 // Revoke tokens and remove them from Clerk user metadata
 export async function revokeTokens(): Promise<boolean> {
 	const tokens = await getTokens();

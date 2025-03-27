@@ -4,13 +4,25 @@ import { storeTokens } from "@/lib/intuit/auth";
 
 export async function GET(request: NextRequest) {
 	try {
+		console.log("🚀 ~ GET ~ request:", request);
 		// Get the URL with query parameters from the request
 		const url = new URL(request.url);
+		// const parseRedirect = request.url;
+
+		console.log("🚀 ~ GET ~ url:", url);
+
 		const fullUrl = url.origin + url.pathname + url.search;
 
+		console.log("🚀 ~ GET ~ fullUrl:", fullUrl);
+
 		// Parse the authorization response from Intuit
-		const response = await oauthClient.createToken(fullUrl);
-		const tokens = response.getJson();
+		const tokens = await oauthClient
+			.createToken(fullUrl)
+			.then((authResponse) => JSON.stringify(authResponse.getToken()));
+
+		console.log("🚀 ~ GET ~ tokens:", token)s;
+
+		// const tokens = response.getJson();
 
 		// Store tokens in user metadata
 		await storeTokens(tokens);

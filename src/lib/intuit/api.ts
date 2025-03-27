@@ -1,25 +1,30 @@
 import { refreshTokensIfNeeded } from "./auth";
+import {
+	CompanyInfo,
+	type CompanyInfoResponse,
+	type Customer,
+	type Purchase,
+	type PurchaseOrder,
+	type QueryParams,
+	type Vendor,
+} from "./types";
 
 // Check for required environment variables
 if (!process.env.QB_ENVIRONMENT) {
 	console.warn("QB_ENVIRONMENT is not set. Defaulting to 'sandbox'.");
 }
 
-if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_SANDBOX_COMPANY_ID) {
+if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_COMPANY_ID) {
 	console.error(
 		"Missing company ID! Please set QB_COMPANY_ID or INTUIT_SANDBOX_COMPANY_ID",
 	);
 }
 
 // Base URL for QuickBooks API
-const baseUrl =
-	process.env.QB_ENVIRONMENT === "sandbox"
-		? "https://sandbox-quickbooks.api.intuit.com/v3/company/"
-		: "https://quickbooks.api.intuit.com/v3/company/";
 
 // Company ID from env
-const companyId =
-	process.env.QB_COMPANY_ID || process.env.INTUIT_SANDBOX_COMPANY_ID;
+const companyId = process.env.INTUIT_COMPANY_ID;
+const apiRoot = `${process.env.INTUIT_BASE_URL}/v3/company/${companyId}`;
 
 // Validate company ID before any requests
 if (!companyId) {
@@ -48,7 +53,7 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	}
 
 	// Full API URL
-	const url = `${baseUrl}${companyId}/${endpoint}`;
+	const url = `${apiRoot}/${endpoint}`;
 
 	console.log(`Making QuickBooks API request to: ${url}`);
 	console.log(`Using token: ${tokens.access_token.substring(0, 10)}...`);
@@ -72,8 +77,10 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 
 	// Make the request
 	const response = await fetch(url, options);
-
 	console.log("🚀 ~ response:", response);
+	const res = await response.json();
+
+	console.log("🚀 ~ res:", res);
 
 	// Handle non-successful responses
 	if (!response.ok) {
@@ -95,7 +102,7 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	}
 
 	// Parse and return the JSON response
-	return response.json();
+	return res;
 }
 
 /**
@@ -154,238 +161,15 @@ export function buildQueryString(
 	return query;
 }
 
-// Common interface for query parameters
-export interface QueryParams {
-	limit?: number;
-	offset?: number;
-	asc?: string;
-	desc?: string;
-	[key: string]: string | number | boolean | undefined;
-}
-
-/**
- * Company information type definition
- */
-export type CompanyInfo = {
-	Id?: string;
-	SyncToken?: string;
-	CompanyName: string;
-	LegalName?: string;
-	CompanyAddr?: {
-		Line1?: string;
-		Line2?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	CustomerCommunicationAddr?: {
-		Line1?: string;
-		Line2?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	LegalAddr?: {
-		Line1?: string;
-		Line2?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	PrimaryPhone?: { FreeFormNumber: string };
-	CompanyEmail?: { Address: string };
-	WebAddr?: { URI: string };
-	SupportedLanguages?: string;
-	Country?: string;
-	Email?: { Address: string };
-	FiscalYearStartMonth?: string;
-};
-
 /**
  * Retrieves company information from QuickBooks
  * @returns Promise with the company information
  */
 export async function getCompanyInfo() {
-	return quickbooksRequest<{ CompanyInfo: CompanyInfo }>(
-		`companyinfo/${companyId}`,
+	return quickbooksRequest<CompanyInfoResponse>(
+		"query?query=select * from CompanyInfo",
 	);
 }
-
-// Type definitions based on QuickBooks API
-
-/**
- * Customer entity type definition
- */
-export type Customer = {
-	Id?: string;
-	SyncToken?: string;
-	DisplayName: string;
-	Title?: string;
-	GivenName?: string;
-	MiddleName?: string;
-	FamilyName?: string;
-	Suffix?: string;
-	CompanyName?: string;
-	Active?: boolean;
-	Notes?: string;
-	Balance?: number;
-	PrimaryEmailAddr?: { Address: string };
-	PrimaryPhone?: { FreeFormNumber: string };
-	Mobile?: { FreeFormNumber: string };
-	WebAddr?: { URI: string };
-	BillAddr?: {
-		Line1?: string;
-		Line2?: string;
-		Line3?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	ShipAddr?: {
-		Line1?: string;
-		Line2?: string;
-		Line3?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	Taxable?: boolean;
-	DefaultTaxCodeRef?: { value: string; name?: string };
-	PreferredDeliveryMethod?: string;
-};
-
-/**
- * Vendor entity type definition
- */
-export type Vendor = {
-	Id?: string;
-	SyncToken?: string;
-	DisplayName: string;
-	Title?: string;
-	GivenName?: string;
-	MiddleName?: string;
-	FamilyName?: string;
-	Suffix?: string;
-	CompanyName?: string;
-	Active?: boolean;
-	Vendor1099?: boolean;
-	Balance?: number;
-	AcctNum?: string;
-	PrintOnCheckName?: string;
-	PrimaryEmailAddr?: { Address: string };
-	PrimaryPhone?: { FreeFormNumber: string };
-	Mobile?: { FreeFormNumber: string };
-	WebAddr?: { URI: string };
-	BillAddr?: {
-		Line1?: string;
-		Line2?: string;
-		Line3?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	TermRef?: { value: string; name?: string };
-	TaxIdentifier?: string;
-};
-
-/**
- * Purchase entity type definition
- */
-export type Purchase = {
-	Id?: string;
-	SyncToken?: string;
-	PaymentType: "Cash" | "Check" | "CreditCard";
-	AccountRef: { value: string; name?: string };
-	EntityRef?: { value: string; name?: string; type?: string };
-	Line: Array<{
-		Id?: string;
-		DetailType: "AccountBasedExpenseLineDetail" | "ItemBasedExpenseLineDetail";
-		Amount: number;
-		Description?: string;
-		AccountBasedExpenseLineDetail?: {
-			AccountRef: { value: string; name?: string };
-			TaxCodeRef?: { value: string };
-			BillableStatus?: string;
-			ClassRef?: { value: string; name?: string };
-		};
-		ItemBasedExpenseLineDetail?: {
-			ItemRef: { value: string; name?: string };
-			UnitPrice: number;
-			Qty: number;
-			TaxCodeRef?: { value: string };
-			BillableStatus?: string;
-			ClassRef?: { value: string; name?: string };
-		};
-	}>;
-	TxnDate?: string;
-	CurrencyRef?: { value: string; name?: string };
-	PrivateNote?: string;
-	DocNumber?: string;
-	TxnTaxDetail?: {
-		TotalTax: number;
-		TaxLine: Array<{
-			Amount: number;
-			DetailType: string;
-			TaxLineDetail: {
-				TaxRateRef: { value: string; name?: string };
-				PercentBased?: boolean;
-				TaxPercent?: number;
-				NetAmountTaxable?: number;
-				TaxInclusiveAmount?: number;
-			};
-		}>;
-	};
-	Credit?: boolean;
-	DepartmentRef?: { value: string; name?: string };
-};
-
-/**
- * PurchaseOrder entity type definition
- */
-export type PurchaseOrder = {
-	Id?: string;
-	SyncToken?: string;
-	APAccountRef: { value: string; name?: string };
-	VendorRef: { value: string; name?: string };
-	Line: Array<{
-		Id?: string;
-		DetailType: "AccountBasedExpenseLineDetail" | "ItemBasedExpenseLineDetail";
-		Amount: number;
-		Description?: string;
-		ItemBasedExpenseLineDetail?: {
-			ItemRef: { value: string; name?: string };
-			UnitPrice: number;
-			Qty: number;
-			TaxCodeRef?: { value: string };
-			BillableStatus?: string;
-			ClassRef?: { value: string; name?: string };
-		};
-	}>;
-	POStatus?: "Open" | "Closed";
-	TxnDate?: string;
-	CurrencyRef?: { value: string; name?: string };
-	PrivateNote?: string;
-	Memo?: string;
-	DocNumber?: string;
-	ShipAddr?: {
-		Line1?: string;
-		Line2?: string;
-		Line3?: string;
-		City?: string;
-		CountrySubDivisionCode?: string;
-		PostalCode?: string;
-		Country?: string;
-	};
-	ShipMethodRef?: { value: string; name?: string };
-	EmailStatus?: "NotSet" | "NeedToSend" | "EmailSent";
-	POEmail?: { Address: string };
-};
 
 // Customer CRUD operations
 

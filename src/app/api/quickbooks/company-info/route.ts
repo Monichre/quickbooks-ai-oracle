@@ -8,13 +8,16 @@ export async function GET() {
 		await refreshTokensIfNeeded();
 
 		// Fetch company data from QuickBooks
-		const companyData = await getCompanyInfo();
+		const response = await getCompanyInfo();
+		
+		// Extract company info from the query response
+		const companyData = response.QueryResponse.CompanyInfo[0];
 
 		return NextResponse.json({ companyData });
 	} catch (error) {
 		console.error("Error fetching company info:", error);
 		return NextResponse.json(
-			{ error: "Failed to fetch company information" },
+			{ error: "Failed to fetch company information", details: error },
 			{ status: 500 },
 		);
 	}
