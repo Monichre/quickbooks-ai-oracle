@@ -15,7 +15,8 @@ import {
   PlusIcon,
   Loader2,
 } from 'lucide-react'
-import {useChat} from 'ai/react'
+import Image from 'next/image'
+import {useChat} from '@ai-sdk/react'
 import type {Message} from 'ai'
 
 export function VercelV0Chat() {
@@ -26,7 +27,8 @@ export function VercelV0Chat() {
   )
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
+  const [files, setFiles] = useState<FileList | undefined>(undefined)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const {textareaRef, adjustHeight} = useAutoResizeTextarea({
     minHeight: 60,
     maxHeight: 200,
@@ -63,10 +65,6 @@ export function VercelV0Chat() {
 
   return (
     <div className='flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-4 sm:space-y-8'>
-      <h1 className='text-2xl sm:text-4xl font-bold text-black dark:text-white text-center'>
-        What can I help you ship?
-      </h1>
-
       <div className='w-full'>
         {/* Chat Messages */}
         <div className='mb-4 max-h-[600px] overflow-y-auto bg-neutral-900 rounded-xl border border-neutral-800 p-4'>
@@ -96,6 +94,21 @@ export function VercelV0Chat() {
                       {message.content}
                     </p>
                   )}
+                  <div>
+                    {message?.experimental_attachments
+                      ?.filter((attachment) =>
+                        attachment?.contentType?.startsWith('image/')
+                      )
+                      .map((attachment, index) => (
+                        <Image
+                          key={`${m.id}-${index}`}
+                          src={attachment.url}
+                          width={500}
+                          height={500}
+                          alt={attachment.name ?? `attachment-${index}`}
+                        />
+                      ))}
+                  </div>
                 </div>
               ))}
               {isLoading && (
@@ -111,7 +124,17 @@ export function VercelV0Chat() {
 
         {/* Input Area */}
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(event) => {
+            handleSubmit(event, {
+              experimental_attachments: files,
+            })
+
+            setFiles(undefined)
+
+            if (fileInputRef.current) {
+              fileInputRef.current.value = ''
+            }
+          }}
           className='relative bg-neutral-900 rounded-xl border border-neutral-800'
         >
           <div className='overflow-y-auto'>
@@ -148,6 +171,17 @@ export function VercelV0Chat() {
                 className='group p-2 hover:bg-neutral-800 rounded-lg transition-colors flex items-center gap-1'
               >
                 <Paperclip className='w-4 h-4 text-white' />
+                <input
+                  type='file'
+                  className='opacity-0 w-full'
+                  onChange={(event) => {
+                    if (event.target.files) {
+                      setFiles(event.target.files)
+                    }
+                  }}
+                  multiple
+                  ref={fileInputRef}
+                />
                 <span className='text-xs text-zinc-400 hidden group-hover:inline transition-opacity'>
                   Attach
                 </span>

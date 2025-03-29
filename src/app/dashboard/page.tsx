@@ -49,55 +49,7 @@ export default async function DashboardPage() {
 
   return (
     <div className='flex flex-col'>
-      <header className='sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background'>
-        <div className='flex flex-1 items-center gap-2 px-3'>
-          <SidebarTrigger />
-          <Separator orientation='vertical' className='mr-2 h-4' />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage className='line-clamp-1'>
-                  <strong>Legal Name:</strong>{' '}
-                  {companyData?.LegalName || companyData?.CompanyName}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
       <div className='flex flex-1 flex-col gap-4 p-4'>
-        {companyData && (
-          <div title='Company Information'>
-            {companyData?.CompanyAddr && (
-              <p className='mt-2'>
-                <strong>Address:</strong>
-                <br />
-                {companyData?.CompanyAddr.Line1}
-                <br />
-                {companyData?.CompanyAddr.Line2 && (
-                  <>
-                    {companyData?.CompanyAddr.Line2}
-                    <br />
-                  </>
-                )}
-                {companyData?.CompanyAddr.City},{' '}
-                {companyData?.CompanyAddr.CountrySubDivisionCode}{' '}
-                {companyData?.CompanyAddr.PostalCode}
-              </p>
-            )}
-            {companyData?.PrimaryPhone && (
-              <p className='mt-2'>
-                <strong>Phone:</strong>{' '}
-                {companyData?.PrimaryPhone.FreeFormNumber}
-              </p>
-            )}
-            {companyData?.CompanyEmail && (
-              <p className='mt-2'>
-                <strong>Email:</strong> {companyData?.CompanyEmail.Address}
-              </p>
-            )}
-          </div>
-        )}
         <DashboardContent />
       </div>
     </div>

@@ -18,11 +18,11 @@ interface Profile01Props {
   subscription?: string
 }
 
-interface ClerkUser {
+export interface ClerkUser {
   id?: string
-  firstName?: string
-  lastName?: string
-  fullName?: string
+  firstName?: string | null
+  lastName?: string | null
+  fullName?: string | null
   imageUrl?: string
   emailAddresses?: Array<{emailAddress: string}>
 }

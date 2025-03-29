@@ -27,9 +27,10 @@ export function NavFavorites({
     items: {
       title: string
       url: string
-      emoji: React.ReactNode
+      emoji?: string
+      icon?: string
     }[]
-  }[]
+  }
 }) {
   console.log('🚀 ~ links:', links)
 

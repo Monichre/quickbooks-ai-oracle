@@ -29,27 +29,46 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import {SignOutButton, useUser} from '@clerk/nextjs'
-import Profile01 from '@/components/ui/kokonutui/profile-01'
+import Profile01, {type ClerkUser} from '@/components/ui/kokonutui/profile-01'
+import type {UserResource} from '@clerk/types'
 
 // This is sample data.
 
 export function SidebarLeft({
   links,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar> & {
+  links: Array<{
+    category: string
+    items: Array<{
+      title: string
+      url: string
+      icon?: string
+      emoji?: string
+    }>
+  }>
+}) {
   const [main, dashboards, collections] = links
   const {user} = useUser()
+
+  const mainItems = main.items.map((item) => ({
+    ...item,
+    icon: item.icon || '📄',
+  }))
+  const {toggleSidebar, open} = useSidebar()
+
   return (
-    <Sidebar className='border-r-0' {...props}>
+    <Sidebar className='border-r-0' {...props} collapsible='icon'>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Profile01 user={user} />
+            <Profile01 user={user as unknown as ClerkUser} />
           </SidebarMenuItem>
         </SidebarMenu>
-        <NavMain items={main.items} />
+        <NavMain items={mainItems} />
       </SidebarHeader>
       <SidebarContent>
         <NavFavorites links={dashboards} />

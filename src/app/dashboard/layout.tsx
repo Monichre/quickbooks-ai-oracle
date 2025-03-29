@@ -1,94 +1,61 @@
-import {SidebarLeft} from '@/components/sidebar-left'
-import {SidebarRight} from '@/components/sidebar-right'
-import {SidebarInset, SidebarProvider} from '@/components/ui/sidebar'
+import type React from 'react'
+import {AiCHAT} from '@/components/ai-chat'
+import {SidebarContextProvider} from '@/providers/sidebar-provider'
 
-export default function DashboardLayout({
+import {SidebarTrigger} from '@/components/ui/sidebar'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
+import {Separator} from '@radix-ui/react-dropdown-menu'
+import {getCompanyInfo, isAuthenticated} from '@/lib/quickbooks/client'
+import type {CompanyInfoResponse} from '@/lib/quickbooks/client'
+import {Button} from '@/components/ui/button'
+import {Drawer, DrawerTrigger} from '@/components/ui/drawer'
+import {Plus} from 'lucide-react'
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const leftNavLinks = [
-    {
-      category: 'Main',
-      items: [
-        {
-          title: 'Dashboard',
-          url: '/dashboard',
-          icon: '💳',
-        },
-        {
-          title: 'Sales',
-          url: '/dashboard/sales',
-          icon: '📈',
-        },
-        {
-          title: 'Expenses',
-          url: '/dashboard/expenses',
-          icon: '📉',
-        },
-      ],
-    },
-    {
-      category: 'Dashboards',
-      items: [
-        {
-          title: 'Customers & leads',
-          url: '/dashboard/customers',
-          emoji: '👥',
-        },
-        {
-          title: 'Products',
-          url: '/dashboard/products',
-          emoji: '📊',
-        },
-        {
-          title: 'Vendors',
-          url: '/dashboard/vendors',
-          emoji: '💰',
-        },
-        {
-          title: 'Budgets',
-          url: '/dashboard/budgets',
-          emoji: '💼',
-        },
-        {
-          title: 'Taxes',
-          url: '/dashboard/taxes',
-          emoji: '📝',
-        },
-      ],
-    },
-    {
-      category: 'COLLECTIONS',
-      items: [
-        {
-          title: 'My accountant',
-          url: '/dashboard/my-accountant',
-          emoji: '👨‍💼',
-        },
-        {
-          title: 'Lending & banking',
-          url: '/dashboard/lending-and-banking',
-          emoji: '🏦',
-        },
-        {
-          title: 'Commerce',
-          url: '/dashboard/commerce',
-          emoji: '🛒',
-        },
-        {
-          title: 'Apps',
-          url: '/dashboard/apps',
-          emoji: '📱',
-        },
-      ],
-    },
-  ]
+  const authenticated = await isAuthenticated()
+  const companyData: CompanyInfoResponse = authenticated
+    ? await getCompanyInfo()
+    : null
   return (
-    <SidebarProvider>
-      <SidebarLeft links={leftNavLinks} />
-      <SidebarInset>{children}</SidebarInset>
-      <SidebarRight />
-    </SidebarProvider>
+    <SidebarContextProvider>
+      <Drawer>
+        <div className='flex flex-col relative pt-16'>
+          <header className='sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background'>
+            <div className='flex flex-1 items-center gap-2 px-3'>
+              <SidebarTrigger />
+              <Separator orientation='vertical' className='mr-2 h-4' />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className='line-clamp-1'>
+                      <strong>Legal Name:</strong>{' '}
+                      {companyData?.LegalName || companyData?.CompanyName}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+              <div className='ml-auto'>
+                <DrawerTrigger asChild>
+                  <Button variant='outline'>
+                    <Plus className='size-4' />
+                  </Button>
+                </DrawerTrigger>
+              </div>
+            </div>
+          </header>
+
+          {children}
+          <AiCHAT />
+        </div>
+      </Drawer>
+    </SidebarContextProvider>
   )
 }
