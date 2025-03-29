@@ -1,5 +1,5 @@
 {
-  "name": "@v1/app",
+  "name": "@quickbooks-ai-oracle",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -49,6 +49,7 @@
     "@upstash/redis": "^1.34.5",
     "ai": "^4.2.8",
     "axios": "^1.8.4",
+    "biome": "^0.3.3",
     "class-variance-authority": "^0.7.1",
     "clerk": "^0.8.3",
     "clsx": "^2.1.1",

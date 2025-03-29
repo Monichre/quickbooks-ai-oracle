@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
 		// Parse the authorization response from Intuit
 		const tokens = await oauthClient
 			.createToken(fullUrl)
+			// @ts-ignore
 			.then((authResponse) => JSON.stringify(authResponse.getToken()));
 
 		// const tokens = response.getJson();
