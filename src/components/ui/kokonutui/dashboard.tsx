@@ -1,9 +1,9 @@
 import {Suspense} from 'react'
-import Content from './content'
+// import Content from './content'
 import Layout from './layout'
 import {findCustomers, findVendors, findPurchases} from '@/lib/intuit/api'
 
-export default function Dashboard() {
+export default function KokonutDashboard() {
   return (
     <div data-theme='dark'>
       <Layout>
@@ -12,7 +12,7 @@ export default function Dashboard() {
             <div className='p-4 text-center'>Loading financial data...</div>
           }
         >
-          <Content />
+          {/* <Content /> */}
         </Suspense>
       </Layout>
     </div>

@@ -10,6 +10,9 @@ import {ThemeProvider} from 'next-themes'
 import {cn} from '@/lib/utils'
 import {Navbar} from '@/components/ui/navbar-menu'
 import {FullNav} from '@/components/nav/full-nav'
+
+import {NuqsAdapter} from 'nuqs/adapters/next/app'
+
 export const metadata: Metadata = {
   title: 'Create v1',
   description: 'Production ready Next.js app',
@@ -36,14 +39,19 @@ export default function RootLayout({
             'antialiased'
           )}
         >
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='dark'
-            disableTransitionOnChange
-          >
-            <FullNav />
-            {children}
-          </ThemeProvider>
+          <NuqsAdapter>
+            <ThemeProvider
+              attribute={['class', 'data-theme']}
+              defaultTheme='dark'
+              enableSystem
+              disableTransitionOnChange
+              enableColorScheme
+              style={{colorScheme: 'dark'}}
+            >
+              <FullNav />
+              {children}
+            </ThemeProvider>
+          </NuqsAdapter>
         </body>
       </html>
     </ClerkProvider>

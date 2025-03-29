@@ -43,61 +43,10 @@ export function AdminDashboard({
       <div className='p-6'>
         <h1 className='text-2xl font-bold mb-4'>{companyInfo.CompanyName}</h1>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <DashboardCard title='Company Information'>
-            <p>
-              <strong>Legal Name:</strong>{' '}
-              {companyInfo.LegalName || companyInfo.CompanyName}
-            </p>
-            {companyInfo.CompanyAddr && (
-              <p className='mt-2'>
-                <strong>Address:</strong>
-                <br />
-                {companyInfo.CompanyAddr.Line1}
-                <br />
-                {companyInfo.CompanyAddr.Line2 && (
-                  <>
-                    {companyInfo.CompanyAddr.Line2}
-                    <br />
-                  </>
-                )}
-                {companyInfo.CompanyAddr.City},{' '}
-                {companyInfo.CompanyAddr.CountrySubDivisionCode}{' '}
-                {companyInfo.CompanyAddr.PostalCode}
-              </p>
-            )}
-            {companyInfo.PrimaryPhone && (
-              <p className='mt-2'>
-                <strong>Phone:</strong>{' '}
-                {companyInfo.PrimaryPhone.FreeFormNumber}
-              </p>
-            )}
-            {companyInfo.CompanyEmail && (
-              <p className='mt-2'>
-                <strong>Email:</strong> {companyInfo.CompanyEmail.Address}
-              </p>
-            )}
-          </DashboardCard>
-
           {/* Additional dashboard cards can go here */}
         </div>
       </div>
       <Dashboard />
     </SignedIn>
-  )
-}
-
-// Simple dashboard card component
-function DashboardCard({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className='bg-white rounded-lg shadow p-4'>
-      <h2 className='text-lg font-semibold mb-3'>{title}</h2>
-      <div>{children}</div>
-    </div>
   )
 }

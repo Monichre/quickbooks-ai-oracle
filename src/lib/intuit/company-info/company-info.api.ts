@@ -9,7 +9,7 @@ import type { CompanyInfo, CompanyInfoResponse, QueryParams } from "../types";
 export async function getCompanyInfo() {
 	return quickbooksRequest<CompanyInfoResponse>(
 		"query?query=select * from CompanyInfo",
-	);
+	).then((res) => res.QueryResponse.CompanyInfo[0]);
 }
 
 /**

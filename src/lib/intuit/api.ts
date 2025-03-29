@@ -14,22 +14,34 @@ if (!process.env.QB_ENVIRONMENT) {
 	console.warn("QB_ENVIRONMENT is not set. Defaulting to 'sandbox'.");
 }
 
-if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_COMPANY_ID) {
-	console.error(
-		"Missing company ID! Please set QB_COMPANY_ID or INTUIT_SANDBOX_COMPANY_ID",
-	);
-}
+console.log("🚀 ~ process.env.QB_COMPANY_ID:", process.env.QB_COMPANY_ID);
+console.log(
+	"🚀 ~ process.env.INTUIT_COMPANY_ID:",
+	process.env.INTUIT_COMPANY_ID,
+);
+// if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_COMPANY_ID) {
+// 	console.error(
+// 		"Missing company ID! Please set QB_COMPANY_ID or INTUIT_SANDBOX_COMPANY_ID",
+// 	);
+// }
 
 // Base URL for QuickBooks API
 
 // Company ID from env
 const companyId = process.env.INTUIT_COMPANY_ID;
+
+console.log("🚀 ~ companyId:", companyId);
+
 const apiRoot = `${process.env.INTUIT_BASE_URL}/v3/company/${companyId}`;
 
+console.log("🚀 ~ apiRoot:", apiRoot);
+
+console.log("🚀 ~ apiRoot:", apiRoot);
+
 // Validate company ID before any requests
-if (!companyId) {
-	throw new Error("QuickBooks company ID not found in environment variables");
-}
+// if (!companyId) {
+// 	throw new Error("QuickBooks company ID not found in environment variables");
+// }
 
 /**
  * Makes authenticated requests to the QuickBooks API
@@ -43,6 +55,8 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	method = "GET",
 	data?: D,
 ): Promise<T> {
+	const companyId = process.env.INTUIT_COMPANY_ID;
+	const apiRoot = `${process.env.NEXT_PUBLIC_INTUIT_BASE_URL}/v3/company/${companyId}`;
 	// Refresh tokens if needed
 	const tokens = await refreshTokensIfNeeded();
 
@@ -70,8 +84,8 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 		},
 	};
 
-	// Add body data for non-GET requests
 	if (data && method !== "GET") {
+		// Add body data for non-GET requests
 		options.body = JSON.stringify(data);
 	}
 
@@ -82,9 +96,11 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 
 	console.log("🚀 ~ res:", res);
 
-	// Handle non-successful responses
 	if (!response.ok) {
+		// Handle non-successful responses
 		const errorData = await response.json().catch(() => null);
+
+		console.log("🚀 ~ errorData:", errorData);
 
 		// Log detailed error information
 		console.error("QuickBooks API error details:", {
