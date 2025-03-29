@@ -1,3 +1,4 @@
+import type {Customer} from '@/lib/intuit/types'
 import {cn} from '@/lib/utils'
 import {
   ArrowUpRight,
@@ -11,7 +12,6 @@ import {
   CreditCard,
   Users,
 } from 'lucide-react'
-import type {Customer} from '@/lib/intuit/api'
 
 interface AccountItem {
   id: string

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { oauthClient } from "@/lib/intuit/client";

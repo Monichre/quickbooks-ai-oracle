@@ -101,7 +101,7 @@ export function VercelV0Chat() {
                       )
                       .map((attachment, index) => (
                         <Image
-                          key={`${m.id}-${index}`}
+                          key={`${attachment.url}-${index}`}
                           src={attachment.url}
                           width={500}
                           height={500}

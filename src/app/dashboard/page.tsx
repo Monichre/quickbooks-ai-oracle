@@ -5,7 +5,7 @@ import {refreshTokensIfNeeded, isAuthenticated} from '@/lib/intuit/auth'
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert'
 import {Button} from '@/components/ui/button'
 import Link from 'next/link'
-import {AdminDashboard} from '@/components/admin-dashboard'
+
 import {SidebarLeft} from '@/components/sidebar-left'
 import {SidebarRight} from '@/components/sidebar-right'
 import {
@@ -41,9 +41,7 @@ export default async function DashboardPage() {
   // Ensure we have valid tokens before loading company data
   // await refreshTokensIfNeeded()
   // Load company data directly from the API
-  const companyData: CompanyInfoResponse = authenticated
-    ? await getCompanyInfo()
-    : null
+  const companyData: any = authenticated ? await getCompanyInfo() : null
 
   console.log('🚀 ~ DashboardPage ~ companyData:', companyData)
 

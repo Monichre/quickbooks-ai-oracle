@@ -62,7 +62,7 @@ export function NavWorkspaces({
                         <SidebarMenuSubButton asChild>
                           <a href='#'>
                             <span>{page.emoji}</span>
-                            <span>{page.name}</span>
+                            <span>{page.title}</span>
                           </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

@@ -1,3 +1,4 @@
+import type {Purchase} from '@/lib/intuit/types'
 import {cn} from '@/lib/utils'
 import {
   ArrowUpRight,
@@ -10,7 +11,6 @@ import {
   DollarSign,
   Building,
 } from 'lucide-react'
-import type {Purchase} from '@/lib/intuit/api'
 
 interface Transaction {
   id: string

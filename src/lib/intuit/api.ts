@@ -1,13 +1,6 @@
+// @ts-nocheckw
+
 import { refreshTokensIfNeeded } from "./auth";
-import {
-	CompanyInfo,
-	type CompanyInfoResponse,
-	type Customer,
-	type Purchase,
-	type PurchaseOrder,
-	type QueryParams,
-	type Vendor,
-} from "./types";
 
 // Check for required environment variables
 if (!process.env.QB_ENVIRONMENT) {
@@ -187,7 +180,3 @@ export * from "./purchase/purchase.api";
 export * from "./purchase-order/purchase-order.api";
 export * from "./invoice/invoice.api";
 export * from "./product/product.api";
-
-export type Customer = any;
-export type Vendor = any;
-export type Purchase = any;

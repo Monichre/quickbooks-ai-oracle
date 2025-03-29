@@ -7,9 +7,9 @@ import {
   findCustomers,
   findVendors,
   findPurchases,
-  Customer,
-  Vendor,
-  Purchase,
+  // Customer,
+  // Vendor,
+  // Purchase,
 } from '@/lib/intuit/api'
 
 async function CustomersList() {
