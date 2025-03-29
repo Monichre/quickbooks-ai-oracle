@@ -20,8 +20,6 @@ export async function GET(request: NextRequest) {
 			.createToken(fullUrl)
 			.then((authResponse) => JSON.stringify(authResponse.getToken()));
 
-		console.log("🚀 ~ GET ~ tokens:", token)s;
-
 		// const tokens = response.getJson();
 
 		// Store tokens in user metadata
