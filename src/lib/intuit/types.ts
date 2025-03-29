@@ -79,11 +79,8 @@ export type CompanyInfo = {
 /**
  * Type definition for company info query response
  */
-export type CompanyInfoResponse = {
-	QueryResponse: {
-		CompanyInfo: CompanyInfo[];
-		maxResults: number;
-	};
+export type CompanyInfoResponse = any & {
+	CompanyInfo?: CompanyInfo[];
 };
 
 /**
