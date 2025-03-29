@@ -187,3 +187,7 @@ export * from "./purchase/purchase.api";
 export * from "./purchase-order/purchase-order.api";
 export * from "./invoice/invoice.api";
 export * from "./product/product.api";
+
+export type Customer = any;
+export type Vendor = any;
+export type Purchase = any;

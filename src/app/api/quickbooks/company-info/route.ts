@@ -8,8 +8,9 @@ export async function GET() {
 		await refreshTokensIfNeeded();
 
 		// Fetch company data from QuickBooks
-		const response = await getCompanyInfo();
-		
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const response: any = await getCompanyInfo();
+
 		// Extract company info from the query response
 		const companyData = response.QueryResponse.CompanyInfo[0];
 
