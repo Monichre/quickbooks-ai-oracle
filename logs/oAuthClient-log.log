@@ -1119,3 +1119,289 @@
   "token_type": "bearer",
   "x_refresh_token_expires_in": 8704073
 }
+2025-03-31T21:45:49.292Z info: Refresh usingToken () response is : {
+  "expires_in": 3600,
+  "refresh_token": "RT1-114-H0-1752183949ifyetdr1070c6kjlejop",
+  "access_token": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwieC5vcmciOiJIMCJ9..KsvoQ1IoPtTfjRPHaNIANg.PBsGwIaGsHwQEJQYFBHYkaFSpbBCJssbzsGiXvkLEQmR1EZiRNIQ4CnIQDe26pmXXYu5yXX5JIDlOZjrwYqzNKD2D-IDFQEkVQRni9j9W3wPr-mbM-p8YR82FnEd1fvctuiEpv6nJKlyg7c48xAWVYUINZ7zu6TRdyOHoisRYhitPwjD8vEj4tAREfWCm9TjVRHCPHKJ2oDLr02F5tZFdqcF3owQdKtz53VyB7Z6DH2-R1i_o-kefAe5IJ3NUqeqvGbamO6muEgWY71HJBtT7h92gpq1cm2S51qyuWNALCbDBOngkMmErTkf0sUfz3mu8KzxKXBZYShRWXD-kf7CR8dgdG-_HTx7iyuk9P9QNT0xEtEM38RMDVRFVEdsmDHJ6WpgOTpy3nvYHp7Cetb0tviLtdZTb4A6VhvT4vcsXFvBKEuxc17jol5d4B6eb1Y8CDlCV9VjhJjh8VHdZMgKXVeTE-D_kDVr9bAt-QlGvJU.CbLxueBTc4Zxir-kzNhxog",
+  "token_type": "bearer",
+  "x_refresh_token_expires_in": 8726400
+}
+2025-03-31T21:45:49.304Z info: Refresh usingToken () response is : {
+  "expires_in": 3600,
+  "token_type": "bearer",
+  "x_refresh_token_expires_in": 8726400,
+  "refresh_token": "AB11752183949YTHKABZuDECy4hd9maAxBVsIECPsrYBpIQNab",
+  "access_token": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..hjXgx_fpN6PnuY-lNSeRLA.9znNY-aQqMC3CBUIN29RsLe-TygeNwRkgtm27imAEmUAfLiW-w5tXEcq-A5DAsrInH9Jg_u9IN4iBEgdKFKPbF2Sa17bOCVEHEW1kKp9G5hEFiisZo6mgeihdunq-ZcMJLXPsNg3Od4e3mTDtwdANcSu66OXRX5yVPqQnLaN4zcigwCEjdneNyCBhuXXUMlwnxj9sGcJJTdrN9DzvBv3LKnfAb_PXH4dGChQDgpGnhNmESSb3MhGpihH7jJ4TqV1olUfs7cv2EZ7EB9MGME0LunVAk9Yx3QmD7sGeZ3pP4mZ1V6Hayk0MlPU9_feuumZMqJyi6JvL99Tf0mWBG3mOiqB01ok6fBV_xBHhS3VEGtFTASAxx9_6NqFKC-BI-ADLrIY90cOs0gG-sYRsILJvBdGet41xjWh-HyMNG4aOfT15Rh2-8PQ8Bkw52nUkoBq8Oo2pQGtfNnt5-aEW7luSy3zOwH2ltmVH6R_tzTNwKprSiFRFBOrnbRj7J1UKLW2KEnvNA2ebFUCpzPr196aICxiyvpdlf3FkonZU4XjbgikqL8PvWJD6NELjHXyL56LPu1jj2XbXdfkF9RDJXYd3norsgnCOfqOqq36ChEcI3pc4tm5WyQyEYQ_iJhmcSZ2emkyjwHawVrc1bN3oNoNS1-30TkvS7GDm9-kTA9sHMRClONK7aHrzuJQvlt_YlHENjiJr0xvM7nBuDo_p3hb6Veu6gHiM1hmeP-Wb-GZv2p_90Hftt3ETdhVL3vHRI6t.LhbpwPGM8BTNgOrnlgBNUA"
+}
+2025-03-31T21:45:49.307Z info: Refresh usingToken () response is : {
+  "token_type": "bearer",
+  "access_token": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..JHs3liqiK0mmfgIWN9Z0zQ.aZcFwLwK-OI_0JueLb_bJ2SHGWX2WX5J7yuMugBNnIiF7ix8Qon1se4FPwfgWsjALpyGZxCkx3dhcYASVVCYa5DEeiqQyui1P9UlYhu3_kAXsxskYUytGJKWEt5WfkruwiEN2V6XftbUpQXEx_HC_5zDvZCy1ondgR8RqknN28WXB3UxxBH1l8Jxbq89LwyEWIlMUlT7TkhOzqD5rp7VtDrVpSU9Snvn3Y8p5AolSedyXhQbSg1Mgxlozuodkpwj_a0N_CLc5eZcbQ4sA4FOKKqa3KRfGtonumdTksLx0poVUyJVnl2fdmWWY2Lrk4b0eNuTS8vOlfaQe6d59K42ZH7VzVDo8Qq5KoIamIenTjvymIHrnsv2qNG6PYyjENB9HGpuP6q7_kZaVhFC0i0EbMob9BcWXJ-i-U_hmcKs5ffV6MEvvMQlwLMskiiTbXC97T1pRu-VtkeZSNxeinqRHQFpteDdU_tD5mpC_MvbWE7npyw-_I5OE8lpEQ0vGHdpxWXG6J9p14IXuwYT55fb_stDDNlrFr9rrdPZePHyK7j448-AztGk2_ly885dC7cpT0-3J4r_TYvutkWeRCW--xzyc3Zwm1HfTrK-zpKfNP5BLqcwT3JHttvIzdhcVEGEq8oSmf30KjrP9m6dA0bjYlOrcL6UUh_h-gxvlVAsb0TEROPJdzetGH9rrYTJpxoaU4p7XgCKutAFK568-qvfFrUvHsYhoaMiOKAhn8UIbfeDxtxIGoaW777XMtRcgZtm.tLITHieKCtKwLsZY_SE39w",
+  "refresh_token": "AB117521839499e7wkzVbjdARd0lrv3ED2kGpHaZhnUzCjYz3Y",
+  "x_refresh_token_expires_in": 8726400,
+  "expires_in": 3600
+}
+2025-03-31T21:45:49.318Z info: Refresh usingToken () response is : {
+  "expires_in": 3600,
+  "x_refresh_token_expires_in": 8726400,
+  "refresh_token": "AB11752183949SvO3k0zstFTLoNR6SyvHhsSETzFN8d3HFBDjs",
+  "access_token": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..GZ2McfLcTBVUHEvxLBfT5A.Ka31piEGLwsWEJWE9udVBpMG62M203cmN9njNqAU6YpCArYScvoR13yYUAM1w0lVfqK6ZuDQ5LdEW130mq2Gs38re_BXl9PCejXhM2pcou3u_9HhRKS6bVjIbwu_15bncwP7o_M5By_X9R9TayulwxgwPoYYViCoG0SnyNsG4sxX9m56MKgRdM0iKnlQLRFwBslOGon5tsum8E4lADfouW1qjJqGDA5-9r8BoeRS-u9DZ8aBrr1mHReW_cN-_loMz_QVtwpZS6eDtdjre0HicjfcKDKGdsr05TAydapsD8pZgBgtLaoLGvf60qBq2s-dTetxwNMxNb5yHkucjbriUxdrV5yRKqyc39Yh3l0lKvlMVYUovJ2WN2wSH1TuSaUh3f_tGll-SGExUzKJFS9jYv3tI6ya-e9W_gqMytQymX0lPguqpZV8-qIVJ5-HQlSM0ReBt7Lk_rcJVQiGHtfpQd9MBN1CW1xIjkaxoAmxCH3ZzOKUotBMaW_HKvlejvKoY1alXx-4r3KSZo0t_eucA2iYDWpKlfbcF0rATE1bSCcwz9lzwsXyqZ7ndxWiBw3zxU1CiGhcDcZUAvhBfmbKKLaZZcay6sCcZoJWZknLXH5LH5dV261QTkEIWpzotwPs4wOJVvqESDjWgs69OHzI50YLWzSCQa7uKj6IDbCsQHF-WPqEt3iaXdWtS4quZpKvjSRKIJpTKb710J3v0QfjL8jbFhDccyjZqjLbA68zlXW7WST2ScTdT3Gywllk8tDp.p3Jvjof82m-B6jz0F0g3xw",
+  "token_type": "bearer"
+}
+2025-03-31T21:45:49.635Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async quickbooksRequest (webpack-internal:///(rsc)/./src/lib/intuit/api.ts:96:20)\n    at async DashboardLayout (webpack-internal:///(rsc)/./src/app/dashboard/layout.tsx:28:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
+2025-03-31T21:45:49.707Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async quickbooksRequest (webpack-internal:///(rsc)/./src/lib/intuit/api.ts:96:20)\n    at async DashboardPage (webpack-internal:///(rsc)/./src/app/dashboard/page.tsx:28:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
+2025-03-31T21:45:49.759Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async quickbooksRequest (webpack-internal:///(rsc)/./src/lib/intuit/api.ts:96:20)\n    at async DashboardLayout (webpack-internal:///(rsc)/./src/app/dashboard/layout.tsx:28:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
+2025-03-31T21:45:49.821Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async quickbooksRequest (webpack-internal:///(rsc)/./src/lib/intuit/api.ts:96:20)\n    at async DashboardPage (webpack-internal:///(rsc)/./src/app/dashboard/page.tsx:28:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
+2025-03-31T21:50:51.945Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async isAuthenticated (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:136:20)\n    at async DashboardLayout (webpack-internal:///(rsc)/./src/app/dashboard/layout.tsx:27:27)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}
+2025-03-31T21:50:52.005Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:82:37)\n    at async isAuthenticated (webpack-internal:///(rsc)/./src/lib/intuit/auth.ts:136:20)\n    at async DashboardPage (webpack-internal:///(rsc)/./src/app/dashboard/page.tsx:17:27)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117519310396Ny6DFz0pTB4WaA1JPhqTFY3qr9tgoELftjAZ",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}

@@ -3,7 +3,6 @@ description:
 globs: 
 alwaysApply: false
 ---
-I'll scrape the QuickBooks Online API documentation for the Vendor entity and provide it as markdown.
 
 # QuickBooks Online API - Vendor Entity Documentation
 

@@ -3,9 +3,6 @@ description:
 globs: 
 alwaysApply: false
 ---
-I'll scrape the content from both URLs and provide them as separate markdown documents.
-
-Now I'll present the content from both URLs as separate markdown documents:
 
 # Document 1: QuickBooks Online API - Purchase Entity Documentation
 
