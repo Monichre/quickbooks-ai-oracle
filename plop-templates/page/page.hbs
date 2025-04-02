@@ -1,0 +1,14 @@
+import React from 'react';
+
+export const metadata = {
+  title: '{{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}',
+  description: '{{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}} page',
+};
+
+export default async function {{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}Page() {
+  return (
+    <div className="{{kebabCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}-page">
+      <h1>{{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}</h1>
+    </div>
+  );
+} 

@@ -1,0 +1,180 @@
+# Bill
+
+A bill is an AP (accounts payable) transaction that is typically created by a vendor. It is a request for payment.
+QuickBooks also allows customized numbering for bills.
+
+## The bill object
+
+```json
+{
+  "Line": [
+    {
+      "Id": "1",
+      "LineNum": 1,
+      "Description": "Sample line description",
+      "Amount": 200.00,
+      "DetailType": "AccountBasedExpenseLineDetail",
+      "AccountBasedExpenseLineDetail": {
+        "AccountRef": {
+          "value": "7",
+          "name": "Advertising"
+        },
+        "BillableStatus": "NotBillable",
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    }
+  ],
+  "VendorRef": {
+    "value": "56",
+    "name": "Squeaky Kleen Car Wash"
+  },
+  "APAccountRef": {
+    "value": "33",
+    "name": "Accounts Payable (A/P)"
+  },
+  "TotalAmt": 200.00,
+  "DueDate": "2023-08-31",
+  "Balance": 200.00,
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "SyncToken": "0",
+  "Id": "624"
+}
+```
+
+## Create a bill
+
+### Request Body
+
+```json
+{
+  "Line": [
+    {
+      "DetailType": "AccountBasedExpenseLineDetail",
+      "Amount": 200.00,
+      "AccountBasedExpenseLineDetail": {
+        "AccountRef": {
+          "value": "7"
+        }
+      }
+    }
+  ],
+  "VendorRef": {
+    "value": "56"
+  }
+}
+```
+
+## Delete a bill
+
+You can mark a bill as deleted, but you cannot permanently delete it. When deleting bills, reference the bill's Id in the URL.
+You can restore a deleted bill with a similar request, just set the operation to "restore".
+
+### Request Body
+
+```json
+{
+  "SyncToken": "0",
+  "Id": "624"
+}
+```
+
+## Query a bill
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Bill
+```
+
+## Read a bill
+
+### Request
+
+```
+GET /v3/company/<realmId>/bill/<id>
+```
+
+### Response
+
+```json
+{
+  "Bill": {
+    "Line": [
+      {
+        "Id": "1",
+        "LineNum": 1,
+        "Description": "Sample line description",
+        "Amount": 200.00,
+        "DetailType": "AccountBasedExpenseLineDetail",
+        "AccountBasedExpenseLineDetail": {
+          "AccountRef": {
+            "value": "7",
+            "name": "Advertising"
+          },
+          "BillableStatus": "NotBillable",
+          "TaxCodeRef": {
+            "value": "NON"
+          }
+        }
+      }
+    ],
+    "VendorRef": {
+      "value": "56",
+      "name": "Squeaky Kleen Car Wash"
+    },
+    "APAccountRef": {
+      "value": "33",
+      "name": "Accounts Payable (A/P)"
+    },
+    "TotalAmt": 200.00,
+    "DueDate": "2023-08-31",
+    "Balance": 200.00,
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "SyncToken": "0",
+    "Id": "624"
+  },
+  "time": "2023-08-01T12:54:10-07:00"
+}
+```
+
+## Full update a bill
+
+### Request Body
+
+```json
+{
+  "Line": [
+    {
+      "Id": "1",
+      "LineNum": 1,
+      "Description": "Updated line description",
+      "Amount": 200.00,
+      "DetailType": "AccountBasedExpenseLineDetail",
+      "AccountBasedExpenseLineDetail": {
+        "AccountRef": {
+          "value": "7",
+          "name": "Advertising"
+        },
+        "BillableStatus": "NotBillable",
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    }
+  ],
+  "VendorRef": {
+    "value": "56",
+    "name": "Squeaky Kleen Car Wash"
+  },
+  "SyncToken": "0",
+  "Id": "624"
+}
+```

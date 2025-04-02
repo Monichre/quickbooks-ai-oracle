@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { findAccounts, getAccount } from "@/lib/intuit/api";
+import { findAccounts, getAccount } from "@/services/intuit/api";
 
 /**
  * GET handler for account data from QuickBooks

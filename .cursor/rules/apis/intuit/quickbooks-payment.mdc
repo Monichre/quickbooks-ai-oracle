@@ -1,0 +1,210 @@
+# Payment
+
+A payment represents a payment received from a customer. A payment can be linked to an invoice or, for non-linked payments, just record the deposit amount.
+
+## The payment object
+
+```json
+{
+  "CustomerRef": {
+    "value": "1",
+    "name": "Amy's Bird Sanctuary"
+  },
+  "TotalAmt": 100.00,
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "Line": [
+    {
+      "Amount": 100.00,
+      "LinkedTxn": [
+        {
+          "TxnId": "123",
+          "TxnType": "Invoice"
+        }
+      ]
+    }
+  ],
+  "TxnDate": "2023-05-05",
+  "PaymentMethodRef": {
+    "value": "3",
+    "name": "Credit Card"
+  },
+  "DepositToAccountRef": {
+    "value": "4",
+    "name": "Checking"
+  },
+  "UnappliedAmt": 0,
+  "ProcessPayment": false,
+  "Id": "465",
+  "SyncToken": "0",
+  "MetaData": {
+    "CreateTime": "2023-05-05T10:32:25-07:00",
+    "LastUpdatedTime": "2023-05-05T10:32:25-07:00"
+  }
+}
+```
+
+## Create a payment
+
+### Request Body
+
+```json
+{
+  "CustomerRef": {
+    "value": "1"
+  },
+  "TotalAmt": 100.00,
+  "Line": [
+    {
+      "Amount": 100.00,
+      "LinkedTxn": [
+        {
+          "TxnId": "123",
+          "TxnType": "Invoice"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Query a payment
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Payment where Id = '465'
+```
+
+## Read a payment
+
+### Request
+
+```
+GET /v3/company/<realmId>/payment/<id>
+```
+
+### Response
+
+```json
+{
+  "Payment": {
+    "CustomerRef": {
+      "value": "1",
+      "name": "Amy's Bird Sanctuary"
+    },
+    "TotalAmt": 100.00,
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "Line": [
+      {
+        "Amount": 100.00,
+        "LinkedTxn": [
+          {
+            "TxnId": "123",
+            "TxnType": "Invoice"
+          }
+        ]
+      }
+    ],
+    "TxnDate": "2023-05-05",
+    "PaymentMethodRef": {
+      "value": "3",
+      "name": "Credit Card"
+    },
+    "DepositToAccountRef": {
+      "value": "4",
+      "name": "Checking"
+    },
+    "UnappliedAmt": 0,
+    "ProcessPayment": false,
+    "domain": "QBO",
+    "Id": "465",
+    "SyncToken": "0",
+    "MetaData": {
+      "CreateTime": "2023-05-05T10:32:25-07:00",
+      "LastUpdatedTime": "2023-05-05T10:32:25-07:00"
+    }
+  },
+  "time": "2023-05-05T10:32:25-07:00"
+}
+```
+
+## Full update a payment
+
+### Request Body
+
+```json
+{
+  "Id": "465",
+  "SyncToken": "0",
+  "sparse": false,
+  "CustomerRef": {
+    "value": "1",
+    "name": "Amy's Bird Sanctuary"
+  },
+  "TotalAmt": 100.00,
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "Line": [
+    {
+      "Amount": 100.00,
+      "LinkedTxn": [
+        {
+          "TxnId": "123",
+          "TxnType": "Invoice"
+        }
+      ]
+    }
+  ],
+  "PaymentMethodRef": {
+    "value": "3",
+    "name": "Credit Card"
+  },
+  "DepositToAccountRef": {
+    "value": "4",
+    "name": "Checking"
+  },
+  "ProcessPayment": false
+}
+```
+
+## Delete a payment
+
+### Request
+
+```
+POST /v3/company/<realmId>/payment?operation=delete
+```
+
+### Request Body
+
+```json
+{
+  "Id": "465",
+  "SyncToken": "0"
+}
+```
+
+## Void a payment
+
+### Request
+
+```
+POST /v3/company/<realmId>/payment?operation=void
+```
+
+### Request Body
+
+```json
+{
+  "Id": "465",
+  "SyncToken": "0"
+}
+```

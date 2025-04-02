@@ -1,0 +1,13 @@
+import React from 'react';
+
+interface {{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function {{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}Layout({ children }: {{pascalCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}LayoutProps) {
+  return (
+    <div className="{{kebabCase (lookup (split path "/") (subtract (count (split path "/")) 1))}}-layout">
+      {children}
+    </div>
+  );
+} 

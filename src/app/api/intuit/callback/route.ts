@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { oauthClient } from "@/lib/intuit/client";
-import { storeTokens } from "@/lib/intuit/auth";
+import { oauthClient } from "@/services/intuit/client";
+import { storeTokens } from "@/services/intuit/auth";
 
 export async function GET(request: NextRequest) {
 	try {

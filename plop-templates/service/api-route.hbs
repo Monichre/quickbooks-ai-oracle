@@ -1,0 +1,118 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+/**
+ * GET handler for {{pascalCase name}} API
+ * @param request The Next.js request object
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    // Return data based on the ID
+    if (id) {
+      return NextResponse.json({ 
+        message: `Successfully retrieved {{kebabCase name}} with ID: ${id}` 
+      });
+    }
+
+    // Return all data if no ID is provided
+    return NextResponse.json({ 
+      message: `Successfully retrieved all {{kebabCase name}} items` 
+    });
+  } catch (error) {
+    console.error('Error in {{pascalCase name}} GET handler:', error);
+    return NextResponse.json(
+      { error: 'Failed to retrieve {{kebabCase name}} data' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST handler for {{pascalCase name}} API
+ * @param request The Next.js request object
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // Parse request body
+    const body = await request.json();
+
+    // Process the data
+    return NextResponse.json({ 
+      message: `Successfully created {{kebabCase name}}`,
+      data: body 
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Error in {{pascalCase name}} POST handler:', error);
+    return NextResponse.json(
+      { error: 'Failed to create {{kebabCase name}}' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT handler for {{pascalCase name}} API
+ * @param request The Next.js request object
+ */
+export async function PUT(request: NextRequest) {
+  try {
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    // Parse request body
+    const body = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID is required for updating {{kebabCase name}}' },
+        { status: 400 }
+      );
+    }
+
+    // Process the data
+    return NextResponse.json({ 
+      message: `Successfully updated {{kebabCase name}} with ID: ${id}`,
+      data: body 
+    });
+  } catch (error) {
+    console.error('Error in {{pascalCase name}} PUT handler:', error);
+    return NextResponse.json(
+      { error: 'Failed to update {{kebabCase name}}' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE handler for {{pascalCase name}} API
+ * @param request The Next.js request object
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    // Get query parameters
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID is required for deleting {{kebabCase name}}' },
+        { status: 400 }
+      );
+    }
+
+    // Process the data
+    return NextResponse.json({ 
+      message: `Successfully deleted {{kebabCase name}} with ID: ${id}` 
+    });
+  } catch (error) {
+    console.error('Error in {{pascalCase name}} DELETE handler:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete {{kebabCase name}}' },
+      { status: 500 }
+    );
+  }
+} 

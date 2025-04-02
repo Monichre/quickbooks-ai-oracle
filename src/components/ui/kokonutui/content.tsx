@@ -10,7 +10,7 @@ import {
   // Customer,
   // Vendor,
   // Purchase,
-} from '@/lib/intuit/api'
+} from '@/services/intuit/api'
 
 async function CustomersList() {
   const {QueryResponse} = await findCustomers({limit: 5})

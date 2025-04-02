@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createQuickBooksClient } from "@/lib/quickbooks/client";
-import { refreshTokensIfNeeded } from "@/lib/intuit/auth";
+import { createQuickBooksClient } from "@/services/quickbooks/client";
+import { refreshTokensIfNeeded } from "@/services/intuit/auth";
 
 /**
  * Handles QuickBooks webhook notifications

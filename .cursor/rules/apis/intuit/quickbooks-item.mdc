@@ -1,0 +1,185 @@
+# Item
+
+An item is a product or service that your company buys, sells, or resells to customers. When you add an item, you categorize it as one of these types: inventory, non-inventory, service, or bundle. QuickBooks Online lets you track items so that a sale and its impact on inventory and accounts get recorded simultaneously.
+
+## The item object
+
+```json
+{
+  "Name": "Rock Fountain",
+  "Description": "Custom-made water fountain for your garden with natural rocks.",
+  "Active": true,
+  "FullyQualifiedName": "Rock Fountain",
+  "Taxable": true,
+  "UnitPrice": 275.00,
+  "Type": "Inventory",
+  "IncomeAccountRef": {
+    "value": "79",
+    "name": "Sales of Product Income"
+  },
+  "ExpenseAccountRef": {
+    "value": "80",
+    "name": "Cost of Goods Sold"
+  },
+  "AssetAccountRef": {
+    "value": "81",
+    "name": "Inventory Asset"
+  },
+  "TrackQtyOnHand": true,
+  "QtyOnHand": 10,
+  "InvStartDate": "2023-04-01",
+  "PurchaseCost": 125.00,
+  "PurchaseDesc": "Garden rocks, fountain supplies",
+  "MetaData": {
+    "CreateTime": "2023-04-01T12:31:05-07:00",
+    "LastUpdatedTime": "2023-04-01T12:31:05-07:00"
+  },
+  "Id": "5",
+  "SyncToken": "0"
+}
+```
+
+## Create an item
+
+### Request Body
+
+```json
+{
+  "Name": "Rock Fountain",
+  "IncomeAccountRef": {
+    "value": "79"
+  },
+  "ExpenseAccountRef": {
+    "value": "80"
+  },
+  "AssetAccountRef": {
+    "value": "81"
+  },
+  "Type": "Inventory",
+  "TrackQtyOnHand": true,
+  "QtyOnHand": 10,
+  "InvStartDate": "2023-04-01"
+}
+```
+
+## Query an item
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Item where Name = 'Rock Fountain'
+```
+
+## Read an item
+
+### Request
+
+```
+GET /v3/company/<realmId>/item/<id>
+```
+
+### Response
+
+```json
+{
+  "Item": {
+    "Name": "Rock Fountain",
+    "Description": "Custom-made water fountain for your garden with natural rocks.",
+    "Active": true,
+    "FullyQualifiedName": "Rock Fountain",
+    "Taxable": true,
+    "UnitPrice": 275.00,
+    "Type": "Inventory",
+    "IncomeAccountRef": {
+      "value": "79",
+      "name": "Sales of Product Income"
+    },
+    "ExpenseAccountRef": {
+      "value": "80",
+      "name": "Cost of Goods Sold"
+    },
+    "AssetAccountRef": {
+      "value": "81",
+      "name": "Inventory Asset"
+    },
+    "TrackQtyOnHand": true,
+    "QtyOnHand": 10,
+    "InvStartDate": "2023-04-01",
+    "PurchaseCost": 125.00,
+    "PurchaseDesc": "Garden rocks, fountain supplies",
+    "MetaData": {
+      "CreateTime": "2023-04-01T12:31:05-07:00",
+      "LastUpdatedTime": "2023-04-01T12:31:05-07:00"
+    },
+    "domain": "QBO",
+    "sparse": false,
+    "Id": "5",
+    "SyncToken": "0"
+  },
+  "time": "2023-04-01T12:31:05-07:00"
+}
+```
+
+## Full update an item
+
+### Request Body
+
+```json
+{
+  "Id": "5",
+  "SyncToken": "0",
+  "sparse": false,
+  "Name": "Rock Fountain - Large",
+  "Description": "Updated description for garden rock fountain, larger size",
+  "Active": true,
+  "FullyQualifiedName": "Rock Fountain - Large",
+  "Taxable": true,
+  "UnitPrice": 295.00,
+  "Type": "Inventory",
+  "IncomeAccountRef": {
+    "value": "79",
+    "name": "Sales of Product Income"
+  },
+  "ExpenseAccountRef": {
+    "value": "80",
+    "name": "Cost of Goods Sold"
+  },
+  "AssetAccountRef": {
+    "value": "81",
+    "name": "Inventory Asset"
+  },
+  "TrackQtyOnHand": true,
+  "QtyOnHand": 8,
+  "InvStartDate": "2023-04-01",
+  "PurchaseCost": 145.00,
+  "PurchaseDesc": "Premium garden rocks, fountain supplies"
+}
+```
+
+## Sparse update an item
+
+### Request Body
+
+```json
+{
+  "Id": "5",
+  "SyncToken": "0",
+  "sparse": true,
+  "UnitPrice": 295.00,
+  "QtyOnHand": 8
+}
+```
+
+## Delete an item
+
+You can mark an item as inactive through an API call. You cannot delete an item.
+
+### Request Body
+
+```json
+{
+  "Id": "5",
+  "SyncToken": "0",
+  "Active": false
+}
+```

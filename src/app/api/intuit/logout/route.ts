@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { revokeTokens } from "@/lib/intuit/auth";
+import { revokeTokens } from "@/services/intuit/auth";
 
 export async function POST() {
 	try {

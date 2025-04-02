@@ -15,7 +15,7 @@ import {
   Building,
 } from 'lucide-react'
 import React from 'react'
-import type {Vendor} from '@/lib/intuit/types'
+import type {Vendor} from '@/services/intuit/types'
 
 interface ListItem {
   id: string

@@ -2,7 +2,7 @@
 
 "use server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { oauthClient } from "@/lib/intuit/client";
+import { oauthClient } from "@/services/intuit/client";
 import OAuthClient from "intuit-oauth";
 
 export type IntuitTokens = {

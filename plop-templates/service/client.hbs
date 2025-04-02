@@ -1,0 +1,38 @@
+/**
+ * {{pascalCase name}} Service Client
+ */
+
+import axios from 'axios';
+
+// Create a base URL for this service
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+
+// Create an Axios instance with default config
+export const {{camelCase name}}Client = axios.create({
+  baseURL: `${BASE_URL}/{{kebabCase name}}`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add request interceptor for auth tokens, etc.
+{{camelCase name}}Client.interceptors.request.use(
+  (config) => {
+    // You can add authorization headers, etc. here
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for error handling
+{{camelCase name}}Client.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  (error) => {
+    // Handle error responses
+    return Promise.reject(error);
+  }
+); 

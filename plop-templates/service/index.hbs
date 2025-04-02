@@ -1,0 +1,28 @@
+/**
+ * {{pascalCase name}} Service
+ */
+
+import { {{camelCase name}}Client } from './client';
+
+export const {{camelCase name}} = {
+  // Add your service methods here
+  getAll: async () => {
+    return {{camelCase name}}Client.get('/');
+  },
+  
+  getById: async (id: string) => {
+    return {{camelCase name}}Client.get(`/${id}`);
+  },
+  
+  create: async (data: any) => {
+    return {{camelCase name}}Client.post('/', data);
+  },
+  
+  update: async (id: string, data: any) => {
+    return {{camelCase name}}Client.put(`/${id}`, data);
+  },
+  
+  remove: async (id: string) => {
+    return {{camelCase name}}Client.delete(`/${id}`);
+  },
+}; 

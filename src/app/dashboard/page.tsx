@@ -1,6 +1,6 @@
-import {getCompanyInfo} from '@/lib/intuit/api'
+import {getCompanyInfo} from '@/services/intuit/api'
 import {Card} from '@/components/ui/card'
-import {refreshTokensIfNeeded, isAuthenticated} from '@/lib/intuit/auth'
+import {refreshTokensIfNeeded, isAuthenticated} from '@/services/intuit/auth'
 
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert'
 import {Button} from '@/components/ui/button'
@@ -21,7 +21,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import {DashboardContent} from '@/components/ui/kokonutui'
-import type {CompanyInfoResponse} from '@/lib/intuit/types'
+import type {CompanyInfoResponse} from '@/services/intuit/types'
 
 // Simple dashboard card component
 

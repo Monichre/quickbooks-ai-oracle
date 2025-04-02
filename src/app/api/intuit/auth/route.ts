@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAuthorizationUrl } from "@/lib/intuit/auth";
+import { getAuthorizationUrl } from "@/services/intuit/auth";
 
 export async function GET() {
 	try {

@@ -1,5 +1,5 @@
-import { getCompanyInfo } from "@/lib/intuit/api";
-import { refreshTokensIfNeeded } from "@/lib/intuit/auth";
+import { getCompanyInfo } from "@/services/intuit/api";
+import { refreshTokensIfNeeded } from "@/services/intuit/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {

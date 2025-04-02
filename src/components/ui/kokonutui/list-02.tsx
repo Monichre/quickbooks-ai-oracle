@@ -1,4 +1,4 @@
-import type {Purchase} from '@/lib/intuit/types'
+import type {Purchase} from '@/services/intuit/types'
 import {cn} from '@/lib/utils'
 import {
   ArrowUpRight,

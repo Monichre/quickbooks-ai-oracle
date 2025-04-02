@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { type NextRequest, NextResponse } from "next/server";
-import { findVendors, getVendor } from "@/lib/intuit/api";
+import { findVendors, getVendor } from "@/services/intuit/api";
 
 /**
  * GET handler for vendor data from QuickBooks

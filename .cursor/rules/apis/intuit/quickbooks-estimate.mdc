@@ -1,0 +1,249 @@
+# Estimate
+
+An estimate represents a proposal for a financial transaction. It is a document that customers can review and approve before ordering services or goods. After a customer accepts an estimate, you can convert it to an invoice.
+
+## The estimate object
+
+```json
+{
+  "DocNumber": "1001",
+  "TxnDate": "2023-02-08",
+  "Line": [
+    {
+      "LineNum": 1,
+      "Description": "Professional Services",
+      "Amount": 75.00,
+      "DetailType": "SalesItemLineDetail",
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "1",
+          "name": "Services"
+        },
+        "UnitPrice": 75.00,
+        "Qty": 1,
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    },
+    {
+      "Amount": 75.00,
+      "DetailType": "SubTotalLineDetail",
+      "SubTotalLineDetail": {}
+    }
+  ],
+  "CustomerRef": {
+    "value": "1",
+    "name": "Cool Cars"
+  },
+  "CustomerMemo": {
+    "value": "Thank you for your business and have a great day!"
+  },
+  "BillEmail": {
+    "Address": "Cool_Cars@intuit.com"
+  },
+  "ShipAddr": {
+    "City": "Mountain View",
+    "Line1": "123 Main Street",
+    "PostalCode": "94043",
+    "CountrySubDivisionCode": "CA",
+    "Country": "US"
+  },
+  "BillAddr": {
+    "City": "Mountain View",
+    "Line1": "123 Main Street",
+    "PostalCode": "94043",
+    "CountrySubDivisionCode": "CA",
+    "Country": "US"
+  },
+  "TotalAmt": 75.00,
+  "ApplyTaxAfterDiscount": false,
+  "PrintStatus": "NeedToPrint",
+  "EmailStatus": "NotSet",
+  "ExpirationDate": "2023-03-10",
+  "AcceptedBy": "John Smith",
+  "AcceptedDate": "2023-02-15",
+  "Id": "507",
+  "SyncToken": "0",
+  "MetaData": {
+    "CreateTime": "2023-02-08T10:44:38-08:00",
+    "LastUpdatedTime": "2023-02-08T10:44:38-08:00"
+  }
+}
+```
+
+## Create an estimate
+
+### Request Body
+
+```json
+{
+  "Line": [
+    {
+      "DetailType": "SalesItemLineDetail",
+      "Amount": 75.00,
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "1",
+          "name": "Services"
+        },
+        "UnitPrice": 75.00,
+        "Qty": 1
+      }
+    }
+  ],
+  "CustomerRef": {
+    "value": "1"
+  }
+}
+```
+
+## Query an estimate
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Estimate where Id = '507'
+```
+
+## Read an estimate
+
+### Request
+
+```
+GET /v3/company/<realmId>/estimate/<id>
+```
+
+### Response
+
+```json
+{
+  "Estimate": {
+    "DocNumber": "1001",
+    "TxnDate": "2023-02-08",
+    "Line": [
+      {
+        "LineNum": 1,
+        "Description": "Professional Services",
+        "Amount": 75.00,
+        "DetailType": "SalesItemLineDetail",
+        "SalesItemLineDetail": {
+          "ItemRef": {
+            "value": "1",
+            "name": "Services"
+          },
+          "UnitPrice": 75.00,
+          "Qty": 1,
+          "TaxCodeRef": {
+            "value": "NON"
+          }
+        }
+      },
+      {
+        "Amount": 75.00,
+        "DetailType": "SubTotalLineDetail",
+        "SubTotalLineDetail": {}
+      }
+    ],
+    "CustomerRef": {
+      "value": "1",
+      "name": "Cool Cars"
+    },
+    "CustomerMemo": {
+      "value": "Thank you for your business and have a great day!"
+    },
+    "BillEmail": {
+      "Address": "Cool_Cars@intuit.com"
+    },
+    "ShipAddr": {
+      "City": "Mountain View",
+      "Line1": "123 Main Street",
+      "PostalCode": "94043",
+      "CountrySubDivisionCode": "CA",
+      "Country": "US"
+    },
+    "BillAddr": {
+      "City": "Mountain View",
+      "Line1": "123 Main Street",
+      "PostalCode": "94043",
+      "CountrySubDivisionCode": "CA",
+      "Country": "US"
+    },
+    "TotalAmt": 75.00,
+    "ApplyTaxAfterDiscount": false,
+    "PrintStatus": "NeedToPrint",
+    "EmailStatus": "NotSet",
+    "ExpirationDate": "2023-03-10",
+    "AcceptedBy": "John Smith",
+    "AcceptedDate": "2023-02-15",
+    "domain": "QBO",
+    "Id": "507",
+    "SyncToken": "0",
+    "MetaData": {
+      "CreateTime": "2023-02-08T10:44:38-08:00",
+      "LastUpdatedTime": "2023-02-08T10:44:38-08:00"
+    }
+  },
+  "time": "2023-02-08T10:44:38-08:00"
+}
+```
+
+## Full update an estimate
+
+### Request Body
+
+```json
+{
+  "Id": "507",
+  "SyncToken": "0",
+  "Line": [
+    {
+      "LineNum": 1,
+      "Description": "Professional Services",
+      "Amount": 100.00,
+      "DetailType": "SalesItemLineDetail",
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "1",
+          "name": "Services"
+        },
+        "UnitPrice": 100.00,
+        "Qty": 1,
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    },
+    {
+      "Amount": 100.00,
+      "DetailType": "SubTotalLineDetail",
+      "SubTotalLineDetail": {}
+    }
+  ],
+  "CustomerRef": {
+    "value": "1",
+    "name": "Cool Cars"
+  },
+  "ExpirationDate": "2023-04-10",
+  "CustomerMemo": {
+    "value": "Updated estimate for services"
+  }
+}
+```
+
+## Delete an estimate
+
+### Request
+
+```
+POST /v3/company/<realmId>/estimate?operation=delete
+```
+
+### Request Body
+
+```json
+{
+  "Id": "507",
+  "SyncToken": "0"
+}
+```

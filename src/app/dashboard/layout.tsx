@@ -10,8 +10,8 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb'
 import {Separator} from '@radix-ui/react-dropdown-menu'
-import {getCompanyInfo, isAuthenticated} from '@/lib/quickbooks/client'
-import type {CompanyInfoResponse} from '@/lib/quickbooks/client'
+import {getCompanyInfo, isAuthenticated} from '@/services/quickbooks/client'
+import type {CompanyInfoResponse} from '@/services/quickbooks/client'
 import {Button} from '@/components/ui/button'
 import {Drawer, DrawerTrigger} from '@/components/ui/drawer'
 import {Plus} from 'lucide-react'

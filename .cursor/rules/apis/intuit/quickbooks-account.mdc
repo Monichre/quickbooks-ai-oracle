@@ -1,0 +1,100 @@
+# Account
+
+Accounts are used systematically track financial activities. To record transactions, you assign an account to the transaction. QuickBooks Online uses the double entry accounting system. Each transaction debits one account and credits another. The account types are "asset", "equity", "expense", "liability", or "income". Some accounts allow deposits, others can be marked as a tax account or placed on a balance sheet. Accounts can be "active" or "inactive". The current balance of an account is calculated from the Transaction table.
+
+## Sample account object
+
+```json
+{
+  "Name": "Accounts Receivable",
+  "Active": true,
+  "Classification": "Asset",
+  "AccountType": "Accounts Receivable",
+  "AccountSubType": "AccountsReceivable",
+  "CurrentBalance": 0,
+  "CurrentBalanceWithSubAccounts": 0,
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "Domain": "QBO",
+  "Sparse": false,
+  "Id": "1",
+  "SyncToken": "0",
+  "MetaData": {
+    "CreateTime": "2023-06-05T12:54:10-07:00",
+    "LastUpdatedTime": "2023-06-05T12:54:10-07:00"
+  }
+}
+```
+
+## Create an account
+
+### Request Body
+
+```json
+{
+  "Name": "MyAcctName",
+  "AccountType": "Accounts Receivable"
+}
+```
+
+## Query an account
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Account where Name='Accounts Receivable'
+```
+
+## Read an account
+
+### Request
+
+```
+GET /v3/company/<realmId>/account/<id>
+```
+
+### Response
+
+```json
+{
+  "Account": {
+    "Name": "Accounts Receivable",
+    "SubAccount": false,
+    "FullyQualifiedName": "Accounts Receivable",
+    "Active": true,
+    "Classification": "Asset",
+    "AccountType": "Accounts Receivable",
+    "AccountSubType": "AccountsReceivable",
+    "CurrentBalance": 0,
+    "CurrentBalanceWithSubAccounts": 0,
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "Domain": "QBO",
+    "Sparse": false,
+    "Id": "1",
+    "SyncToken": "0",
+    "MetaData": {
+      "CreateTime": "2023-06-05T12:54:10-07:00",
+      "LastUpdatedTime": "2023-06-05T12:54:10-07:00"
+    }
+  },
+  "time": "2023-06-05T12:54:10-07:00"
+}
+```
+
+## Full update an account
+
+### Request Body
+
+```json
+{
+  "Id": "1",
+  "SyncToken": "0",
+  "Name": "Accounts Receivable",
+  "AccountType": "Accounts Receivable"
+}
+```

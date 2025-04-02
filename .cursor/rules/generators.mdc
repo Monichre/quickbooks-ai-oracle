@@ -1,0 +1,99 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Code Generators
+
+This project uses [Plop.js](mdc:https:/plopjs.com) to generate components, features, and pages.
+
+## Using the Generators
+
+Run the generator with:
+
+```bash
+bun run generate
+# or
+npm run generate
+```
+
+Then select the type of generator you want to use:
+
+- `component` - Creates a new UI component
+- `feature` - Creates a new feature with its main component
+- `page` - Creates a new Next.js page
+- `service` - Creates a new Next.js page
+
+## Component Generator
+
+Creates a new component in  or in an existing component type folder `src/components/{type}/{component-name}/`
+
+Prompts:
+- **name**: The name of the component
+- **type**: The type of component (ui, kokonutui, magicui, admin, qr-code)
+
+Example output for a Button component of type 'ui':
+
+```
+src/components/ui/button/Button.tsx
+src/components/ui/button/index.tsx // exports Button.tsx
+
+// or
+
+`src/components/button/Button.tsx`
+```
+
+## Feature Generator
+
+Creates a new feature with its main component in `src/features/{feature-name}/`.
+
+Prompts:
+- **name**: The name of the feature
+- **component**: The name of the main component
+
+Example output for a 'userProfile' feature with 'ProfileCard' component:
+```
+src/features/user/user-profile/UserProfile.tsx
+src/features/user/user-profile/index.tsx
+src/features/user/index.ts
+```
+
+**TODO:**
+- Add Feature Component: Adds a component to an existing feature
+## Page Generator
+
+Creates a new Next.js page in `src/app/{path}/`.
+
+Prompts:
+- **path**: The page path (e.g. "restaurants/new")
+- **withLayout**: Whether to create a layout file (default=false)
+- **withFeature**: Whether to create a corresponding feature(default=false)
+
+Example output for path 'restaurants/new' with layout:
+```
+src/app/restaurants/new/page.tsx
+src/app/restaurants/new/layout.tsx
+```
+
+## Service Generator
+
+Creates a new service in `src/service/{service-name}/`.
+
+Prompts:
+- **name**: The name of the feature
+- **withApiRoute**: Whether it should also generate an api route for the service `app/api/{service-name}/route`
+
+Example output for a 'intuit' service:
+```
+src/service/intuit/index.ts
+src/service/intuit/client.ts
+```
+
+
+Example output for a 'intuit' service with API routes:
+```
+src/service/intuit/index.ts
+src/service/intuit/client.ts
+
+src/app/api/intuit/route.ts
+```
