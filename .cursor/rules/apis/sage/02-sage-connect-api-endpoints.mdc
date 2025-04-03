@@ -1,0 +1,246 @@
+# SAGE Connect API Endpoints
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_52_36.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Full Product Detail Service, including request parameters, response formats, and data structures.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_52_36.jpg
+- **Image Size**: 1811434 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Full Product Detail
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| errNum | int | | Error number (if failed) |
+| errMsg | string | | Error message (if failed) |
+| product | Product Object | | Product information |
+
+##### Product Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| prodId | int | | Product ID |
+| category | string | 30 | Category name |
+| suppId | int | | Supplier's SAGE ID |
+| lineName | string | 1000 | Supplier's line name |
+| catPage | int | | Catalog page |
+| catYear | int | | Catalog Year |
+| itemNum | string | 25 | Supplier's item number |
+| spc | string | 1 | SAGE Product Code |
+| prName | string | 100 | Product name |
+| description | string | 1000 | Text description |
+| dimensions | string | 100 | Product dimensions |
+| keywords | string | 200 | Product keywords |
+| colors | string | 300 | Product colors |
+| themes | string | 200 | Themes |
+| pics | array of Picture Objects | | Product pictures |
+| qty | array of int | 6 | Quantities |
+| prc | array of currency | 6 | Pricing |
+| priceCode | string | 6 | Price Code |
+| catPrc | array of currency | 6 | Standard catalog pricing |
+| catPriceCode | string | 6 | Catalog Price Code |
+| net | array of currency | 6 | Cost pricing (Confidential) |
+| currency | string | 3 | Currency code for the pricing |
+| priceAdjustMsg | string | 100 | Supplier-level price adjust message |
+| piecesPerUnit | array of int | 6 | Pieces per unit |
+| options | array of Option Objects | | Options information |
+| madeinCountry | string | 2 | Two-letter country code |
+| assembledinCountry | string | 2 | Two-letter country code |
+| decoratedinCountry | string | 2 | Two-letter country code |
+| recyclable | bool | | Recyclable product |
+| newProduct | bool | | New product |
+| envFriendly | bool | | Environmentally friendly |
+| audienceWarning | bool | | Item may not be suitable for all audiences |
+| food | bool | | Food |
+| clothing | bool | | Clothing |
+| productCompliance | string | 1000 | List of compliances |
+| warningLbl | string | 1000 | Compliance warning label (used for Prop 65 compliance and other warning label requirements) |
+| productComplianceMemo | string | 1000 | Additional memo |
+| verified | bool | | Supplier Verified |
+| imprintArea | string | 100 | Imprint area |
+| imprintLoc | string | | Imprint location |
+| secondImprintArea | string | 100 | Second imprint area |
+| secondImprintLoc | string | | Second imprint location |
+| decorationMethod | string | 50 | Decoration Method |
+| decorationNotOffered | bool | | No decoration |
+| setupChg | currency | | Setup Charge |
+| setupChgCode | string | 1 | Setup charge price code |
+| repeatSetupChg | currency | | Repeat setup charge |
+| repeatSetupChgCode | string | 1 | Repeat setup charge code |
+| screenChg | currency | | Screen charge |
+| screenChgCode | string | 1 | Screen charge price code |
+| plateChg | currency | | Plate charge |
+| plateChgCode | string | 1 | Plate charge price code |
+| dieChg | currency | | Die charge |
+| dieChgCode | string | 1 | Die charge price code |
+| toolingChg | currency | | Tooling charge |
+| toolingChgCode | string | 1 | Tooling charge price code |
+| addClrChg | currency | | Additional color setup charge |
+| addClrChgCode | string | 1 | Additional color setup charge code |
+| addClrRunChg | array of currency | 6 | Additional color run charges |
+| addClrRunChgCode | string | 1 | Additional color run charge code |
+| priceIncludes | string | 100 | Price includes |
+| package | string | 50 | Packaging |
+| weightPerCarton | float | | Weight per carton (lbs) |
+| unitsPerCarton | int | | Units per carton |
+| cartonL | int | | Carton length (in inches) |
+| cartonW | int | | Carton width (in inches) |
+| cartonH | int | | Carton height (in inches) |
+| prodTime | int | | Production Time |
+| shipPointCountry | string | 2 | Shipping point country |
+| shipPointZip | int | | Shipping point zip code |
+| onHand | int | | Total units on hand (For unlimited items, onHand will equal 999,999,999) |
+| skus | array of SKU Objects | | Inventory breakdown based on stock keeping units |
+| inventoryLastUpdated | ISO 8601 (UTC) | | Timestamp of last inventory status update in UTC |
+| comment | string | 500 | Comments |
+| expDate | ISO 8601 (UTC) | 10 | Expiration date |
+| discontinued | bool | | Discontinued flag |
+| active | bool | | Active flag (Products are inactive if they have been discontinued or if they are expired) |
+| supplier | Supplier Object | | Supplier information (Only included if IncludeSupplInfo is set in the request) |
+
+##### Picture Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| index | int | | Picture index |
+| url | string | 200 | URL to product picture |
+| caption | string | 100 | Picture caption (e.g., "Red" or "Front view") |
+| hastogo | int | | Whether or not this picture has sample decoration (0=blank, 1=Sample decoration/togo) |
+
+##### Option Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| name | string | 100 | Option Name |
+| pricingIsTotal | bool | | Pricing is total |
+| values | array of Value Objects | | Option values |
+| priceCode | string | 6 | Price Code |
+
+##### Value Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| value | string | 100 | Value Name |
+| prc | array of currency | 6 | Pricing |
+| net | array of currency | 6 | Pricing |
+
+##### SKU Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| attributes | array of Attribute Objects | 5 | Item attributes or options |
+| onHand | int | | Total units of inventory on hand |
+| onOrder | int | | Total units on order |
+| onOrderExpectedDate | ISO 8601 (UTC) | | Date on which the quantity on order should arrive at the factory |
+| warehouseId | int | | Unique warehouse ID (assigned by you) |
+| warehouseCountry | string | 2 | Two-character country code of the warehouse location |
+| warehouseZip | string | 10 | Zip or postal code of the warehouse location |
+| memo | string | 200 | Additional information or notes regarding the inventory |
+| unlimited | bool | | Specifies whether or not this item is stockable (true=Item has unlimited stock (i.e., not stockable), false=item has a defined stock quantity) |
+
+##### Attribute Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| typeId | int | | Attribute type ID (See Notes tab) |
+| name | string | 25 | Attribute name (For example, "Color" or "Size") |
+| value | string | | Attribute value (For example, "red", "green") |
+
+##### Supplier Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| suppId | int | | Supplier SAGE # |
+| coName | string | | Company name |
+| lineName | string | | Supplier line name |
+| contactName | string | | Contact name |
+| mAddr | string | | Mailing address |
+| mCity | string | | Mailing city |
+| mState | string | | Mailing state |
+| mZip | int | | Mailing zip code |
+| mCountry | string | | Mailing country |
+| sAddr | string | | Shipping address |
+| sCity | string | | Shipping city |
+| sState | string | | Shipping state |
+| sZip | int | | Shipping zip code |
+| sCountry | string | | Shipping country |
+| tel | string | | Telephone number |
+| tollFreeTel | string | | Toll free telephone number |
+| fax | string | | Fax number |
+| tollFreeFax | string | | Toll free fax number |
+| email | string | | Email address |
+| salesEmail | string | | Email address |
+| orderEmail | string | | Email address |
+| sampleOrderEmail | string | | Email address |
+| customerServiceEmail | string | | Email address |
+| web | string | | Web URL |
+| unionShop | bool | | Union shop |
+| esg | string | | ESG/Diversity Info |
+| artContactName | string | | Art contact name |
+| artContactEmail | string | | Art contact email |
+| catYear | int | | Catalog year |
+| catExpOn | string | | Catalog expiration date |
+| catCurrency | string | | Catalog currency code |
+| comment | string | | Comment |
+| prefGroupIds | string | | Preference group ID list |
+| prefGroups | string | | Preference group names |
+| persCsRep | string | | Personal CS Rep (The user may add or edit this information using SAGE Workplace) |
+| persCsRepPhn | string | | Personal CS Rep phone (The user may add or edit this information using SAGE Workplace) |
+| persCsRepEmail | string | | Personal CS Rep email address (The user may add or edit this information using SAGE Workplace) |
+| persCustNum | string | | Personal customer # (The user may add or edit this information using SAGE Workplace) |
+| persSuppNote | string | | Personal supplier note (The user may add or edit this information using SAGE Workplace) |
+| generalInfo | GeneralInfo Object | | Supplier general information |
+
+##### GeneralInfo Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| artInfo | string | | Art information |
+| copyChangeInfo | string | | Copy change info |
+| imprintMethods | string | | Imprint methods |
+| imprintColors | string | | Imprint colors |
+| proofInfo | string | | Proof information |
+| pmsCharge | currency | | PMS charge |
+| pmsChargeCode | string | | PMS charge code |
+| copyChangeCharge | currency | | Copy change charge |
+| copyChangeChargeCode | string | | Copy change charge code |
+| artChargeHr | currency | | Art charge hr |
+| artChargeHrCode | string | | Art charge hr code |
+| artChargeJob | currency | | Art charge job |
+| artChargeJobCode | string | | Art charge job code |
+| proofCharge | currency | | Proof charge |
+| proofChargeCode | string | | Proof charge code |
+| specSampleCharge | currency | | Spec sample charge |
+| specSampleChargeCode | string | | Spec sample charge code |
+| orderChangeInfo | string | | Order change info |
+| orderCancelInfo | string | | Order cancel info |
+| lessMinInfo | string | | Less min info |
+| overrunInfo | string | | Overrun info |
+| shipInfo | string | | Shipping info |
+| termsInfo | string | | Terms info |
+| warrantyInfo | string | | Warranty info |
+| returnsInfo | string | | Returns info |
+| coOpInfo | string | | CoOp info |
+| otherInfo | string | | Other info |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

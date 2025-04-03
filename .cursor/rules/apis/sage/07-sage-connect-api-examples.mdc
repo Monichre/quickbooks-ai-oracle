@@ -1,0 +1,94 @@
+# SAGE Connect API Examples
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_07.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Product Search Service, including request field layouts and parameters.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_07.jpg
+- **Image Size**: 1206203 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Product Search
+
+#### Request Field Layout
+
+##### Request Object
+
+| Field name | Type | Max Length | Required | Default | Notes |
+|------------|------|------------|----------|---------|-------|
+| serviceId | string | | | "serviceId":103 | Service request name |
+| apiVer | int | | | "apiVer":130 | for current version |
+| auth | Authentication Object | | | | Authentication information |
+| ref | string | 15 | | | Reference code. This is used for analytics tracking, for example if you want to track which users are sending requests. |
+| search | SearchRec Object | | | | Search information |
+| endBuyerSearch | bool | | | false | Identifies search type. Set this to true if this search is being performed by an end buyer (e.g., on your public website) |
+
+##### Authentication Object
+
+| Field name | Type | Max Length | Required | Default | Notes |
+|------------|------|------------|----------|---------|-------|
+| acctId | int | | | | SAGE Acct # |
+| loginId | string | | | | Login ID for the user submitting the request. For the Public User, leave the login ID blank. Note that the Public User does not get a monthly credit allowance. |
+| key | string | | | | Authentication key. See the Users tab for the authentication key associated with the user. |
+
+##### SearchRec Object
+
+| Field name | Type | Max Length | Default | Notes |
+|------------|------|------------|---------|-------|
+| categories | string | | | The Category field specifies the SAGE category name or number to be searched. For example, if you are looking for flashlights, you would have a category number of 123 or you can enter "flashlights". The category numbers can be obtained using the Research List service module. You may enter multiple categories by separating each one with a comma. |
+| keywords | string | | | Product Keywords |
+| colors | string | | | Product Colors |
+| themes | string | | | Product Themes |
+| quickSearch | string | | | Quicksearch Input |
+| spc | string | | | SAGE Product Code. The SPC is a product identifier in the SAGE database and is unique to your account. |
+| itemNum | string | | | Product's Actual Item Number |
+| itemNumExact | bool | | false | If true, this will search for products where the item number matches exactly. If false, it will search for products where item number matches using wildcards. |
+| itemName | string | | | Product's Item Name |
+| priceLow | currency | | | Lowest Price in USD |
+| priceHigh | currency | | | Highest Price in USD |
+| qty | int | | | Quantity |
+| hideExpirePricing | bool | | false | Hides pricing from products that have expired pricing. If set to true, products with expired pricing will be included in the search but will not have any pricing. |
+| verified | bool | | false | Verified Products |
+| recyclable | bool | | false | Recyclable Products |
+| envFriendly | bool | | false | Environmental Friendly Products |
+| newProduct | bool | | false | New Products Only |
+| unionShop | bool | | false | Products Produced by a Union Shop |
+| esg | string | | | Comma-separated list of ESG/diversity characteristic flag IDs. Suppliers matching any in the list will be considered matches. Obtain the list of names and IDs using the Research List service module. |
+| allAudiences | bool | | false | All Audiences |
+| endUserOnly | bool | | false | Products ok to show end users only. If you are developing an end-user facing application, set this to true to remove any products that are not intended to be viewed by end users. The default is false, meaning all products will be shown. |
+| popular | bool | | false | Popular items only |
+| fresh | bool | | false | Fresh ideas |
+| timely | bool | | false | Timely products |
+| prodTime | int | | 0 | Minimum production time in working days. Leave blank or '0' for any |
+| includeRush | bool | | false | Include rush shipment. The IncludeRush field should be either "Y" or "N" depending on whether or not you want to include suppliers offering rush service in your production time searches. If set to yes, all suppliers offering rush service will be included in the search results even if the normal production time is outside of the specified production time. If the ProdTime field is empty or zero, the IncludeRush parameter is ignored. |
+| madeIn | string | | | Country made in. Two-digit country code |
+| prefGroups | string | | | Preference Groups. The PrefGroups field ties into the preference groups assigned in SAGE Workplace. If this field is blank, all suppliers will be searched. To search only suppliers within one or more specific preference group, enter a comma-separated list of preference group ID numbers to search. The preference group ID numbers can be found in the preference group setup area within SAGE Workplace. |
+| suppId | int | | | Supplier SAGE #. The supplier SAGE # is a 5-digit number that identifies a supplier. This is required for supplier users who are performing searches. |
+| lineName | string | | | Specific Supplier's Line Name |
+| siteCountry | string | | | Site country code (if diff from acct). SiteCountry allows you to specify a two-digit country code for the site's location. If not specified, the country code of your account will be used. The country code is used in searching to determine which products to show on the site. For example, if a supplier has a Canadian catalog and a US catalog, the catalog shown will be determined based on the site's location as specified here. |
+| updatedSince | ISO 8601 UTC datetime | | | Updated since this date/time. Filters to only products that have been updated since this datetime value. This is useful to only return products that have changed since a certain time. Note that values must be entered in UTC time zone and format. For example, "2023-07-27T06:10:00Z" |
+| applyPsSearchRestrictions | bool | | false | Apply PromoSearch search restriction settings. Sets whether or not the global search restriction settings from the PromoSearch Settings area will apply to this search. |
+| applyPsPriceAdjustments | bool | | false | Apply PromoSearch price adjustment settings. Sets whether or not the price adjustment settings from the PromoSearch Settings area will apply to this search. |
+| sort | string | | | Sort order for the products in the response. See notes tab for details |
+| thumbPicRes | int | | 150 | Thumbnail image picture resolution. Options are 100, 150, 200, 300, or 1800 pixels. |
+| extraReturnFields | string | | | Return additional fields in the response string. See notes tab for details |
+| maxTotalItems | int | | 1000 | Max items to find (<=50000). The MaxTotalItems field sets the maximum number of products to find in a search. If this field is not included, the default value will be used. If you would like to return fewer than 1,000 matching products, use this field to set the maximum. If you would like to return more, you can set this to any number up to 50,000. You cannot return more than 50,000 products in a search. |
+| startNum | int | | | Record number to start with (1=first). The StartNum and MaxRecs fields are used to return a subset of the total search results. This allows you to implement "records per page" functionality. If you do not wish to use these fields, leave both empty. However, if you do want to use this functionality, the StartNum should contain the starting record number for this request and the MaxRecs should contain the number of records to return. For example, if a search returns 110 total products and you would like to display records 1-20, you would enter "1" for StartNum and "20" for MaxRecs. Then, to show records 21-40, enter "21" as the StartNum and "20" again for MaxRecs. |
+| maxRecs | int | | | Max records to return per page. The StartNum and MaxRecs fields are used to return a subset of the total search results. This allows you to implement "records per page" functionality. If you do not wish to use these fields, leave both empty. However, if you do want to use this functionality, the StartNum should contain the starting record number for this request and the MaxRecs should contain the number of records to return. For example, if a search returns 110 total products and you would like to display records 1-20, you would enter "1" for StartNum and "20" for MaxRecs. Then, to show records 21-40, enter "21" as the StartNum and "20" again for MaxRecs. |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

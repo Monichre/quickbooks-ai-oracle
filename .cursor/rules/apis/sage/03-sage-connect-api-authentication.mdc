@@ -1,0 +1,290 @@
+# SAGE Connect API Authentication
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_53_12.jpg`
+
+## Description
+
+This file contains detailed information about the SAGE Connect API Presentations service, its data structures, and object models.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_53_12.jpg
+- **Image Size**: 1864665 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Presentations
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| ok | true=post succeeded, false=post failed | bool | | |
+| errNum | Error number (if failed) | int | | |
+| errMsg | Error message (if failed) | string | | |
+| presentations | Array of presentations | array of Presentation Objects | | |
+
+##### Presentation Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| presId | int | | Presentation ID |
+| general | General Object | | |
+| client | Client Object | | |
+| intro | Intro Object | | |
+| itemCnt | int | | Item count |
+| items | array of Items Objects | | Array of items |
+| closing | Closing Object | | |
+| header | Header Object | | |
+| footer | Footer Object | | |
+| terms | Terms Object | | |
+| formatting | Formatting Object | | |
+| stats | Stats Object | | |
+
+##### General Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| acctId | int | | Account number |
+| ownerPersonId | int | | |
+| filename | string | | Filename |
+| title | string | | Title |
+| reference | string | | Reference |
+| date | ISO 8601 (UTC) | | Date |
+| projectId | int | | Project ID |
+| projectName | string | | Project name |
+| pcFolderId | int | | PC folder ID |
+| pcFolderName | int | | PC folder name |
+| acctRepId | int | | Account representative ID |
+| quickNote | string | | Quick note |
+| notesText | string | | Notes text |
+| status | bool | | Status |
+
+##### Client Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| clientId | Client ID | int | | |
+| clientCompany | Client company name | string | | |
+| name | Client name | string | | |
+| company | Company | string | | |
+| address1 | Client address line 1 | string | | |
+| address2 | Client address line 2 | string | | |
+| city | Client city | string | | |
+| state | Client state | string | | |
+| zip | Client zip | string | | |
+| country | Client country | string | | |
+| phone | Client phone | string | | |
+| fax | Client fax | string | | |
+| email | Client email | string | | |
+| taxRate | Tax Rate | string | | |
+
+##### Intro Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| introText | Introduction Text | string | | |
+| introTextHTML | Introduction text HTML | string | | |
+| salutation | Salutation | string | | |
+
+##### Items Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| presItemId | int | | Presentation item ID |
+| sortOrder | int | | Sort order |
+| name | string | | Name |
+| itemNum | string | | Item number |
+| category | string | | Category |
+| description | string | | Description |
+| descriptionHtml | string | | Description HTML |
+| includeItem | bool | | Include item |
+| pics | array of Image Objects | | Item Images |
+| lastUpdateImages | ISO 8601 (UTC) | | Last update images |
+| qtys | array of int | 6 | Quantities |
+| catPrcs | array of currency | 6 | Standard catalog pricing |
+| sellPrcs | array of currency | | Sell prices |
+| costs | array of currency | | Costs |
+| usePrCodeForCost | bool | | Use price code for cost |
+| showPriceGridFlags | int | | Show price grid flags |
+| discounts | array of currency | | Discounts |
+| addChgTotals | array of currency | | Additional Charge Totals |
+| taxTotals | array of currency | | Tax Totals |
+| totals | array of currency | | Totals |
+| totalPerPcs | array of currency | | Total per pieces |
+| priceAdjustType | string | | Price adjust type |
+| priceAdjustPercent | string | | Price adjust percent |
+| priceAdjustFixed | string | | Price adjust fixed |
+| priceAdjustInfo | string | | Price adjust information |
+| qtyAdjustInfo | string | | Qty adjust information |
+| priceIncludes | string | | Price includes |
+| showAddChgFlags | bool | | Show add charge flags |
+| setupChg | currency | | Setup charge |
+| setupChgCode | string | 1 | Setup charge price code |
+| screenChg | currency | | Screen charge |
+| screenChgCode | string | 1 | Screen charge price code |
+| dieChg | currency | | Die charge |
+| dieChgCode | string | 1 | Die charge price code |
+| plateChg | currency | | Plate charge |
+| plateChgCode | string | 1 | Plate charge price code |
+| repeatChg | currency | | Repeat charge |
+| repeatChgCode | string | 1 | Repeat charge code |
+| toolingChg | currency | | Tooling charge |
+| toolingChgCode | string | 1 | Tooling charge price code |
+| resetChg | currency | | Reset charge |
+| resetChgCode | string | 1 | Reset charge price code |
+| copyChg | currency | | Copy charge |
+| copyChgCode | string | 1 | Copy charge price code |
+| artChg | currency | | Art charge |
+| artChgCode | string | 1 | Art charge price code |
+| pmsChg | currency | | PMS charge |
+| pmsChgCode | string | 1 | PMS charge price code |
+| proofChg | currency | | Proof charge |
+| proofChgCode | string | 1 | Proof charge price code |
+| specSampleChg | currency | | Sample charge |
+| specSampleChgCode | string | 1 | Sample charge price code |
+| addClrSetupChg | currency | | Additional setup charge |
+| addClrSetupChgCode | string | 1 | Additional setup charge price code |
+| addClrRunChgs | array of currency | | Additional clear run charges |
+| addClrPriceCode | string | | Additional clear price code |
+| additionalColors | string | | Additional colors |
+| shipChgs | array of currency | | Shipping charges |
+| customChgs | array of currency | | Custom charges |
+| addChgAllQtyFlags | string | | Additional charge all quantity flags |
+| includeAddChgInTotal | bool | | Include add charge in total |
+| additionalChargesText | string | | Additional charges text |
+| otherChgText | string | | Other charge text |
+| colorInfoText | string | | Color information text |
+| imprintInfoText | string | | Imprint information text |
+| packagingText | string | | Packaging text |
+| warningLbl | string | | Warning Label |
+| addInfoText | string | | Additional information text |
+| prodId | int | | Product ID |
+| encryptedProdId | string | | Encrypted product ID |
+| internalItemNum | string | | Internal item number |
+| spc | string | | SAGE Product Code |
+| internalRefNum | string | | Internal reference Number |
+| catPage | string | | Catalog page |
+| catYear | int | | Catalog year |
+| catExpires | string | | Catalog expiration date |
+| shipPoint | int | | Shipping point zip code |
+| weightPerCtn | float | | Weight per carton (lbs) |
+| cartonSizeL | int | | Carton length (in inches) |
+| cartonSizeW | int | | Carton width (in inches) |
+| cartonSizeH | int | | Carton height (in inches) |
+| supplier | Supplier Object | | |
+| notes | string | | Notes |
+| lastUpdateTimestamp | ISO 8601 (UTC) | | Last update timestamp |
+| feedback | array of Feedback Objects | | Feedback |
+
+##### Supplier Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| sageId | int | | Supplier's SAGE ID |
+| company | string | | Supplier's company name |
+| line | string | | Supplier line name |
+| city | string | | Supplier's mailing city |
+| state | string | | Supplier's mailing state |
+| zip | string | | Supplier's mailing zip code |
+| phone | string | | Supplier's telephone number |
+| fax | string | | Supplier's fax number |
+| email | string | | Supplier's email address |
+| web | string | | Supplier's web URL |
+| personalId | string | | My supplier personal ID |
+| myCsRep | string | | My customer service representative |
+| myCsRepPhn | string | | My customer service representative' phone |
+| myCsRepEmail | string | | My customer service representative's email |
+| myCustNum | string | | My customer number |
+| mySuppNote | string | | My notes about the supplier |
+| autoUpdateSuppInfo | bool | | Automatically update supplier information |
+
+##### Image Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| url | URL of Image | string | | |
+
+##### Feedback Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| feedbackId | Feedback ID | int | | |
+| author | Author | string | | |
+| timestampText | Timestamp text | ISO 8601 (UTC) | | |
+| headerText | Header text | string | | |
+| comment | Comment | string | | |
+| isClient | IsClient | bool | | |
+| isRead | IsRead | bool | | |
+
+##### Closing Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| closingText | string | | Closing text |
+| closingTextHTML | string | | Closing text HTML |
+| sigClosing | string | | Signature closing |
+| sigType | string | | Signature type |
+| hasSigImage | bool | | Has signature image |
+| sigText | string | | Signature text |
+| sigPrintedName | string | | Signature printed name |
+| sigTitle | string | | Signature title |
+
+##### Header Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| headFirstText | string | | Header first text |
+| headFirstTextHTML | string | | Header first text HTML |
+| headAddtlText | string | | Header additional text |
+| headAddtlTextHTML | string | | Header additional text HTML |
+
+##### Footer Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| footFirstText | string | | Footer first text |
+| footFirstTextHTML | string | | Foot first text HTML |
+| footAddtlText | string | | Footer additional text |
+| footAddtlTextHTML | string | | Footer additional text HTML |
+
+##### Terms Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| termsText | Terms text | string | | |
+| termsTextHTML | Terms text HTML | string | | |
+
+##### Formatting Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| currencySymbol | Currency symbol | string | | |
+| catPriceRowLabel | Catalog price row label | string | | |
+| showPriceRowLabel | Show price row label | string | | |
+| discountRowLabel | Discount row label | string | | |
+| addChgRowLabel | Additional charge row label | string | | |
+| totalRowLabel | Total row label | string | | |
+| totalPerPcRowLabel | Total per piece row label | string | | |
+
+##### Stats Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| createTimestamp | string | | Create timestamp |
+| lastUpdateTimestamp | string | | Last update timestamp |
+| lastAccessedTimestamp | string | | Last accessed timestamp |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

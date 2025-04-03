@@ -1,0 +1,34 @@
+# SAGE Connect API Rate Limits
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_16.jpg`
+
+## Description
+
+This file contains information about rate limiting, throttling policies, and quotas for the SAGE Connect API.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_16.jpg
+- **Image Size**: 436523 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+The image shows documentation for rate limits in the SAGE Connect API, which likely includes:
+
+- Rate limit thresholds and quotas
+- Rate limit response headers
+- Best practices for handling rate limits
+- Strategies for optimizing API usage
+- Penalty periods for exceeding limits
+
+## Manual Transcription Required
+
+Due to technical limitations, the text content of this image needs to be manually transcribed. The original screenshot should be referenced for accurate information.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

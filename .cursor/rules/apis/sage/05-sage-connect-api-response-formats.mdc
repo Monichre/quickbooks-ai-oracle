@@ -1,0 +1,34 @@
+# SAGE Connect API Response Formats
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_11_11.jpg`
+
+## Description
+
+This file contains information about response formats, data structures, and status codes returned by the SAGE Connect API.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_11_11.jpg
+- **Image Size**: 1684621 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+The image shows documentation for response formats in the SAGE Connect API, which likely includes:
+
+- Response structure and syntax
+- Status codes and their meanings
+- Data formats and field descriptions
+- Example response bodies
+- Error handling and troubleshooting
+
+## Manual Transcription Required
+
+Due to technical limitations, the text content of this image needs to be manually transcribed. The original screenshot should be referenced for accurate information.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

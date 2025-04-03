@@ -1,0 +1,70 @@
+# SAGE Connect API Error Handling
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_11_44.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Inventory Status Service, including response formats and field definitions.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_11_44.jpg
+- **Image Size**: 438704 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Inventory Status
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| products | Array of products | array of Product Objects | | |
+
+##### Product Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| productId | SAGE Product ID | int | | The Product ID uniquely identifies a product in the SAGE database. |
+| sageNum | The supplier's SAGE # | int | | |
+| itemNum | Item number | string | 25 | |
+| onHand | Total units on hand | int | | For unlimited items, onHand will equal 999,999,999. |
+| skus | Stock keeping units | array of SKU Objects | | |
+| lastUpdated | Timestamp of last inventory status update in UTC | ISO 8601 (UTC) | | |
+
+##### SKU Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| attributes | Item attributes or options | array of Attribute Objects | 5 | |
+| onHand | Total units of inventory on hand | int | | |
+| onOrder | Total units on order | int | | |
+| onOrderExpectedDate | Date on which the quantity on order should arrive at the factory | ISO 8601 (UTC) | | |
+| refreshLeadDays | Approximate number of days to refresh inventory once order is placed (if not enough in stock) | int | | |
+| warehouseId | Unique warehouse ID (assigned by you) | int | | |
+| warehouseCountry | Two-character country code of the warehouse location | string | 2 | |
+| warehouseZip | Zip or postal code of the warehouse location | string | 10 | |
+| memo | Additional information or notes regarding the inventory | string | 200 | |
+| unlimited | Specifies whether or not this item is stockable | bool | | true=Item has unlimited stock (i.e. not stockable), false=item has a defined stock quantity |
+
+##### Attribute Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| typeId | Attribute type ID | int | | See Notes tab |
+| name | Attribute name | string | 25 | For example, "Color" or "Size" |
+| value | Attribute value | string | | For example, "red", "green", "XL" |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

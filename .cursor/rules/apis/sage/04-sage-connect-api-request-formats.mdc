@@ -1,0 +1,262 @@
+# SAGE Connect API Request Formats
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_10_46.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Order Forms service, including request formats, data structures, and field definitions.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_10_46.jpg
+- **Image Size**: 1684621 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Order Forms
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| ok | bool | | true=post succeeded, false=post failed |
+| errNum | int | | Error number (if failed) |
+| errMsg | string | | Error message (if failed) |
+| documentCnt | int | | Number of documents being returned |
+| documents | array of Doc Objects | | Array of orders |
+
+##### Doc Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| header | Header Object | | Header information |
+| billTo | BillTo Object | | Bill to information |
+| shipTo | ShipTo Object | | Ship to information (SupplierID is not empty) |
+| client | Client Object | | Client Information (ClientID is not empty) |
+| supplier | Supplier Object | | Supplier Information |
+| payment | Payment Object | | Payment information |
+| shipping | Shipping Object | | Shipping information |
+| itemCnt | int | | Item count |
+| items | array of Item Objects | | Array of items |
+| totals | Totals Object | | Totals information |
+| fileCount | int | | File count |
+| filesPickupUrl | string | | URL to file pickup webpage |
+| files | array of File Objects | | File attachment information |
+| notes | Notes Object | | Notes |
+| delivery | Delivery Object | | Delivery information |
+
+##### Header Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| docId | int | | Document ID (The document ID is unique for each document) |
+| sageAcctNum | int | | SAGE account number |
+| formType | int | | Form type ID (1 CATREQ, 2 SAMPLE, 3 RFQ, 4 PO, 10 QUOTE, 11 SALESORDER, 12 ORDERACK, 13 INVOICE, 14 PACKLIST) |
+| formTypeText | string | | Form type (text) |
+| orderDate | ISO 8601 (UTC) | | Order date/time |
+| supplierId | int | | SAGE supplier ID |
+| clientId | int | | SAGE client ID |
+| custNum | string | | Supplier's customer number (If the distributor has entered their customer number for the supplier, that value will show here) |
+| jobNum | string | | Job number |
+| poNum | string | | Po# |
+| projectId | string | | Project ID |
+| projectName | string | | Project name |
+| fileFolder | string | | File center folder |
+| salesperson | string | | Salesperson |
+| status | int | | Order status (0 DRAFT, 1 OPEN, 2 COMPLETE, 3 CANCELED) |
+
+##### BillTo Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| company | string | | Company name |
+| contactName | string | | Contact name |
+| address | string | | Address line 1 |
+| address2 | string | | Address line 2 |
+| city | string | | city |
+| state | string | | State/province |
+| zip | string | | Zip/postal code |
+| country | string | | Country (2-character postal code) |
+| phone | string | | Phone |
+| fax | string | | Fax |
+| email | string | | Email |
+
+##### ShipTo Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| company | string | | Company name |
+| contactName | string | | Contact name |
+| address | string | | Address line 1 |
+| address2 | string | | Address line 2 |
+| city | string | | city |
+| state | string | | State/province |
+| zip | string | | Zip/postal code |
+| country | string | | Country (2-character postal code) |
+| residentialAddress | bool | | 0=no, 1=yes |
+| phone | string | | Phone |
+| fax | string | | Fax |
+| email | string | | Email |
+| dropShip | bool | | 0=no, 1=yes |
+
+##### Payment Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| payTerms | string | | Payment terms |
+| payMethod | string | | Payment method |
+| isPaid | bool | | Is paid (0=no, 1=yes) |
+| commissionable | bool | | Commissionable (0=no, 1=yes) |
+
+##### Shipping Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| shipMethod | string | | Shipping method |
+| shipAcct | string | | Shipping account number |
+| shipDate | ISO 8601 (UTC) | | Ship date |
+| inHandsDate | ISO 8601 (UTC) | | In hands date |
+| rush | bool | | Rush service (0=no, 1=yes) |
+
+##### Item Object
+
+| Field name | Description | Type | Max Length | Notes |
+|------------|-------------|------|------------|-------|
+| itemId | Unique ID for this line item | int | | |
+| type | Item type | int | | |
+| qty | Quantity | int | | |
+| itemNum | Item number | string | | |
+| suppItemNum | Supplier's item number | string | | |
+| prodId | Unique ID for product | int | | Product ID: a unique identifier from the SAGE database. Custom items will not have a prodId. This ID is unique to each product. |
+| description | Description | string | | |
+| color | Color | string | | |
+| size | Size | string | | |
+| imprint | Imprint | string | | |
+| price | Price per item | currency | | |
+| extPrice | Extended price | currency | | |
+| cost | Cost per item | currency | | |
+| extCost | Extended cost | currency | | |
+| notes | Notes | string | | |
+| shipChg | Shipping charge | currency | | |
+| additionalChargesRec | Additional charges information | array of AdditionalCharges Objects | | |
+| addChgTotalPrice | Add charge total price | currency | | |
+| addChgTotalCost | Add charge total cost | currency | | |
+| supplier | Supplier information | Supplier Object | | |
+
+##### AdditionalCharges Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| setupCharge | currency | | Setup charge |
+| setupChargeCost | currency | | Setup charge cost |
+| screenCharge | currency | | Screen charge |
+| screenChargeCost | currency | | Screen charge cost |
+| dieCharge | currency | | Die charge |
+| dieChargeCost | currency | | Die charge cost |
+| plateCharge | currency | | Plate charge |
+| plateChargeCost | currency | | Plate charge cost |
+| toolingCharge | currency | | Tooling charge |
+| toolingChargeCost | currency | | Tooling charge cost |
+| resetCharge | currency | | Reset charge |
+| resetChargeCost | currency | | Reset charge cost |
+| repeatCharge | currency | | Repeat charge |
+| repeatChargeCost | currency | | Repeat charge cost |
+| copyChangeCharge | currency | | Copy change charge |
+| copyChangeChargeCost | currency | | Copy change charge cost |
+| pmsCharge | currency | | PMS charge |
+| pmsChargeCost | currency | | PMS charge cost |
+| artCharge | currency | | Art charge |
+| artChargeCost | currency | | Art charge cost |
+| specCharge | currency | | Spec charge |
+| specChargeCost | currency | | Spec charge cost |
+| proofCharge | currency | | Proof charge |
+| proofChargeCost | currency | | Proof charge cost |
+| additionalColorSetup | currency | | Additional color setup charge |
+| additionalColorSetupCost | currency | | Additional color setup charge cost |
+| addClrRun | currency | | Additional color charge |
+| addClrRunCost | currency | | Additional color charge cost |
+| customChg1Name | string | | Custom chg1 name |
+| customChg1 | currency | | Custom chg1 charge |
+| customChg1Cost | currency | | Custom chg1 charge cost |
+| customChg2Name | string | | Custom chg2 name |
+| customChg2 | currency | | Custom chg2 charge |
+| customChg2Cost | currency | | Custom chg2 charge cost |
+
+##### Client Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| company | string | | Company name |
+| accountNumber | string | | Account number |
+
+##### Supplier Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| supplierId | int | | Supplier SAGE # |
+| company | string | | Company name |
+| contactName | string | | Contact name |
+| address | string | | Mailing address |
+| address2 | string | | Mailing address line 2 |
+| city | string | | Mailing city |
+| state | string | | Mailing state |
+| zip | string | | Mailing zip code |
+| country | string | | Mailing country |
+| phone | string | | Telephone number |
+| fax | string | | Fax number |
+| email | string | | Email address |
+
+##### Totals Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| subtotal | currency | | Subtotal |
+| discountTotal | currency | | Discount total |
+| additionalChargeTotal | currency | | Additional charge total |
+| shippingTotal | currency | | Shipping charge total |
+| shippingTbd | bool | | Shipping marked as TBD (1=yes, 0=no) |
+| shippingCalcFromItems | bool | | (0=no, 1=yes) |
+| taxTotal | currency | | Tax total |
+| taxExempt | bool | | Tax exempt (1=yes, 0=no) |
+| grandTotal | currency | | Grand total |
+
+##### File Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| filename | string | | File name |
+| description | string | | File description |
+| fileSizeKb | int | | File size in KB |
+| status | bool | | Status (0=Not yet downloaded, 1=Downloaded) |
+| pickupUrl | string | | Direct URL to file |
+
+##### Notes Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| supplierMemo | string | | Supplier memo |
+| factoryMemo | string | | Factory memo |
+| clientMemo | string | | Client memo |
+| internalMemo | string | | Internal memo |
+
+##### Delivery Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| destination | string | | Destination |
+| deliveredTimeStamp | ISO 8601 (UTC) | | Delivered time stamp |
+| confirmationRequested | bool | | Confirmation requested |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

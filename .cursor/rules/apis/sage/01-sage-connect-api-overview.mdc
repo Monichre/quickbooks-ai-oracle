@@ -1,0 +1,151 @@
+# SAGE Connect API Overview
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_52_16.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Basic Product Detail Service, its structure, data formats, and field documentation.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-03_52_16.jpg
+- **Image Size**: 1039500 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Basic Product Detail
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| errNum | int | | Error number (if failed) |
+| errMsg | string | | Error message (if failed) |
+| product | Product Object | | Product information |
+
+##### Product Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| prodId | int | | Product ID |
+| category | string | 30 | Category name |
+| suppId | int | | Supplier's SAGE ID |
+| lineName | string | 1000 | Supplier's line name |
+| catPage | int | | Catalog page |
+| catYear | int | | Catalog Year |
+| itemNum | string | 25 | Supplier's item number |
+| spc | string | 1 | SAGE Product Code |
+| prName | string | 100 | Product name |
+| description | string | 1000 | Text description |
+| dimensions | string | 100 | Product dimensions |
+| keywords | string | 200 | Product keywords |
+| colors | string | 300 | Product colors |
+| themes | string | 200 | Themes |
+| pics | array of Picture Objects | | Product pictures |
+| qty | array of int | 6 | Quantities |
+| prc | array of currency | 6 | Pricing |
+| priceCode | string | 6 | Price Code |
+| catPrc | array of currency | 6 | Standard catalog pricing |
+| catPriceCode | string | 6 | Catalog Price Code |
+| currency | string | 3 | Currency code for the pricing |
+| piecesPerUnit | array of int | 6 | Pieces per unit |
+| options | array of Option Objects | | Options information |
+| madeinCountry | string | 2 | Two-letter country code |
+| assembledinCountry | string | 2 | Two-letter country code |
+| decoratedinCountry | string | 2 | Two-letter country code |
+| recyclable | bool | | Recyclable product |
+| newProduct | bool | | New product |
+| envFriendly | bool | | Environmentally friendly |
+| audienceWarning | bool | | Item may not be suitable for all audiences |
+| food | bool | | Food |
+| clothing | bool | | Clothing |
+| productCompliance | string | 1000 | List of compliances |
+| warningLbl | string | 1000 | Compliance warning label (used for Prop 65 compliance and other warning label requirements) |
+| productComplianceMemo | string | 1000 | Additional memo |
+| verified | bool | | Supplier Verified |
+| imprintArea | string | 100 | Imprint area |
+| imprintLoc | string | | Imprint location |
+| secondImprintArea | string | 100 | Second imprint area/location |
+| secondImprintLoc | string | | Second imprint location |
+| decorationMethod | string | 50 | Decoration Method |
+| decorationNotOffered | bool | | No decoration |
+| setupChg | currency | | Setup Charge |
+| priceIncludes | string | 100 | Price includes |
+| package | string | 50 | Packaging |
+| weightPerCarton | float | | Weight per carton (lbs) |
+| unitsPerCarton | int | | Units per carton |
+| cartonL | int | | Carton length (in inches) |
+| cartonW | int | | Carton width (in inches) |
+| cartonH | int | | Carton height (in inches) |
+| prodTime | int | | Production Time |
+| shipPointCountry | string | 2 | Shipping point country |
+| shipPointZip | int | | Shipping point zip code |
+| onHand | int | | Total units on hand (For unlimited items, onHand will equal 999,999,999) |
+| skus | array of SKU Objects | | Inventory breakdown based on stock keeping units |
+| inventoryLastUpdated | ISO 8601 (UTC) | | Timestamp of last inventory status update in UTC |
+| comment | string | 500 | Comments |
+| expDate | ISO 8601 (UTC) | 10 | Expiration date |
+| discontinued | bool | | Discontinued flag |
+| active | bool | | Active flag (Products are inactive if they have been discontinued or if they are expired) |
+
+##### Picture Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| index | int | | Picture index |
+| url | string | 200 | URL to product picture |
+| caption | string | 100 | Picture caption (e.g., "Red" or "Front view") |
+| hastogo | int | | Whether or not this picture has sample decoration (0=blank, 1=Sample decoration/togo) |
+
+##### Option Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| name | string | 100 | Option Name |
+| pricingIsTotal | bool | | Pricing is total |
+| values | array of Value Objects | | Option values |
+| priceCode | string | 6 | Price Code |
+
+##### Value Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| value | string | 100 | Value Name |
+| prc | array of currency | 6 | Pricing |
+
+##### SKU Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| attributes | array of Attribute Objects | 5 | Item attributes or options |
+| onHand | int | | Total units of inventory on hand |
+| onOrder | int | | Total units on order |
+| onOrderExpectedDate | ISO 8601 (UTC) | | Date on which the quantity on order should arrive at the factory |
+| refreshLeadDays | int | | Approximate number of days to refresh inventory once order is placed (if not enough in stock) |
+| warehouseId | int | | Unique warehouse ID (assigned by you) |
+| warehouseCountry | string | 2 | Two-character country code of the warehouse location |
+| warehouseZip | string | 10 | Zip or postal code of the warehouse location |
+| memo | string | 200 | Additional information or notes regarding the inventory |
+| unlimited | bool | | Specifies whether or not this item is stockable (true=Item has unlimited stock (ie. not stockable), false=item has a defined stock quantity) |
+
+##### Attribute Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| typeId | int | | Attribute type ID (See Notes tab) |
+| name | string | 25 | Attribute name (For example, "Color" or "Size") |
+| value | string | | Attribute value (For example, "red", "green", "XL") |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.

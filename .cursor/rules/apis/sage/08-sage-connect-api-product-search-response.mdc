@@ -1,0 +1,69 @@
+# SAGE Connect API Product Search Response
+
+## Source
+
+This documentation is based on a screenshot of the SAGE Connect API documentation interface located at:
+`screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_16.jpg`
+
+## Description
+
+This file contains information about the SAGE Connect API Product Search Service response field layouts, including the structure of response objects and field definitions.
+
+## Image Details
+
+- **Filename**: screencapture-sagemember-sm-dll-ConnectAPIDoc-2025-04-02-04_12_16.jpg
+- **Image Size**: 436523 bytes
+- **Capture Date**: April 2nd, 2025
+
+## Content Overview
+
+### SAGE Connect / Product Search
+
+#### Response Field Layout
+
+##### Response Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| ok | bool | | true=post succeeded, false=post failed |
+| errNum | int | | Error number (if failed) |
+| errMsg | string | | Error message (if failed) |
+| searchResponseMsg | string | | Response message from search (if any) |
+| totalFound | int | | Total number of matches |
+| products | array of ProductListRec Objects | | Array of products |
+
+##### ProductListRec Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| prodEld | int | | Unique ID for product. This ID is unique to each product. |
+| spc | string | | SAGE Product Code |
+| name | string | | Product name |
+| itemNum | string | | Item number |
+| category | string | | Item category |
+| description | string | | Item Description |
+| colors | string | | Item Colors |
+| themes | string | | Item Themes |
+| suppId | int | | Supplier SAGE number |
+| line | string | | Supplier line name |
+| supplier | string | | Confidential supplier name |
+| prefGroups | Array of PrefGroupRec | | Supplier preference groups |
+| pre | currency | | Price (Shows range if no quantity entered) |
+| net | currency | | Confidential net price |
+| prodTime | int | | Production time |
+| thumbPic | string | | Link to thumbnail image |
+
+##### PrefGroupRec Object
+
+| Field name | Type | Max Length | Notes |
+|------------|------|------------|-------|
+| id | int | | Unique preference group ID |
+| name | string | | Preference group name |
+
+## Copyright
+
+© 2025 SAGE. All use of this service is governed by the SAGE Customer Agreement. Unauthorized use is strictly prohibited.
+
+## Related Documentation
+
+For complete documentation, refer to the other SAGE API documentation files in this directory.
