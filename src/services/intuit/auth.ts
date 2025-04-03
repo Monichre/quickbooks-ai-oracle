@@ -84,38 +84,70 @@ export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
 
 	if (tokensNeedRefresh(tokens)) {
 		try {
-			const refreshResponse = await oauthClient.refreshUsingToken(
-				tokens.refresh_token,
-			);
-			const newTokens = refreshResponse.getJson();
+			// Set the token in the client first
+			oauthClient.setToken({
+				access_token: tokens.access_token,
+				refresh_token: tokens.refresh_token,
+				token_type: tokens.token_type,
+				expires_in: tokens.expires_in,
+				x_refresh_token_expires_in: tokens.x_refresh_token_expires_in,
+				createdAt: tokens.createdAt,
+			});
+
+			// Try using the standard refresh method first
+			let newTokens: IntuitTokens;
+			try {
+				const refreshResponse: {
+					getJson(): IntuitTokens;
+				} = await oauthClient.refresh();
+				newTokens = refreshResponse.getJson();
+			} catch (refreshError) {
+				// If standard refresh fails, try the refreshUsingToken method
+				console.log("Standard refresh failed, trying refreshUsingToken");
+				const refreshResponse: {
+					getJson(): IntuitTokens;
+				} = await oauthClient.refreshUsingToken(tokens.refresh_token);
+				newTokens = refreshResponse.getJson();
+			}
+
 			await storeTokens(newTokens);
 			return newTokens;
 		} catch (error) {
 			console.error("Error refreshing tokens:", error);
+
+			// If we get a 400 error, the refresh token may be expired
+			// We should clear the tokens and redirect to re-authenticate
+			if (error.status === 400) {
+				console.log("Refresh token might be expired, clearing tokens");
+				await clearTokens();
+			}
+
 			return null;
 		}
 	}
 	return tokens;
 }
-// const refreshTokens = async () => {
-// 	const tokensNeedRefresh = oauthClient.isAccessTokenValid();
-// 	// const tokens = await getTokens();
-// 	// if (!tokens) return null;
 
-// 	if (tokensNeedRefresh) {
-// 		try {
-// 			const refreshResponse = await oauthClient.refresh().then(authResponse => authResponse.getToken())
-// 			// const newTokens = refreshResponse.getJson();
-// 			// await storeTokens(newTokens);
-// 			// return newTokens;
-// 		} catch (error) {
-// 			console.error("Error refreshing tokens:", error);
-// 			return null;
-// 		}
-// 	}
-// 	return tokens;
-// // }
-// }
+// Clear tokens from Clerk user metadata without revoking them
+async function clearTokens(): Promise<boolean> {
+	const { userId } = await auth();
+	if (!userId) return false;
+
+	try {
+		// Use clerkClient pattern from docs
+		const client = await clerkClient();
+		await client.users.updateUser(userId, {
+			publicMetadata: {
+				qbTokens: null,
+			},
+		});
+		return true;
+	} catch (error) {
+		console.error("Error clearing tokens:", error);
+		return false;
+	}
+}
+
 // Revoke tokens and remove them from Clerk user metadata
 export async function revokeTokens(): Promise<boolean> {
 	const tokens = await getTokens();
@@ -124,18 +156,8 @@ export async function revokeTokens(): Promise<boolean> {
 	try {
 		await oauthClient.revoke({ token: tokens.access_token });
 
-		const { userId } = await auth();
-		if (!userId) return false;
-
-		// Use clerkClient pattern from docs
-		const client = await clerkClient();
-		await client.users.updateUser(userId, {
-			publicMetadata: {
-				qbTokens: null,
-			},
-		});
-
-		return true;
+		// Clear the tokens from metadata
+		return await clearTokens();
 	} catch (error) {
 		console.error("Error revoking tokens:", error);
 		return false;
