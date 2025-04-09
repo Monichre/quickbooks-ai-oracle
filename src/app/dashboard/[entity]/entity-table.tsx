@@ -9,7 +9,6 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table'
-import {entityApiMap} from './page'
 
 // Define a generic entity object type
 type EntityObject = Record<string, unknown>

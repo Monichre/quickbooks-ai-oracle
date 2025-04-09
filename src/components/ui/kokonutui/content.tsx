@@ -1,6 +1,6 @@
 import {Calendar, CreditCard, Wallet, Users} from 'lucide-react'
 import {Suspense} from 'react'
-import List01 from './list-01'
+import List01 from './CustomersListPreview'
 import List02 from './list-02'
 import List03 from './list-03'
 import {
@@ -11,13 +11,14 @@ import {
   // Vendor,
   // Purchase,
 } from '@/services/intuit/api'
+import CustomersListPreview from './CustomersListPreview'
 
 async function CustomersList() {
   const {QueryResponse} = await findCustomers({limit: 5})
 
   console.log('🚀 ~ CustomersList ~ QueryResponse:', QueryResponse)
 
-  return <List01 customers={QueryResponse.Customer} />
+  return <CustomersListPreview customers={QueryResponse.Customer} />
 }
 
 async function PurchasesList() {

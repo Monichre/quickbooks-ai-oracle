@@ -3,55 +3,99 @@ import {notFound} from 'next/navigation'
 import EntityTable from './entity-table'
 
 // Define a type for the supported entity types
-type EntityType =
-  | 'accounts'
-  | 'customers'
-  | 'vendors'
-  | 'invoices'
-  | 'items'
-  | 'products'
-  | 'purchases'
-  | 'purchase-orders'
+import type {EntityType} from '@/services/intuit/types'
 
-// Map entity types to their API endpoints
-export const entityApiMap: Record<EntityType, string> = {
-  accounts: '/api/quickbooks/account',
-  customers: '/api/quickbooks/customer',
-  vendors: '/api/quickbooks/vendor',
-  invoices: '/api/quickbooks/invoice',
-  items: '/api/quickbooks/item',
-  products: '/api/quickbooks/product',
-  purchases: '/api/quickbooks/purchase',
-  'purchase-orders': '/api/quickbooks/purchase-order',
+// Import QueryParams for type safety
+import {
+  findAccounts,
+  findCustomers,
+  findVendors,
+  findInvoices,
+  findItems,
+  findProducts,
+  findPurchases,
+  findPurchaseOrders,
+  findBills,
+  findEstimates,
+  type QueryParams,
+} from '@/services/intuit/api'
+
+// Define a common function type for all API endpoints
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ApiFunction = (params?: {
+  limit?: number
+  [key: string]: any
+}) => Promise<any>
+
+// Map entity types to their corresponding API functions
+const entityApiFunctionMap: Record<EntityType, ApiFunction> = {
+  accounts: findAccounts,
+  customers: findCustomers,
+  vendors: findVendors,
+  invoices: findInvoices,
+  items: findItems,
+  products: findProducts,
+  purchases: findPurchases,
+  'purchase-orders': findPurchaseOrders,
+  bills: findBills,
+  estimates: findEstimates,
 }
 
 // Server Component to handle data fetching
 async function fetchEntityData(entity: string) {
-  if (!entity || !entityApiMap[entity as EntityType]) {
+  if (!entity || !entityApiFunctionMap[entity as EntityType]) {
     return notFound()
   }
 
-  const response = await fetch(entityApiMap[entity as EntityType], {
-    // This ensures the data is fresh on each request
-    cache: 'no-store',
-  })
+  try {
+    // Call the appropriate API function with default parameters
+    const response = await entityApiFunctionMap[entity as EntityType]({
+      limit: 100,
+    })
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${entity} data: ${response.statusText}`)
+    console.log('🚀 ~ fetchEntityData ~ response:', response)
+
+    // Convert entity string to capitalized singular form for accessing QueryResponse
+    const capitalizedEntity = entity
+      .replace(/-([a-z])/g, (g) => g[1].toUpperCase())
+      .replace(/s$/, '')
+      .replace(/^[a-z]/, (c) => c.toUpperCase())
+
+    // Most API responses have a QueryResponse property containing the actual data
+    // Try to access the data using QueryResponse[CapitalEntityKey] pattern
+    if (
+      response.QueryResponse &&
+      Object.prototype.hasOwnProperty.call(
+        response.QueryResponse,
+        capitalizedEntity
+      )
+    ) {
+      return response.QueryResponse[capitalizedEntity]
+    }
+
+    // Fallback to the entire QueryResponse or response if specific key not found
+    return response.QueryResponse || response
+  } catch (error) {
+    console.error(`Error fetching ${entity} data:`, error)
+    throw new Error(
+      `Failed to fetch ${entity} data: ${(error as Error).message}`
+    )
   }
-
-  return response.json()
 }
 
 export default async function EntityPage({params}: {params: {entity: string}}) {
-  const {entity} = params
+  console.log('🚀 ~ EntityPage ~ params:', params)
+
+  const {entity} = await params
 
   // Check if entity is valid
-  if (!entityApiMap[entity as EntityType]) {
+  if (!entityApiFunctionMap[entity as EntityType]) {
     return notFound()
   }
 
   const data = await fetchEntityData(entity)
+
+  console.log('🚀 ~ EntityPage ~ data:', data)
 
   return (
     <div className='container mx-auto py-8'>

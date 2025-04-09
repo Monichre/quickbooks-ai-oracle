@@ -404,3 +404,18 @@ export type Invoice = {
  * Product entity type definition (alias for Item)
  */
 export type Product = Item;
+
+/**
+ * Supported entity types for QuickBooks API interactions
+ */
+export type EntityType =
+	| "accounts"
+	| "customers"
+	| "vendors"
+	| "invoices"
+	| "items"
+	| "products"
+	| "purchases"
+	| "purchase-orders"
+	| "bills"
+	| "estimates";

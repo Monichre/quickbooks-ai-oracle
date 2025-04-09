@@ -1,6 +1,7 @@
 // @ts-nocheckw
 
 import { refreshTokensIfNeeded } from "./auth";
+import type { QueryParams } from "./types";
 
 // Check for required environment variables
 if (!process.env.QB_ENVIRONMENT) {
@@ -180,3 +181,7 @@ export * from "./purchase/purchase.api";
 export * from "./purchase-order/purchase-order.api";
 export * from "./invoice/invoice.api";
 export * from "./product/product.api";
+export * from "./bill/bill.api";
+export * from "./estimate/estimate.api";
+
+export type { QueryParams };

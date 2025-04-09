@@ -12,6 +12,7 @@ import {
   CreditCard,
   Users,
 } from 'lucide-react'
+import Link from 'next/link'
 
 interface AccountItem {
   id: string
@@ -28,7 +29,7 @@ interface List01Props {
   className?: string
 }
 
-export default function List01({
+export default function CustomersListPreview({
   totalBalance = '$26,540.25',
   accounts,
   customers = [],
@@ -187,8 +188,10 @@ export default function List01({
               'transition-all duration-200'
             )}
           >
-            <ArrowRight className='w-3.5 h-3.5' />
-            <span>More</span>
+            <Link href='/dashboard/customers'>
+              <ArrowRight className='w-3.5 h-3.5' />
+              <span>More</span>
+            </Link>
           </button>
         </div>
       </div>

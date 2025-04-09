@@ -206,7 +206,7 @@ export const SidebarContextProvider = ({
     <UISidebarProvider open={open} onOpenChange={handleToggleSidebar}>
       <SidebarLeft links={initialLinks} />
       <SidebarInset>{children}</SidebarInset>
-      <SidebarRight />
+      {/* <SidebarRight /> */}
     </UISidebarProvider>
   )
 }

@@ -23,3 +23,5 @@ export * from "./purchase-order/purchase-order.api";
 export * from "./account/account.api";
 export * from "./company-info/company-info.api";
 export * from "./item/item.api";
+export * from "./bill/bill.api";
+export * from "./estimate/estimate.api";
