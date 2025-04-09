@@ -79,7 +79,7 @@ export type CompanyInfo = {
 /**
  * Type definition for company info query response
  */
-export type CompanyInfoResponse = any & {
+export type CompanyInfoResponse = {} & {
 	CompanyInfo?: CompanyInfo[];
 };
 
@@ -404,3 +404,119 @@ export type Invoice = {
  * Product entity type definition (alias for Item)
  */
 export type Product = Item;
+
+// Bill API types
+export interface BillCreateRequest {
+	VendorRef: {
+		value: string;
+		name?: string;
+	};
+	Line: Array<{
+		DetailType: "AccountBasedExpenseLine" | "ItemBasedExpenseLine";
+		Amount: number;
+		AccountBasedExpenseLineDetail?: {
+			AccountRef: {
+				value: string;
+				name?: string;
+			};
+			TaxCodeRef?: {
+				value: string;
+			};
+			BillableStatus?: "Billable" | "NotBillable" | "HasBeenBilled";
+		};
+		ItemBasedExpenseLineDetail?: {
+			ItemRef: {
+				value: string;
+				name?: string;
+			};
+			Qty?: number;
+			UnitPrice?: number;
+			TaxCodeRef?: {
+				value: string;
+			};
+			BillableStatus?: "Billable" | "NotBillable" | "HasBeenBilled";
+		};
+		Description?: string;
+	}>;
+	CurrencyRef?: {
+		value: string;
+		name?: string;
+	};
+	TxnDate?: string;
+	DueDate?: string;
+	DocNumber?: string;
+	PrivateNote?: string;
+	TotalAmt?: number;
+	GlobalTaxCalculation?: "TaxExcluded" | "TaxInclusive" | "NotApplicable";
+	APAccountRef?: {
+		value: string;
+		name?: string;
+	};
+	SalesTermRef?: {
+		value: string;
+		name?: string;
+	};
+	LinkedTxn?: Array<{
+		TxnId: string;
+		TxnType: "PurchaseOrder" | "BillPaymentCheck" | "ReimburseCharge";
+	}>;
+	DepartmentRef?: {
+		value: string;
+		name?: string;
+	};
+	TPAR?: boolean;
+}
+
+export interface Bill {
+	Id: string;
+	SyncToken: string;
+	VendorRef: {
+		value: string;
+		name: string;
+	};
+	Line: Array<{
+		Id?: string;
+		LineNum?: number;
+		Description?: string;
+		Amount: number;
+		DetailType: string;
+		AccountBasedExpenseLineDetail?: Record<string, unknown>;
+		ItemBasedExpenseLineDetail?: Record<string, unknown>;
+	}>;
+	TxnDate: string;
+	CurrencyRef?: {
+		value: string;
+		name: string;
+	};
+	ExchangeRate?: number;
+	DueDate?: string;
+	Balance?: number;
+	HomeBalance?: number;
+	TotalAmt: number;
+	// Additional fields would be included here
+}
+
+export interface BillResponse {
+	Bill: Bill;
+	time: string;
+}
+
+export interface BillUpdateRequest extends BillCreateRequest {
+	Id: string;
+	SyncToken: string;
+}
+
+export interface BillDeleteRequest {
+	Id: string;
+	SyncToken: string;
+}
+
+export interface BillQueryResponse {
+	QueryResponse: {
+		Bill: Bill[];
+		startPosition: number;
+		maxResults: number;
+		totalCount: number;
+	};
+	time: string;
+}

@@ -205,8 +205,11 @@ export const SidebarContextProvider = ({
   return (
     <UISidebarProvider open={open} onOpenChange={handleToggleSidebar}>
       <SidebarLeft links={initialLinks} />
-      <SidebarInset>{children}</SidebarInset>
-      <SidebarRight />
+      <SidebarInset>
+        <div className='h-full w-full px-4'>{children}</div>
+      </SidebarInset>
+
+      {/* <SidebarRight defaultOpen={false} /> */}
     </UISidebarProvider>
   )
 }

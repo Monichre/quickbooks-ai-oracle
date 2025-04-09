@@ -1552,3 +1552,95 @@
   "refresh_token": "AB117521839499e7wkzVbjdARd0lrv3ED2kGpHaZhnUzCjYz3Y",
   "x_refresh_token_expires_in": 8700610
 }
+2025-04-03T09:10:22.494Z error: Refresh Token () threw an exception : {
+  "message": "getaddrinfo ENOTFOUND oauth.platform.intuit.com",
+  "name": "Error",
+  "stack": "Error: getaddrinfo ENOTFOUND oauth.platform.intuit.com\n    at AxiosError.from (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:857:14)\n    at RedirectableRequest.handleRequestError (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3169:25)\n    at RedirectableRequest.emit (node:events:507:28)\n    at eventHandlers.<computed> (webpack-internal:///(rsc)/./node_modules/follow-redirects/index.js:49:24)\n    at ClientRequest.emit (node:events:507:28)\n    at emitErrorEvent (node:_http_client:104:11)\n    at TLSSocket.socketErrorListener (node:_http_client:518:5)\n    at TLSSocket.emit (node:events:507:28)\n    at emitErrorNT (node:internal/streams/destroy:170:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:129:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/services/intuit/auth.ts:82:37)\n    at async isAuthenticated (webpack-internal:///(rsc)/./src/services/intuit/auth.ts:136:20)\n    at async DashboardLayout (webpack-internal:///(rsc)/./src/app/dashboard/layout.tsx:27:27)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117521839499e7wkzVbjdARd0lrv3ED2kGpHaZhnUzCjYz3Y",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ENOTFOUND"
+}
+2025-04-03T09:10:23.036Z info: Refresh usingToken () response is : {
+  "token_type": "bearer",
+  "x_refresh_token_expires_in": 8726400,
+  "access_token": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..oEBTbe8mZwPomiksQMindA.6nohXYvLRZbv_khvw8K5rBvv-vYLEfu67WMQIXj-tMLmgRopoN7FyZQ2MOOlIgc2EisHy7UGQQqSr9zT5wFSXoJMH5WhvZVCqWPb66Y7MRX2vYp6NKyHZNC1WS0l71joHXB0gWzRPfKuU4boYItDL5hkSZneH1yIeI1zCKI8I2_A5j8vTkmashQzfOlnvD2dCgQbrqTeJ7HlKjsRRfRTaLhu2XNdSC6YZtv_uBdHAL7agl3JPgBcnuhLQvsXsmG199VSJMSV96w31YO4ieOl4k5EWeC0p5RUVpwzTpZ0Q7GMQQHRdeWz3W4x-WuJV6t6GHplMpTDuu8djnm9Jl9jeuCeTRbHK6M68v3ZsVhhgEn84f0_ZhctcSSrsFC5GFhHI9spTcZPiipNX0EYyZYEBxagce57SXbj5K8rSzZb9y-3SvZjxW2gU614OBvQUlt5ZsxZowICJAfywYl6RIpprnHyOsC1kHedjE70vh18B63mSThDJS66XfSnMPTQCknOo3PQEJKLKPX9Zs8ETgTbepGRD5oz6aoaK_XlwIo2dRV0HvIBbhuHlON4XjOp4pTVoVx9yPhTUnvTYTB_k6wdO6xMjrTFmmO_LDiVeA7D_lNm6Wttrbl9FHfnxA5GzPFmRUMGLLiuUfyGfaU5a8xNEtV32F5yxHFYAmqZRF1ViNlbtm7blrwJNxmMiurtQyD0HnCPW0zKdW2bblzMzjPURKOqD6T8w51o08_OA1Uz8abhpfHal5fQwZWwjLwLPkHt.78oRVtaLqx-35ayoazcgzw",
+  "refresh_token": "AB11752397823F34VizuwliK0U1EB6l99lq3scq6p24XUCCGSp",
+  "expires_in": 3600
+}
+2025-04-03T09:10:23.216Z error: Refresh Token () threw an exception : {
+  "message": "Request failed with status code 400",
+  "name": "AxiosError",
+  "stack": "AxiosError: Request failed with status code 400\n    at settle (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:2031:12)\n    at IncomingMessage.handleStreamEnd (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:3148:11)\n    at IncomingMessage.emit (node:events:519:35)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)\n    at Axios.request (webpack-internal:///(rsc)/./node_modules/axios/dist/node/axios.cjs:4258:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async refreshTokensIfNeeded (webpack-internal:///(rsc)/./src/services/intuit/auth.ts:82:37)\n    at async quickbooksRequest (webpack-internal:///(rsc)/./src/services/intuit/api.ts:96:20)\n    at async DashboardPage (webpack-internal:///(rsc)/./src/app/dashboard/page.tsx:28:41)",
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "adapter": [
+      "xhr",
+      "http",
+      "fetch"
+    ],
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "env": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic QUIxSUtTdWtpV3A4UkFWQVJadHBQYnB2QXdkRWtlSXVBOXk3T1IydTNSdEZkSktzc1E6RTRld3g1UVFaNUJSSHoxakxWU2xJd3FtNFZuWk9FcWZkNWx3RVZFOA==",
+      "User-Agent": "Intuit-OAuthClient-JS_4.2.0_Darwin_24.3.0_darwin",
+      "Content-Length": "89",
+      "Accept-Encoding": "gzip, compress, deflate, br"
+    },
+    "url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+    "data": "grant_type=refresh_token&refresh_token=AB117521839499e7wkzVbjdARd0lrv3ED2kGpHaZhnUzCjYz3Y",
+    "method": "post",
+    "allowAbsoluteUrls": true
+  },
+  "code": "ERR_BAD_REQUEST",
+  "status": 400
+}

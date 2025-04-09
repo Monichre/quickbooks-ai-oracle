@@ -52,7 +52,7 @@ The Estimate represents a proposal for a financial transaction from a business t
 
 *   `CurrencyRefType`
 
-    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
+    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
 
 *   `GlobalTaxCalculationEnum`
 
@@ -85,7 +85,7 @@ The Estimate represents a proposal for a financial transaction from a business t
 
 *   `CustomField`
 
-    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
+    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
 
 *   `ReferenceType`
 
@@ -174,7 +174,7 @@ The Estimate represents a proposal for a financial transaction from a business t
 
 *   `TxnTaxDetail`
 
-    This data type provides information for taxes charged on the transaction as a whole. It captures the details sales taxes calculated for the transaction based on the tax codes referenced by the transaction. This can be calculated by QuickBooks business logic or you may supply it when adding a transaction. See [Global tax model](https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-sales-tax-for-non-us-locales "Global Tax Model") for more information about this element. If sales tax is disabled (`Preferences.TaxPrefs.UsingSalesTax` is set to false) then `TxnTaxDetail` is ignored and not stored.
+    This data type provides information for taxes charged on the transaction as a whole. It captures the details sales taxes calculated for the transaction based on the tax codes referenced by the transaction. This can be calculated by QuickBooks business logic or you may supply it when adding a transaction. See [Global tax model](mdc:https:/developer.intuit.com/app/developer/qbo/docs/workflows/manage-sales-tax-for-non-us-locales "Global Tax Model") for more information about this element. If sales tax is disabled (`Preferences.TaxPrefs.UsingSalesTax` is set to false) then `TxnTaxDetail` is ignored and not stored.
 
 *   `String`
 
@@ -248,7 +248,7 @@ The Estimate represents a proposal for a financial transaction from a business t
 
 *   `ReferenceType`
 
-    Reference to the `TaxExepmtion` ID associated with this object. Available for companies that have [automated sales tax](https://developer.intuit.com/hub/blog/2017/12/11/using-quickbooks-online-api-automated-sales-tax "Automatic Sales Tax") enabled.
+    Reference to the `TaxExepmtion` ID associated with this object. Available for companies that have [automated sales tax](mdc:https:/developer.intuit.com/hub/blog/2017/12/11/using-quickbooks-online-api-automated-sales-tax "Automatic Sales Tax") enabled.
 
     *   `TaxExemptionRef.Name`: The Tax Exemption Id for the customer to which this object is associated. This Id is typically issued by the state.
     *   `TaxExemptionRef.value`: The system-generated Id of the exemption type.
@@ -301,7 +301,7 @@ The minimum elements to create an estimate are listed here.
 *   `CurrencyRefType`
 
     Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company.
-    Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company
+    Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company
 
 ### Returns
 
@@ -427,7 +427,7 @@ Sparse updating provides the ability to update a subset of properties for a give
 
 *   `CurrencyRefType`
 
-    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
+    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
 
 *   `GlobalTaxCalculationEnum`
 
@@ -460,7 +460,7 @@ Sparse updating provides the ability to update a subset of properties for a give
 
 *   `CustomField`
 
-    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
+    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
 
 *   `ReferenceType`
 
@@ -549,7 +549,7 @@ Sparse updating provides the ability to update a subset of properties for a give
 
 *   `TxnTaxDetail`
 
-    This data type provides information for taxes charged on the transaction as a whole. It captures the details sales taxes calculated for the transaction based on the tax codes referenced by the transaction. This can be calculated by QuickBooks business logic or you may supply it when adding a transaction. See [Global tax model](https://developer.intuit.com/app/developer/qbo/docs/workflows/manage-sales-tax-for-non-us-locales "Global Tax Model") for more information about this element. If sales tax is disabled (`Preferences.TaxPrefs.UsingSalesTax` is set to false) then `TxnTaxDetail` is ignored and not stored.
+    This data type provides information for taxes charged on the transaction as a whole. It captures the details sales taxes calculated for the transaction based on the tax codes referenced by the transaction. This can be calculated by QuickBooks business logic or you may supply it when adding a transaction. See [Global tax model](mdc:https:/developer.intuit.com/app/developer/qbo/docs/workflows/manage-sales-tax-for-non-us-locales "Global Tax Model") for more information about this element. If sales tax is disabled (`Preferences.TaxPrefs.UsingSalesTax` is set to false) then `TxnTaxDetail` is ignored and not stored.
 
 *   `String`
 
@@ -599,7 +599,7 @@ Sparse updating provides the ability to update a subset of properties for a give
 
 *   `ReferenceType`
 
-    Reference to the `TaxExepmtion` ID associated with this object. Available for companies that have [automated sales tax](https://developer.intuit.com/hub/blog/2017/12/11/using-quickbooks-online-api-automated-sales-tax "Automatic Sales Tax") enabled.
+    Reference to the `TaxExepmtion` ID associated with this object. Available for companies that have [automated sales tax](mdc:https:/developer.intuit.com/hub/blog/2017/12/11/using-quickbooks-online-api-automated-sales-tax "Automatic Sales Tax") enabled.
 
     *   `TaxExemptionRef.Name`: The Tax Exemption Id for the customer to which this object is associated. This Id is typically issued by the state.
     *   `TaxExemptionRef.value`: The system-generated Id of the exemption type.
@@ -661,7 +661,7 @@ Use this operation to update any of the writable fields of an existing estimate 
 
 *   `CurrencyRefType`
 
-    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
+    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company. Multicurrency is enabled for the company if `Preferences.MultiCurrencyEnabled` is set to true. Read more about multicurrency support [here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company.
 
 *   `GlobalTaxCalculationEnum`
 
@@ -694,7 +694,7 @@ Use this operation to update any of the writable fields of an existing estimate 
 
 *   `CustomField`
 
-    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
+    One of, up to three custom fields for the transaction. Available for custom fields so configured for the company. Check `Preferences.SalesFormsPrefs.CustomField` and `Preferences.VendorAndPurchasesPrefs.POCustomField` for custom fields currenly configured. [Click here](mdc:https:/developer.intuit.com/app/developer/qbo/docs/develop/tutorials/create-custom-fields "Custom Fields") to learn about managing custom fields.
 
 *   `ReferenceType`
 

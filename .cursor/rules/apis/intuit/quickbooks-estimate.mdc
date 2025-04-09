@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Estimate
 
 An estimate represents a proposal for a financial transaction. It is a document that customers can review and approve before ordering services or goods. After a customer accepts an estimate, you can convert it to an invoice.

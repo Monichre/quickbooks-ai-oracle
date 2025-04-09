@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Payment
 
 A payment represents a payment received from a customer. A payment can be linked to an invoice or, for non-linked payments, just record the deposit amount.

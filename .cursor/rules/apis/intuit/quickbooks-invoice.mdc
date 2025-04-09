@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Invoice
 
 An invoice is a form that itemizes and records a sales transaction that your business creates and sends to customers. When you create an invoice, QuickBooks Online decreases inventory, increases revenue, and records the customer's obligation to pay.

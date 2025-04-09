@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # AccountListDetail Report
 
 The AccountListDetail report provides detailed information about all accounts in the Chart of Accounts. It includes the account ID, name, type, subtype, and current balance.
