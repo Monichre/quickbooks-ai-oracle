@@ -12053,7 +12053,7 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	data?: D,
 ): Promise<T> {
 	const companyId = process.env.INTUIT_COMPANY_ID;
-	const apiRoot = `${process.env.NEXT_PUBLIC_INTUIT_BASE_URL}/v3/company/${companyId}`;
+	const apiRoot = `${process.env.NEXT_PUBLIC_INTUIT_API_BASE_URL}/v3/company/${companyId}`;
 	// Refresh tokens if needed
 	const tokens = await refreshTokensIfNeeded();
 	console.log("🚀 ~ tokens:", tokens);

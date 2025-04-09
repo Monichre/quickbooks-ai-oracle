@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useMemo} from 'react'
 import {
   Table,
   TableHeader,
@@ -9,6 +9,28 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table'
+import {
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import {ArrowUpDown, ChevronLeft, ChevronRight} from 'lucide-react'
+import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {cn} from '@/lib/utils'
 
 // Define a generic entity object type
 type EntityObject = Record<string, unknown>
@@ -26,8 +48,12 @@ interface EntityTableProps {
 
 export default function EntityTable({entity, initialData}: EntityTableProps) {
   const [data, setData] = useState<EntityObject[]>([])
-  const [columns, setColumns] = useState<string[]>([])
+  const [columnKeys, setColumnKeys] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState<string>('')
+  const [pageSize, setPageSize] = useState<number>(10)
 
   useEffect(() => {
     try {
@@ -86,7 +112,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
         const otherKeys = Array.from(allKeys).filter(
           (key) => !priorityKeys.includes(key)
         )
-        setColumns([
+        setColumnKeys([
           ...priorityKeys.filter((key) => allKeys.has(key)),
           ...otherKeys,
         ])
@@ -100,6 +126,78 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
       )
     }
   }, [entity, initialData])
+
+  // Memoize columns definition based on column keys
+  const columns = useMemo<ColumnDef<EntityObject>[]>(() => {
+    if (!columnKeys.length) return []
+
+    // Determine which column should be pinned (DisplayName, Name, or Id in that order)
+    const pinnedColumnKey = columnKeys.includes('DisplayName') 
+      ? 'DisplayName' 
+      : columnKeys.includes('Name') 
+        ? 'Name' 
+        : columnKeys.includes('Id') 
+          ? 'Id' 
+          : null;
+
+    return columnKeys.map((key) => ({
+      id: key,
+      accessorKey: key,
+      enablePinning: true,
+      // Pin the DisplayName, Name or Id column to the left
+      ...(key === pinnedColumnKey ? { pin: 'left' } : {}),
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className={cn(
+              "pl-0 font-medium", 
+              column.getIsPinned() && "bg-muted/50"
+            )}
+          >
+            {key}
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const value = row.getValue(key)
+        return (
+          <div className="truncate max-w-[200px]">
+            {value?.toString() || '—'}
+          </div>
+        )
+      },
+      enableSorting: true,
+      enableFiltering: true,
+    }))
+  }, [columnKeys])
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter,
+    },
+    enableColumnFilters: true,
+    enableColumnPinning: true,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: 'includesString',
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize,
+      },
+    },
+  })
 
   if (error) {
     return (
@@ -120,27 +218,149 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
   }
 
   return (
-    <div className='overflow-x-auto rounded-lg border border-gray-200'>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableHead key={column}>{column}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((item, index) => (
-            <TableRow key={item.Id?.toString() || index}>
-              {columns.map((column) => (
-                <TableCell key={`${item.Id || index}-${column}`}>
-                  {item[column]?.toString() || '—'}
-                </TableCell>
+    <div className='space-y-4'>
+      {/* Global filter */}
+      <div className='flex items-center gap-2'>
+        <Input
+          placeholder='Search all columns...'
+          value={globalFilter ?? ''}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          className='max-w-sm'
+        />
+      </div>
+
+      {/* Table with horizontal scrolling container */}
+      <div className='overflow-x-auto rounded-lg border border-gray-200'>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {table.getFlatHeaders().map((header) => (
+                <TableHead 
+                  key={header.id} 
+                  className={cn(
+                    "whitespace-nowrap",
+                    header.column.getIsPinned() && 
+                    "sticky left-0 z-10 bg-background border-r"
+                  )}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            {/* Add filtering inputs */}
+            <TableRow>
+              {table.getFlatHeaders().map((header) => (
+                <TableHead 
+                  key={`filter-${header.id}`}
+                  className={cn(
+                    header.column.getIsPinned() && 
+                    "sticky left-0 z-10 bg-background border-r"
+                  )}
+                >
+                  {header.column.getCanFilter() ? (
+                    <Input
+                      placeholder={`Filter ${header.column.id}`}
+                      value={(header.column.getFilterValue() as string) ?? ''}
+                      onChange={(e) => 
+                        header.column.setFilterValue(e.target.value)
+                      }
+                      className="w-full max-w-[150px] h-8 text-xs"
+                    />
+                  ) : null}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell 
+                      key={cell.id}
+                      className={cn(
+                        cell.column.getIsPinned() && 
+                        "sticky left-0 z-10 bg-white border-r"
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className='flex items-center justify-between space-x-2 py-4'>
+        <div className='flex items-center space-x-2'>
+          <p className='text-sm text-muted-foreground'>Rows per page:</p>
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => {
+              setPageSize(Number(value))
+              table.setPageSize(Number(value))
+            }}
+          >
+            <SelectTrigger className='h-8 w-20'>
+              <SelectValue placeholder={pageSize} />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 50, 100].map((size) => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className='flex items-center justify-end space-x-6 lg:space-x-8'>
+          <div className='flex w-[100px] items-center justify-center text-sm font-medium'>
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
+            {table.getPageCount()}
+          </div>
+          <div className='flex items-center space-x-2'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft className='h-4 w-4' />
+            </Button>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight className='h-4 w-4' />
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

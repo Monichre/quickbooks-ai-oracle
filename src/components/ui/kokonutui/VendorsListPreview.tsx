@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import React from 'react'
 import type {Vendor} from '@/services/intuit/types'
+import Link from 'next/link'
 
 interface ListItem {
   id: string
@@ -96,7 +97,7 @@ const ITEMS: ListItem[] = [
   },
 ]
 
-export default function List03({
+export default function VendorsListPreview({
   items = ITEMS,
   vendors = [],
   className,
@@ -217,8 +218,13 @@ export default function List03({
                       'transition-colors duration-200'
                     )}
                   >
-                    View Details
-                    <ArrowRight className='w-3.5 h-3.5' />
+                    <Link
+                      href={`/dashboard/vendors/${vendor.id}`}
+                      className='flex items-center gap-2'
+                    >
+                      View Details
+                      <ArrowRight className='w-3.5 h-3.5' />
+                    </Link>
                   </button>
                 </div>
               </div>

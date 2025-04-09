@@ -11,6 +11,7 @@ import {
   DollarSign,
   Building,
 } from 'lucide-react'
+import Link from 'next/link'
 
 interface Transaction {
   id: string
@@ -36,7 +37,10 @@ const categoryStyles = {
   entertainment: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-100',
 }
 
-export default function List02({purchases = [], className}: List02Props) {
+export default function PurchasesListPreview({
+  purchases = [],
+  className,
+}: List02Props) {
   // If purchases are provided, use them instead of the default transactions
   const hasPurchases = purchases && purchases.length > 0
 
@@ -172,8 +176,10 @@ export default function List02({purchases = [], className}: List02Props) {
             'focus:ring-offset-2 dark:focus:ring-offset-zinc-900'
           )}
         >
-          <span>View All {hasPurchases ? 'Purchases' : 'Transactions'}</span>
-          <ArrowRight className='w-3.5 h-3.5' />
+          <Link href='/dashboard/purchases' className='flex items-center gap-2'>
+            <span>View All {hasPurchases ? 'Purchases' : 'Transactions'}</span>
+            <ArrowRight className='w-3.5 h-3.5' />
+          </Link>
         </button>
       </div>
     </div>

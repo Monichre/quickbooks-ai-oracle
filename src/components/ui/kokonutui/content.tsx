@@ -1,8 +1,8 @@
 import {Calendar, CreditCard, Wallet, Users} from 'lucide-react'
 import {Suspense} from 'react'
 import List01 from './CustomersListPreview'
-import List02 from './list-02'
-import List03 from './list-03'
+import List02 from './PurchasesListPreview'
+import List03 from './VendorsListPreview'
 import {
   findCustomers,
   findVendors,
@@ -12,6 +12,10 @@ import {
   // Purchase,
 } from '@/services/intuit/api'
 import CustomersListPreview from './CustomersListPreview'
+import PurchasesListPreview from './PurchasesListPreview'
+import VendorsListPreview from './VendorsListPreview'
+import Link from 'next/link'
+import {Button} from '@/components/ui/button'
 
 async function CustomersList() {
   const {QueryResponse} = await findCustomers({limit: 5})
@@ -26,7 +30,7 @@ async function PurchasesList() {
 
   console.log('🚀 ~ PurchasesList ~ QueryResponse:', QueryResponse)
 
-  return <List02 purchases={QueryResponse.Purchase} />
+  return <PurchasesListPreview purchases={QueryResponse.Purchase} />
 }
 
 async function VendorsList() {
@@ -34,7 +38,7 @@ async function VendorsList() {
 
   console.log('🚀 ~ VendorsList ~ QueryResponse:', QueryResponse)
 
-  return <List03 vendors={QueryResponse.Vendor} />
+  return <VendorsListPreview vendors={QueryResponse.Vendor} />
 }
 
 export function DashboardContent() {
@@ -77,6 +81,11 @@ export function DashboardContent() {
         <h2 className='text-lg font-bold text-gray-900 text-white mb-4 text-left flex items-center gap-2'>
           <Wallet className='w-3.5 h-3.5 text-zinc-900 text-zinc-50' />
           Vendors
+          <Button variant='link' asChild className='block ml-auto'>
+            <Link href='/dashboard/vendors' className='flex items-center gap-2'>
+              View All
+            </Link>
+          </Button>
         </h2>
         <Suspense
           fallback={<div className='p-4 text-center'>Loading vendors...</div>}

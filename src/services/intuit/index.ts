@@ -25,3 +25,7 @@ export * from "./company-info/company-info.api";
 export * from "./item/item.api";
 export * from "./bill/bill.api";
 export * from "./estimate/estimate.api";
+export * from "./payment/payment.api";
+export * from "./employee/employee.api";
+export * from "./account-list-detail/account-list-detail.api";
+export * from "./profit-and-loss";

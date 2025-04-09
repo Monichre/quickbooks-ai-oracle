@@ -188,7 +188,10 @@ export default function CustomersListPreview({
               'transition-all duration-200'
             )}
           >
-            <Link href='/dashboard/customers'>
+            <Link
+              href='/dashboard/customers'
+              className='flex items-center gap-2'
+            >
               <ArrowRight className='w-3.5 h-3.5' />
               <span>More</span>
             </Link>

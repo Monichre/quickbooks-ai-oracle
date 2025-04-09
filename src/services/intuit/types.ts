@@ -418,4 +418,5 @@ export type EntityType =
 	| "purchases"
 	| "purchase-orders"
 	| "bills"
-	| "estimates";
+	| "estimates"
+	| "payments";

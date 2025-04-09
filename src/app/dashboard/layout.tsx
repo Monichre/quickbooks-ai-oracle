@@ -14,7 +14,7 @@ import {getCompanyInfo, isAuthenticated} from '@/services/quickbooks/client'
 import type {CompanyInfoResponse} from '@/services/quickbooks/client'
 import {Button} from '@/components/ui/button'
 import {Drawer, DrawerTrigger} from '@/components/ui/drawer'
-import {Plus} from 'lucide-react'
+import {BrainIcon, Plus} from 'lucide-react'
 export default async function DashboardLayout({
   children,
 }: {
@@ -44,8 +44,8 @@ export default async function DashboardLayout({
               </Breadcrumb>
               <div className='ml-auto'>
                 <DrawerTrigger asChild>
-                  <Button variant='outline'>
-                    <Plus className='size-4' />
+                  <Button variant='outline' size='icon'>
+                    <BrainIcon className='size-4 ' />
                   </Button>
                 </DrawerTrigger>
               </div>
