@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Item
 
 An item is a product or service that your company buys, sells, or resells to customers. When you add an item, you categorize it as one of these types: inventory, non-inventory, service, or bundle. QuickBooks Online lets you track items so that a sale and its impact on inventory and accounts get recorded simultaneously.

@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Customer
 
 A customer is the consumer of the service or product that your business offers. QuickBooks Online allows you to use SubCustomer to relate a customer (the parent) to another customer (the subcustomer).

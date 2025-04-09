@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Vendor
 
 A vendor is a supplier from whom you purchase goods and/or services. Information includes name, address, and default payment terms.

@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # ProfitAndLoss Report
 
 The ProfitAndLoss report provides a summary of revenue, expenses, and net income for a specified time period. It's also known as an income statement.

@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useMemo} from 'react'
 import {
   Table,
   TableHeader,
@@ -9,16 +9,14 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table'
+import {ChevronDown, ChevronUp} from 'lucide-react'
+import {Pagination} from '@/components/ui/pagination'
 import {entityApiMap} from './page'
-
-// Define a generic entity object type
-type EntityObject = Record<string, unknown>
-
-// Define possible response structures
-type QuickBooksResponse = {
-  QueryResponse?: Record<string, EntityObject[]>
-  [key: string]: unknown
-}
+import {
+  type EntityObject,
+  type QuickBooksResponse,
+  entityTypeToResponseKey,
+} from '@/services/intuit/types/response-types'
 
 interface EntityTableProps {
   entity: string
@@ -29,36 +27,67 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
   const [data, setData] = useState<EntityObject[]>([])
   const [columns, setColumns] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [sortConfig, setSortConfig] = useState<{
+    key: string | null
+    direction: 'asc' | 'desc'
+  }>({
+    key: null,
+    direction: 'asc',
+  })
 
-  useEffect(() => {
+  // Extract all data from the response
+  const allData = useMemo(() => {
     try {
       // Extract the data from the response based on entity type
       let entityData: EntityObject[] = []
 
-      // Process the initialData based on its structure
-      if (initialData.QueryResponse) {
-        // Find the entity data in the QueryResponse object
-        const entityKey = Object.keys(initialData.QueryResponse).find(
-          (key) =>
-            key.toLowerCase() === entity.slice(0, -1) ||
-            (entity === 'purchase-orders' && key === 'PurchaseOrder') ||
-            (entity === 'items' && key === 'Item') ||
-            (entity === 'products' && key === 'Item')
-        )
+      // Get the entity key from the mapping
+      const entityKey = entityTypeToResponseKey[entity]
 
-        if (entityKey) {
-          entityData = initialData.QueryResponse[entityKey]
-        }
+      // Process the initialData based on its structure
+      if (initialData.QueryResponse?.[entityKey]) {
+        entityData = initialData.QueryResponse[entityKey]
       } else if (Array.isArray(initialData)) {
         entityData = initialData as unknown as EntityObject[]
-      } else if (initialData[entity.slice(0, -1)]) {
-        entityData = [initialData[entity.slice(0, -1)] as EntityObject]
+      } else if (initialData[entityKey]) {
+        entityData = [initialData[entityKey] as EntityObject]
       }
 
+      return entityData || []
+    } catch (err) {
+      console.error(`Error extracting data for ${entity}:`, err)
+      return []
+    }
+  }, [entity, initialData])
+
+  // Total count of items
+  const totalCount = useMemo(() => {
+    return initialData.QueryResponse?.totalCount || allData.length
+  }, [allData.length, initialData.QueryResponse?.totalCount])
+
+  // Calculate total pages
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(allData.length / itemsPerPage))
+  }, [allData.length, itemsPerPage])
+
+  // Current page data
+  const currentData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return sortData(allData, sortConfig.key, sortConfig.direction).slice(
+      startIndex,
+      endIndex
+    )
+  }, [allData, currentPage, itemsPerPage, sortConfig])
+
+  useEffect(() => {
+    try {
       // If we found data, determine the columns
-      if (entityData.length > 0) {
+      if (allData.length > 0) {
         // Get all unique keys from all objects
-        const allKeys = entityData.reduce(
+        const allKeys = allData.reduce(
           (keys: Set<string>, item: EntityObject) => {
             for (const key of Object.keys(item)) {
               // Filter out complex objects and arrays for table display
@@ -83,6 +112,9 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
           'DocNumber',
           'Active',
           'Balance',
+          'TotalAmt',
+          'TxnDate',
+          'DueDate',
         ]
         const otherKeys = Array.from(allKeys).filter(
           (key) => !priorityKeys.includes(key)
@@ -93,14 +125,59 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
         ])
       }
 
-      setData(entityData || [])
+      setData(currentData)
     } catch (err) {
       console.error(`Error processing ${entity} data:`, err)
       setError(
         err instanceof Error ? err.message : 'An error occurred processing data'
       )
     }
-  }, [entity, initialData])
+  }, [entity, allData, currentData])
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
+  // Sort data function
+  function sortData(
+    data: EntityObject[],
+    key: string | null,
+    direction: 'asc' | 'desc'
+  ): EntityObject[] {
+    if (!key || !data) return data
+
+    return [...data].sort((a, b) => {
+      // Handle null or undefined values
+      if (a[key] === null || a[key] === undefined)
+        return direction === 'asc' ? -1 : 1
+      if (b[key] === null || b[key] === undefined)
+        return direction === 'asc' ? 1 : -1
+
+      // Compare based on value types
+      if (typeof a[key] === 'string' && typeof b[key] === 'string') {
+        return direction === 'asc'
+          ? (a[key] as string).localeCompare(b[key] as string)
+          : (b[key] as string).localeCompare(a[key] as string)
+      }
+
+      // Default numeric comparison
+      return direction === 'asc'
+        ? Number(a[key]) - Number(b[key])
+        : Number(b[key]) - Number(a[key])
+    })
+  }
+
+  // Handle sorting
+  const handleSort = (key: string) => {
+    setSortConfig({
+      key,
+      direction:
+        sortConfig.key === key && sortConfig.direction === 'asc'
+          ? 'desc'
+          : 'asc',
+    })
+  }
 
   if (error) {
     return (
@@ -121,27 +198,73 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
   }
 
   return (
-    <div className='overflow-x-auto rounded-lg border border-gray-200'>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableHead key={column}>{column}</TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((item, index) => (
-            <TableRow key={item.Id?.toString() || index}>
+    <div className='space-y-2'>
+      <div className='text-sm text-gray-500 mb-2 flex justify-between items-center'>
+        <div>
+          Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+          {Math.min(currentPage * itemsPerPage, allData.length)} of{' '}
+          {allData.length} records (Total: {totalCount})
+        </div>
+        <div className='flex items-center space-x-2'>
+          <span>Rows per page:</span>
+          <select
+            className='border border-gray-300 rounded p-1 text-sm'
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value))
+              setCurrentPage(1) // Reset to first page when changing page size
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+      </div>
+      <div className='overflow-x-auto rounded-lg border border-gray-200'>
+        <Table>
+          <TableHeader>
+            <TableRow>
               {columns.map((column) => (
-                <TableCell key={`${item.Id || index}-${column}`}>
-                  {item[column]?.toString() || '—'}
-                </TableCell>
+                <TableHead
+                  key={column}
+                  className='cursor-pointer hover:bg-gray-50'
+                  onClick={() => handleSort(column)}
+                >
+                  <div className='flex items-center space-x-1'>
+                    <span>{column}</span>
+                    {sortConfig.key === column &&
+                      (sortConfig.direction === 'asc' ? (
+                        <ChevronUp className='h-4 w-4' />
+                      ) : (
+                        <ChevronDown className='h-4 w-4' />
+                      ))}
+                  </div>
+                </TableHead>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={item.Id?.toString() || index}>
+                {columns.map((column) => (
+                  <TableCell key={`${item.Id || index}-${column}`}>
+                    {item[column]?.toString() || '—'}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }

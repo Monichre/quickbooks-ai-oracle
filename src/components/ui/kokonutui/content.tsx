@@ -1,40 +1,7 @@
-import {Calendar, CreditCard, Wallet, Users} from 'lucide-react'
-import {Suspense} from 'react'
-import List01 from './list-01'
-import List02 from './list-02'
-import List03 from './list-03'
-import {
-  findCustomers,
-  findVendors,
-  findPurchases,
-  // Customer,
-  // Vendor,
-  // Purchase,
-} from '@/services/intuit/api'
-
-async function CustomersList() {
-  const {QueryResponse} = await findCustomers({limit: 5})
-
-  console.log('🚀 ~ CustomersList ~ QueryResponse:', QueryResponse)
-
-  return <List01 customers={QueryResponse.Customer} />
-}
-
-async function PurchasesList() {
-  const {QueryResponse} = await findPurchases({limit: 6})
-
-  console.log('🚀 ~ PurchasesList ~ QueryResponse:', QueryResponse)
-
-  return <List02 purchases={QueryResponse.Purchase} />
-}
-
-async function VendorsList() {
-  const {QueryResponse} = await findVendors({limit: 3})
-
-  console.log('🚀 ~ VendorsList ~ QueryResponse:', QueryResponse)
-
-  return <List03 vendors={QueryResponse.Vendor} />
-}
+import {CreditCard, Wallet, Users} from 'lucide-react'
+import {CustomersList} from '@/components/preview-lists/customers-list'
+import {PurchasesList} from '@/components/preview-lists/purchases-list'
+import {VendorsList} from '@/components/preview-lists/vendors-list'
 
 export function DashboardContent() {
   return (
@@ -46,13 +13,7 @@ export function DashboardContent() {
             Customers
           </h2>
           <div className='flex-1'>
-            <Suspense
-              fallback={
-                <div className='p-4 text-center'>Loading customers...</div>
-              }
-            >
-              <CustomersList />
-            </Suspense>
+            <CustomersList />
           </div>
         </div>
         <div className='bg-[#0F0F12] rounded-xl p-6 flex flex-col border border-gray-200 border-[#1F1F23]'>
@@ -61,13 +22,7 @@ export function DashboardContent() {
             Recent Purchases
           </h2>
           <div className='flex-1'>
-            <Suspense
-              fallback={
-                <div className='p-4 text-center'>Loading transactions...</div>
-              }
-            >
-              <PurchasesList />
-            </Suspense>
+            <PurchasesList />
           </div>
         </div>
       </div>
@@ -77,11 +32,7 @@ export function DashboardContent() {
           <Wallet className='w-3.5 h-3.5 text-zinc-900 text-zinc-50' />
           Vendors
         </h2>
-        <Suspense
-          fallback={<div className='p-4 text-center'>Loading vendors...</div>}
-        >
-          <VendorsList />
-        </Suspense>
+        <VendorsList />
       </div>
     </div>
   )

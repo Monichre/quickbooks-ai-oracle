@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import React from 'react'
 import type {Vendor} from '@/services/intuit/types'
+import Link from 'next/link'
 
 interface ListItem {
   id: string
@@ -217,7 +218,9 @@ export default function List03({
                       'transition-colors duration-200'
                     )}
                   >
-                    View Details
+                    <Link href={`/dashboard/vendors/${vendor.id}`}>
+                      View Details
+                    </Link>
                     <ArrowRight className='w-3.5 h-3.5' />
                   </button>
                 </div>

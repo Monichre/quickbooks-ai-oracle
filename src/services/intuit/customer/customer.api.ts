@@ -31,6 +31,7 @@ export async function getCustomer(customerId: string) {
  */
 export async function findCustomers(params: QueryParams = {}) {
 	const queryString = buildQueryString(params);
+
 	return quickbooksRequest<{ QueryResponse: { Customer: Customer[] } }>(
 		`query?query=select * from Customer${queryString}`,
 	);

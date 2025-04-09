@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
 import { getAuthorizationUrl } from "@/services/intuit/auth";
 
+/**
+ * Main Direct Auth Route
+ *
+ * This route can be accessed directly at /api/intuit/auth
+ * It serves as the main entry point for the QuickBooks authorization flow.
+ *
+ * For programmatic/client-side usage, the /api/intuit/auth/connect route
+ * can be used, which returns either a redirect or a JSON response.
+ */
 export async function GET() {
 	try {
 		// Get the authorization URL

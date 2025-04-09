@@ -5,4 +5,7 @@ export const oauthClient = new OAuthClient({
 	clientSecret: process.env.INTUIT_CLIENT_SECRET,
 	environment: process.env.INTUIT_ENVIRONMENT_ID,
 	redirectUri: process.env.INTUIT_REDIRECT_URI,
+	logging: true,
 });
+
+console.log("🚀 ~ oauthClient:", oauthClient);
