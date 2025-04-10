@@ -45,13 +45,43 @@ const defaultNavLinks: NavCategory[] = [
         icon: '💳',
       },
       {
-        title: 'Sales',
-        url: '/dashboard/sales',
+        title: 'Estimates',
+        url: '/dashboard/estimates',
         icon: '📈',
       },
       {
-        title: 'Expenses',
-        url: '/dashboard/expenses',
+        title: 'Invoices',
+        url: '/dashboard/invoices',
+        icon: '📉',
+      },
+      {
+        title: 'Bills',
+        url: '/dashboard/bills',
+        icon: '📉',
+      },
+      {
+        title: 'Items',
+        url: '/dashboard/items',
+        icon: '📉',
+      },
+      {
+        title: 'Purchases',
+        url: '/dashboard/purchases',
+        icon: '📉',
+      },
+      {
+        title: 'Purchase Orders',
+        url: '/dashboard/purchase-orders',
+        icon: '📉',
+      },
+      {
+        title: 'Payments',
+        url: '/dashboard/payments',
+        icon: '📉',
+      },
+      {
+        title: 'Profit & Loss',
+        url: '/dashboard/profit-and-loss',
         icon: '📉',
       },
     ],
@@ -60,8 +90,13 @@ const defaultNavLinks: NavCategory[] = [
     category: 'Dashboards',
     items: [
       {
-        title: 'Customers & leads',
+        title: 'Customers',
         url: '/dashboard/customers',
+        emoji: '👥',
+      },
+      {
+        title: 'Employees',
+        url: '/dashboard/employees',
         emoji: '👥',
       },
       {
@@ -74,40 +109,21 @@ const defaultNavLinks: NavCategory[] = [
         url: '/dashboard/vendors',
         emoji: '💰',
       },
+
       {
-        title: 'Budgets',
-        url: '/dashboard/budgets',
-        emoji: '💼',
-      },
-      {
-        title: 'Taxes',
-        url: '/dashboard/taxes',
+        title: 'Accounts',
+        url: '/dashboard/accounts',
         emoji: '📝',
       },
-    ],
-  },
-  {
-    category: 'COLLECTIONS',
-    items: [
       {
-        title: 'My accountant',
-        url: '/dashboard/my-accountant',
-        emoji: '👨‍💼',
+        title: 'Reports',
+        url: '/dashboard/reports',
+        emoji: '📝',
       },
       {
-        title: 'Lending & banking',
-        url: '/dashboard/lending-and-banking',
-        emoji: '🏦',
-      },
-      {
-        title: 'Commerce',
-        url: '/dashboard/commerce',
-        emoji: '🛒',
-      },
-      {
-        title: 'Apps',
-        url: '/dashboard/apps',
-        emoji: '📱',
+        title: 'Account List Detail',
+        url: '/dashboard/account-list-detail',
+        emoji: '⚙️',
       },
     ],
   },
@@ -137,7 +153,6 @@ export const useNavLinks = () => {
 
   const getMainLinks = () => getCategoryLinks('Main')
   const getDashboardLinks = () => getCategoryLinks('Dashboards')
-  const getCollectionLinks = () => getCategoryLinks('COLLECTIONS')
 
   const toggleSidebar = () => {
     setOpen(!open)
@@ -182,7 +197,7 @@ export const useNavLinks = () => {
     navLinks,
     getMainLinks,
     getDashboardLinks,
-    getCollectionLinks,
+
     getCategoryLinks,
     toggleSidebar,
     addNavLink,

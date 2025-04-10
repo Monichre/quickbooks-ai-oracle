@@ -18,6 +18,10 @@ import {
   findBills,
   findEstimates,
   type QueryParams,
+  findPayments,
+  findEmployees,
+  getAccountListDetail,
+  getProfitAndLossReport,
 } from '@/services/intuit/api'
 
 // Define a common function type for all API endpoints
@@ -28,7 +32,7 @@ type ApiFunction = (params?: {
 }) => Promise<any>
 
 // Map entity types to their corresponding API functions
-const entityApiFunctionMap: Record<EntityType, ApiFunction> = {
+export const entityApiFunctionMap: Record<EntityType, ApiFunction> = {
   accounts: findAccounts,
   customers: findCustomers,
   vendors: findVendors,
@@ -37,8 +41,12 @@ const entityApiFunctionMap: Record<EntityType, ApiFunction> = {
   products: findProducts,
   purchases: findPurchases,
   'purchase-orders': findPurchaseOrders,
-  bills: findBills,
   estimates: findEstimates,
+  payments: findPayments,
+  employees: findEmployees,
+  bills: findBills,
+  'account-list-detail': getAccountListDetail,
+  'profit-and-loss': getProfitAndLossReport,
 }
 
 // Server Component to handle data fetching
@@ -49,7 +57,7 @@ async function fetchEntityData(entity: string) {
 
   try {
     // Call the appropriate API function with default parameters
-    const response = await entityApiFunctionMap[entity as EntityType]({
+    const response: any = await entityApiFunctionMap[entity as EntityType]({
       limit: 100,
     })
 
@@ -83,10 +91,28 @@ async function fetchEntityData(entity: string) {
   }
 }
 
-export default async function EntityPage({params}: {params: {entity: string}}) {
+export default async function EntityPage(props) {
+  const params = await props.params
+
   console.log('🚀 ~ EntityPage ~ params:', params)
 
-  const {entity} = await params
+  const searchParams = await props.searchParams
+
+  console.log('🚀 ~ EntityPage ~ searchParams:', searchParams)
+
+  const entity = params.entity
+
+  console.log('🚀 ~ EntityPage ~ entity:', entity)
+
+  const slug = params.slug
+
+  console.log('🚀 ~ EntityPage ~ slug:', slug)
+
+  const query = searchParams.query
+
+  console.log('🚀 ~ EntityPage ~ query:', query)
+
+  console.log('🚀 ~ EntityPage ~ entity:', entity)
 
   // Check if entity is valid
   if (!entityApiFunctionMap[entity as EntityType]) {
@@ -95,7 +121,9 @@ export default async function EntityPage({params}: {params: {entity: string}}) {
 
   const data = await fetchEntityData(entity)
 
-  console.log('🚀 ~ EntityPage ~ data:', data)
+  console.log('🚀 ~ EntityPage ~ params:', params, 'EntityPage ~ data:', data)
+  const initialData = Array.isArray(data) ? data : data?.Item
+  console.log('🚀 ~ EntityPage ~ initialData:', initialData)
 
   return (
     <div className='container mx-auto py-8'>
@@ -107,7 +135,7 @@ export default async function EntityPage({params}: {params: {entity: string}}) {
           </div>
         }
       >
-        <EntityTable entity={entity as EntityType} initialData={data} />
+        <EntityTable entity={entity as EntityType} initialData={initialData} />
       </Suspense>
     </div>
   )

@@ -1,8 +1,6 @@
 import type React from 'react'
 import {AiCHAT} from '@/components/ai-chat'
-import {SidebarContextProvider} from '@/providers/sidebar-provider'
 
-import {SidebarTrigger} from '@/components/ui/sidebar'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -13,8 +11,16 @@ import {Separator} from '@radix-ui/react-dropdown-menu'
 import {getCompanyInfo, isAuthenticated} from '@/services/quickbooks/client'
 import type {CompanyInfoResponse} from '@/services/quickbooks/client'
 import {Button} from '@/components/ui/button'
-import {Drawer, DrawerTrigger} from '@/components/ui/drawer'
+import {Drawer, DrawerContent, DrawerTrigger} from '@/components/ui/drawer'
 import {BrainIcon, Plus} from 'lucide-react'
+import {DynamicToolbar} from '@/components/toolbar'
+import {defaultNavLinks} from '@/constants'
+import {NavFavorites} from '@/components/nav-favorites'
+import {NavMain} from '@/components/nav-main'
+import Profile01, {type ClerkUser} from '@/components/ui/kokonutui/profile-01'
+import {currentUser} from '@clerk/nextjs/server'
+import {SignOutButton} from '@clerk/nextjs'
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -24,13 +30,40 @@ export default async function DashboardLayout({
   const companyData: CompanyInfoResponse = authenticated
     ? await getCompanyInfo()
     : null
+  const [main, dashboards] = defaultNavLinks
+  const user = await currentUser()
+
+  console.log('🚀 ~ user:', user)
+
+  const mainItems = main.items.map((item) => ({
+    ...item,
+    icon: item.icon || '📄',
+  }))
+  const dashboardsItems = dashboards.items.map((item) => ({
+    ...item,
+    icon: item.icon || '📄',
+  }))
   return (
-    <SidebarContextProvider>
-      <Drawer>
-        <div className='flex flex-col relative pt-16'>
+    <>
+      <div className='flex flex-col relative pt-16'>
+        <Drawer direction='left'>
+          <DrawerContent className='!bg-black/90 bg-blur border-r border-gray-200 border-[#1F1F23]'>
+            <Profile01 user={user as unknown as ClerkUser} />
+
+            <NavMain items={mainItems} />
+
+            <NavMain items={dashboardsItems} />
+
+            <SignOutButton />
+          </DrawerContent>
+
           <header className='sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background'>
             <div className='flex flex-1 items-center gap-2 px-3'>
-              <SidebarTrigger />
+              <DrawerTrigger asChild>
+                <Button variant='outline' size='icon'>
+                  <BrainIcon className='size-4 ' />
+                </Button>
+              </DrawerTrigger>
               <Separator orientation='vertical' className='mr-2 h-4' />
               <Breadcrumb>
                 <BreadcrumbList>
@@ -51,11 +84,13 @@ export default async function DashboardLayout({
               </div>
             </div>
           </header>
-
-          {children}
+        </Drawer>
+        {children}
+        <DynamicToolbar />
+        <Drawer direction='bottom'>
           <AiCHAT />
-        </div>
-      </Drawer>
-    </SidebarContextProvider>
+        </Drawer>
+      </div>
+    </>
   )
 }

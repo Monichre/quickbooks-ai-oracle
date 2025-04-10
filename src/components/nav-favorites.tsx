@@ -13,12 +13,11 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
-
+  SidebarMenuAction,
+} from '@/components/nav-main'
+import {useIsMobile} from '@/hooks/use-mobile'
+import {Button} from '@/components/ui/button'
 export function NavFavorites({
   links,
 }: {
@@ -33,8 +32,7 @@ export function NavFavorites({
   }
 }) {
   console.log('🚀 ~ links:', links)
-
-  const {isMobile} = useSidebar()
+  const isMobile = useIsMobile()
   const {category, items} = links
   return (
     <SidebarGroup className='group-data-[collapsible=icon]:hidden'>
@@ -42,12 +40,6 @@ export function NavFavorites({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <a href={item.url} title={item.title}>
-                <span>{item.emoji}</span>
-                <span>{item.title}</span>
-              </a>
-            </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
@@ -83,10 +75,10 @@ export function NavFavorites({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className='text-sidebar-foreground/70'>
+          <Button className='text-sidebar-foreground/70'>
             <MoreHorizontal />
             <span>More</span>
-          </SidebarMenuButton>
+          </Button>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

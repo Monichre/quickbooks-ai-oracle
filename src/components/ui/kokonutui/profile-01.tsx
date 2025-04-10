@@ -75,8 +75,8 @@ export default function Profile01({
   return (
     <div className='w-full max-w-sm mx-auto'>
       <div className='relative overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800'>
-        <div className='relative px-6 pt-12 pb-6'>
-          <div className='flex items-center gap-4 mb-8'>
+        <div className='relative px-1 pt-12 pb-6'>
+          <div className='flex items-center gap-4 mb-4'>
             <div className='relative shrink-0'>
               <Image
                 src={displayAvatar}
@@ -85,15 +85,16 @@ export default function Profile01({
                 height={42}
                 className='rounded-full ring-4 ring-white dark:ring-zinc-900 object-cover'
               />
-              <div className='absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900' />
             </div>
 
             {/* Profile Info */}
-            <div className='flex-1'>
-              <h2 className='text-lg font-semibold text-zinc-900 dark:text-zinc-100'>
+            <div className='flex-1 flex flex-col gap-1'>
+              <h2 className='text-sm font-semibold text-zinc-900 dark:text-zinc-100'>
                 {displayName}
               </h2>
-              <p className='text-zinc-600 dark:text-zinc-400'>{displayRole}</p>
+              <p className='text-zinc-600 dark:text-zinc-400 text-sm'>
+                {displayRole}
+              </p>
             </div>
           </div>
           <div className='h-px bg-zinc-200 dark:bg-zinc-800 my-6' />

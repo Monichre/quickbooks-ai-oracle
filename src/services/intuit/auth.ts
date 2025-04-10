@@ -14,6 +14,11 @@ export type IntuitTokens = {
 	createdAt?: number;
 };
 
+// Generate a random state value for OAuth security
+function generateRandomState() {
+	return Math.random().toString(36).substring(2, 15);
+}
+
 // Get the authorization URL
 export async function getAuthorizationUrl() {
 	return await oauthClient.authorizeUri({
@@ -25,27 +30,30 @@ export async function getAuthorizationUrl() {
 			OAuthClient.scopes.Phone,
 			OAuthClient.scopes.Address,
 		],
-		state: "test ",
+		state: "test",
 	});
-}
-
-// Generate a random state value for OAuth security
-function generateRandomState() {
-	return Math.random().toString(36).substring(2, 15);
 }
 
 // Store tokens in Clerk user public metadata
 export async function storeTokens(tokens: IntuitTokens) {
+	console.log("🚀 ~ storeTokens ~ tokens:", tokens);
+
 	const tokensWithTimestamp = {
 		...tokens,
 		createdAt: Date.now(),
 	};
 
 	const { userId } = await auth();
+
+	console.log("🚀 ~ storeTokens ~ userId:", userId);
+
 	if (!userId) throw new Error("No authenticated user");
 
 	// Use clerkClient pattern from docs
 	const client = await clerkClient();
+
+	console.log("🚀 ~ storeTokens ~ client:", client);
+
 	await client.users.updateUser(userId, {
 		publicMetadata: {
 			qbTokens: tokensWithTimestamp,
@@ -55,11 +63,19 @@ export async function storeTokens(tokens: IntuitTokens) {
 
 // Retrieve tokens from Clerk user metadata
 export async function getTokens(): Promise<IntuitTokens | null> {
-	const { userId } = await auth();
+	const { userId, ...rest } = await auth();
+
+	console.log("🚀 ~ getTokens ~ rest:", rest);
+
+	console.log("🚀 ~ getTokens ~ userId:", userId);
+
 	if (!userId) return null;
 
 	const client = await clerkClient();
 	const user = await client.users.getUser(userId);
+
+	console.log("🚀 ~ getTokens ~ user:", user);
+
 	const tokens = user.publicMetadata.qbTokens as IntuitTokens | undefined;
 
 	console.log("🚀 ~ getTokens ~ tokens:", tokens);
@@ -101,15 +117,21 @@ export async function refreshTokensIfNeeded(): Promise<IntuitTokens | null> {
 					getJson(): IntuitTokens;
 				} = await oauthClient.refresh();
 				newTokens = refreshResponse.getJson();
+
+				console.log("🚀 ~ refreshTokensIfNeeded ~ newTokens:", newTokens);
 			} catch (refreshError) {
+				console.log("🚀 ~ refreshTokensIfNeeded ~ refreshError:", refreshError);
+
 				// If standard refresh fails, try the refreshUsingToken method
 				console.log("Standard refresh failed, trying refreshUsingToken");
 				const refreshResponse: {
 					getJson(): IntuitTokens;
 				} = await oauthClient.refreshUsingToken(tokens.refresh_token);
 				newTokens = refreshResponse.getJson();
-			}
 
+				console.log("🚀 ~ refreshTokensIfNeeded ~ newTokens:", newTokens);
+			}
+			oauthClient.setToken(newTokens);
 			await storeTokens(newTokens);
 			return newTokens;
 		} catch (error) {

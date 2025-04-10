@@ -31,9 +31,23 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {cn} from '@/lib/utils'
+import type {
+  Item,
+  Invoice,
+  Account,
+  Customer,
+  Purchase,
+  PurchaseOrder,
+  Vendor,
+  Product,
+} from '@/services'
+import type {Bill} from '@/services/intuit/bill/bill.types'
+import type {Estimate} from '@/services/intuit/estimate/estimate.types'
+import type {Payment} from '@/services/intuit/payment/payment.types'
+import type {Employee} from '@/services/intuit/employee/employee.types'
 
 // Define a generic entity object type
-type EntityObject = Record<string, unknown>
+type EntityObject = Purchase | PurchaseOrder
 
 // Define possible response structures
 type QuickBooksResponse = {
@@ -60,8 +74,26 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
       // Extract the data from the response based on entity type
       let entityData: EntityObject[] = []
 
+      // Define a more comprehensive EntityObject type to include all possible entity types
+      type EntityObject =
+        | Purchase
+        | PurchaseOrder
+        | Account
+        | Customer
+        | Vendor
+        | Invoice
+        | Item
+        | Product
+        | Bill
+        | Estimate
+        | Payment
+        | Employee
+        | {[key: string]: any} // Fallback for other entity types
+
       // Process the initialData based on its structure
-      if (initialData.QueryResponse) {
+      if (Array.isArray(initialData)) {
+        entityData = initialData as unknown as EntityObject[]
+      } else if (initialData?.QueryResponse) {
         // Find the entity data in the QueryResponse object
         const entityKey = Object.keys(initialData.QueryResponse).find(
           (key) =>
@@ -74,8 +106,6 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
         if (entityKey) {
           entityData = initialData.QueryResponse[entityKey]
         }
-      } else if (Array.isArray(initialData)) {
-        entityData = initialData as unknown as EntityObject[]
       } else if (initialData[entity.slice(0, -1)]) {
         entityData = [initialData[entity.slice(0, -1)] as EntityObject]
       }
@@ -132,39 +162,39 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
     if (!columnKeys.length) return []
 
     // Determine which column should be pinned (DisplayName, Name, or Id in that order)
-    const pinnedColumnKey = columnKeys.includes('DisplayName') 
-      ? 'DisplayName' 
-      : columnKeys.includes('Name') 
-        ? 'Name' 
-        : columnKeys.includes('Id') 
-          ? 'Id' 
-          : null;
+    const pinnedColumnKey = columnKeys.includes('DisplayName')
+      ? 'DisplayName'
+      : columnKeys.includes('Name')
+      ? 'Name'
+      : columnKeys.includes('Id')
+      ? 'Id'
+      : null
 
     return columnKeys.map((key) => ({
       id: key,
       accessorKey: key,
       enablePinning: true,
       // Pin the DisplayName, Name or Id column to the left
-      ...(key === pinnedColumnKey ? { pin: 'left' } : {}),
-      header: ({ column }) => {
+      ...(key === pinnedColumnKey ? {pin: 'left'} : {}),
+      header: ({column}) => {
         return (
           <Button
-            variant="ghost"
+            variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className={cn(
-              "pl-0 font-medium", 
-              column.getIsPinned() && "bg-muted/50"
+              'pl-0 font-medium',
+              column.getIsPinned() && 'bg-muted/50'
             )}
           >
             {key}
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className='ml-2 h-4 w-4' />
           </Button>
         )
       },
-      cell: ({ row }) => {
+      cell: ({row}) => {
         const value = row.getValue(key)
         return (
-          <div className="truncate max-w-[200px]">
+          <div className='truncate max-w-[200px]'>
             {value?.toString() || '—'}
           </div>
         )
@@ -235,12 +265,12 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
           <TableHeader>
             <TableRow>
               {table.getFlatHeaders().map((header) => (
-                <TableHead 
-                  key={header.id} 
+                <TableHead
+                  key={header.id}
                   className={cn(
-                    "whitespace-nowrap",
-                    header.column.getIsPinned() && 
-                    "sticky left-0 z-10 bg-background border-r"
+                    'whitespace-nowrap',
+                    header.column.getIsPinned() &&
+                      'sticky left-0 z-10 bg-background border-r'
                   )}
                 >
                   {header.isPlaceholder
@@ -255,21 +285,21 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
             {/* Add filtering inputs */}
             <TableRow>
               {table.getFlatHeaders().map((header) => (
-                <TableHead 
+                <TableHead
                   key={`filter-${header.id}`}
                   className={cn(
-                    header.column.getIsPinned() && 
-                    "sticky left-0 z-10 bg-background border-r"
+                    header.column.getIsPinned() &&
+                      'sticky left-0 z-10 bg-background border-r'
                   )}
                 >
                   {header.column.getCanFilter() ? (
                     <Input
                       placeholder={`Filter ${header.column.id}`}
                       value={(header.column.getFilterValue() as string) ?? ''}
-                      onChange={(e) => 
+                      onChange={(e) =>
                         header.column.setFilterValue(e.target.value)
                       }
-                      className="w-full max-w-[150px] h-8 text-xs"
+                      className='w-full max-w-[150px] h-8 text-xs'
                     />
                   ) : null}
                 </TableHead>
@@ -284,11 +314,11 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell 
+                    <TableCell
                       key={cell.id}
                       className={cn(
-                        cell.column.getIsPinned() && 
-                        "sticky left-0 z-10 bg-white border-r"
+                        cell.column.getIsPinned() &&
+                          'sticky left-0 z-10 bg-white border-r'
                       )}
                     >
                       {flexRender(

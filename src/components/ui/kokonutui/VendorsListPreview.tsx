@@ -141,7 +141,7 @@ export default function VendorsListPreview({
                   'w-[280px] shrink-0',
                   'bg-zinc-900/70',
                   'rounded-xl',
-                  'border border-zinc-800',
+                  'border border-zinc-300',
                   'hover:border-zinc-700',
                   'transition-all duration-200',
                   'shadow-sm backdrop-blur-xl'

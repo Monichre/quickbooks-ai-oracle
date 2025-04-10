@@ -1,8 +1,6 @@
-import {Calendar, CreditCard, Wallet, Users} from 'lucide-react'
+import {Calendar, CreditCard, Wallet, Users, Receipt} from 'lucide-react'
 import {Suspense} from 'react'
-import List01 from './CustomersListPreview'
-import List02 from './PurchasesListPreview'
-import List03 from './VendorsListPreview'
+
 import {
   findCustomers,
   findVendors,
@@ -16,6 +14,7 @@ import PurchasesListPreview from './PurchasesListPreview'
 import VendorsListPreview from './VendorsListPreview'
 import Link from 'next/link'
 import {Button} from '@/components/ui/button'
+import InvoicesListPreview from '@/components/ui/kokonutui/InvoicesListPreview'
 
 async function CustomersList() {
   const {QueryResponse} = await findCustomers({limit: 5})
@@ -72,6 +71,21 @@ export function DashboardContent() {
               }
             >
               <PurchasesList />
+            </Suspense>
+          </div>
+        </div>
+        <div className='bg-[#0F0F12] rounded-xl p-6 flex flex-col border border-gray-200 border-[#1F1F23]'>
+          <h2 className='text-lg font-bold text-gray-900 text-white mb-4 text-left flex items-center gap-2'>
+            <Receipt className='w-3.5 h-3.5 text-zinc-900 text-zinc-50' />
+            Recent Invoices
+          </h2>
+          <div className='flex-1'>
+            <Suspense
+              fallback={
+                <div className='p-4 text-center'>Loading invoices...</div>
+              }
+            >
+              <InvoicesListPreview />
             </Suspense>
           </div>
         </div>

@@ -5,6 +5,7 @@ import {SignInButton} from '@clerk/nextjs'
 import {dark} from '@clerk/themes'
 import {GeistMono} from 'geist/font/mono'
 import {GeistSans} from 'geist/font/sans'
+import {Roboto, Roboto_Condensed, Roboto_Mono} from 'next/font/google'
 import type {Metadata} from 'next'
 import {ThemeProvider} from 'next-themes'
 import {cn} from '@/lib/utils'
@@ -12,6 +13,24 @@ import {Navbar} from '@/components/ui/navbar-menu'
 import {FullNav} from '@/components/nav/full-nav'
 
 import {NuqsAdapter} from 'nuqs/adapters/next/app'
+
+const roboto = Roboto({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto',
+})
+
+const robotoCondensed = Roboto_Condensed({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto-condensed',
+})
+
+const robotoMono = Roboto_Mono({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto-mono',
+})
 
 export const metadata: Metadata = {
   title: 'Create v1',
@@ -35,7 +54,7 @@ export default function RootLayout({
       <html lang='en' suppressHydrationWarning>
         <body
           className={cn(
-            `${GeistSans.variable} ${GeistMono.variable} dark`,
+            `${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} dark`,
             'antialiased'
           )}
         >

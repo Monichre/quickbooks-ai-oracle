@@ -3,12 +3,33 @@ import { buildQueryString } from "../api";
 import type { Purchase, QueryParams } from "../types";
 
 /**
+ * Response type for QuickBooks purchase operations
+ */
+export type PurchaseResponse = {
+	Purchase: Purchase;
+};
+
+/**
+ * Response type for QuickBooks purchase query operations
+ */
+export type PurchaseQueryResponse = {
+	QueryResponse: {
+		Purchase: Purchase[];
+		startPosition?: number;
+		maxResults?: number;
+		totalCount?: number;
+	};
+};
+
+/**
  * Creates a new purchase in QuickBooks
  * @param purchaseData - Purchase data to create
  * @returns Promise with the created purchase
  */
-export async function createPurchase(purchaseData: Purchase) {
-	return quickbooksRequest<{ Purchase: Purchase }, { Purchase: Purchase }>(
+export async function createPurchase(
+	purchaseData: Purchase,
+): Promise<PurchaseResponse> {
+	return quickbooksRequest<PurchaseResponse, { Purchase: Purchase }>(
 		"purchase",
 		"POST",
 		{ Purchase: purchaseData },
@@ -20,8 +41,10 @@ export async function createPurchase(purchaseData: Purchase) {
  * @param purchaseId - ID of the purchase to retrieve
  * @returns Promise with the purchase data
  */
-export async function getPurchase(purchaseId: string) {
-	return quickbooksRequest<{ Purchase: Purchase }>(`purchase/${purchaseId}`);
+export async function getPurchase(
+	purchaseId: string,
+): Promise<PurchaseResponse> {
+	return quickbooksRequest<PurchaseResponse>(`purchase/${purchaseId}`);
 }
 
 /**
@@ -29,9 +52,11 @@ export async function getPurchase(purchaseId: string) {
  * @param params - Query parameters and filters
  * @returns Promise with the list of purchases matching the query
  */
-export async function findPurchases(params: QueryParams = {}) {
+export async function findPurchases(
+	params: QueryParams = {},
+): Promise<PurchaseQueryResponse> {
 	const queryString = buildQueryString(params);
-	return quickbooksRequest<{ QueryResponse: { Purchase: Purchase[] } }>(
+	return quickbooksRequest<PurchaseQueryResponse>(
 		`query?query=select * from Purchase${queryString}`,
 	);
 }
@@ -43,8 +68,8 @@ export async function findPurchases(params: QueryParams = {}) {
  */
 export async function updatePurchase(
 	purchaseData: Purchase & { Id: string; SyncToken: string },
-) {
-	return quickbooksRequest<{ Purchase: Purchase }, { Purchase: Purchase }>(
+): Promise<PurchaseResponse> {
+	return quickbooksRequest<PurchaseResponse, { Purchase: Purchase }>(
 		"purchase",
 		"POST",
 		{ Purchase: purchaseData },
@@ -57,12 +82,16 @@ export async function updatePurchase(
  * @param syncToken - SyncToken of the purchase to delete
  * @returns Promise with the deletion result
  */
-export async function deletePurchase(purchaseId: string, syncToken: string) {
-	return quickbooksRequest<
-		{ Purchase: Purchase },
-		{ Id: string; SyncToken: string }
-	>("purchase?operation=delete", "POST", {
-		Id: purchaseId,
-		SyncToken: syncToken,
-	});
+export async function deletePurchase(
+	purchaseId: string,
+	syncToken: string,
+): Promise<PurchaseResponse> {
+	return quickbooksRequest<PurchaseResponse, { Id: string; SyncToken: string }>(
+		"purchase?operation=delete",
+		"POST",
+		{
+			Id: purchaseId,
+			SyncToken: syncToken,
+		},
+	);
 }

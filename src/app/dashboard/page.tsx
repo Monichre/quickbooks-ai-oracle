@@ -26,31 +26,22 @@ import {
 } from '@/components/ui/sidebar'
 import {DashboardContent} from '@/components/ui/kokonutui'
 import type {CompanyInfoResponse} from '@/services/intuit/types'
-
+import {redirect} from 'next/navigation'
+import {DynamicToolbar} from '@/components/toolbar'
 // Simple dashboard card component
 
 export default async function DashboardPage() {
   // Check if authenticated with QuickBooks
-  let authenticated = false
-  let authError = null
-  let authUrl = ''
+  let authenticated = await isAuthenticated()
+  const authError = null
+  const authUrl = await getAuthorizationUrl()
 
-  try {
+  if (!authenticated) {
+    refreshTokensIfNeeded()
     authenticated = await isAuthenticated()
-    if (!authenticated) {
-      authUrl = await getAuthorizationUrl()
-    }
-  } catch (error) {
-    console.error('Authentication check error:', error)
-    authError = error instanceof Error ? error.message : 'Authentication error'
-    try {
-      authUrl = await getAuthorizationUrl()
-    } catch (urlError) {
-      console.error('Failed to get auth URL:', urlError)
-    }
-  }
 
-  console.log('🚀 ~ DashboardPage ~ authenticated:', authenticated)
+    console.log('🚀 ~ DashboardPage ~ authenticated:', authenticated)
+  }
 
   // If authenticated, try to load company data
   let companyData = null
@@ -68,6 +59,7 @@ export default async function DashboardPage() {
 
   // If we have authentication or data errors, show error UI
   if (!authenticated || authError || dataError) {
+    // redirect(authUrl)
     return (
       <div className='container mx-auto p-6'>
         {(authError || dataError) && (
@@ -114,6 +106,7 @@ export default async function DashboardPage() {
       <div className='flex flex-1 flex-col gap-4 p-4'>
         <DashboardContent />
       </div>
+      <DynamicToolbar />
     </div>
   )
 }

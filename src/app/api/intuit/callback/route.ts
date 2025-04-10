@@ -19,8 +19,14 @@ export async function GET(request: NextRequest) {
 		const tokens = await oauthClient
 			.createToken(fullUrl)
 			// @ts-ignore
-			.then((authResponse) => JSON.stringify(authResponse.getToken()));
+			.then((authResponse) => {
+				console.log("🚀 ~ .then ~ authResponse:", authResponse);
+				const tokenRes = authResponse.getJson();
+				console.log("🚀 ~ .then ~ tokenRes:", tokenRes);
+				return tokenRes; // Return the object directly, not stringified
+			});
 
+		console.log("🚀 ~ GET ~ tokens:", tokens);
 		// const tokens = response.getJson();
 
 		// Store tokens in user metadata
