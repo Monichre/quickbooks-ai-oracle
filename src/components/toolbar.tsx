@@ -29,12 +29,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import useDebounce from '@/hooks/use-debounce'
+import {
+  fetchEntityData,
+  type entityApiFunctionMap,
+} from '@/services/intuit/_common/helpers'
 
 // Define IntuitEntity interface instead of using the Action type from sonner
 interface IntuitEntity {
   id: string
   label: string
-  icon: JSX.Element
+  icon: React.ReactNode
   description: string
   short: string
   end: string
@@ -50,7 +54,7 @@ interface SearchResult {
 interface IntuitSearchResult {
   id: string
   name: string
-  [key: string]: any // Allow for additional properties
+  [key: string]: unknown // Allow for additional properties
 }
 
 const iconClass = 'w-4 h-4 dark:text-[#adf0dd]'
@@ -174,25 +178,16 @@ export function DynamicToolbar() {
   const searchEntity = useCallback(async () => {
     setIsLoading(true)
     try {
-      // Import the entityApiFunctionMap to use the same API functions
-      const {entityApiFunctionMap} = await import(
-        '@/app/dashboard/[entity]/page'
-      )
+      // Import the API functions from the correct location
 
       // Map the selectedEntity.label to the corresponding entity type key
       const entityKey = selectedEntity.label
         .toLowerCase()
         .replace(/\s+/g, '-') as keyof typeof entityApiFunctionMap
 
-      // Get the appropriate API function
-      const apiFunction = entityApiFunctionMap[entityKey]
-
       if (typeof apiFunction === 'function') {
         // Call the API function with the search query
-        const response = await apiFunction({
-          query: debouncedSearchValue,
-          limit: 10,
-        })
+        const response = await fetchEntityData(selectedOption)
 
         // Process the response similar to fetchEntityData in page.tsx
         const capitalizedEntity = entityKey

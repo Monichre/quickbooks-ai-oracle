@@ -10,20 +10,8 @@ import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert'
 import {Button} from '@/components/ui/button'
 import Link from 'next/link'
 
-import {SidebarLeft} from '@/components/sidebar-left'
-import {SidebarRight} from '@/components/sidebar-right'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from '@/components/ui/breadcrumb'
 import {Separator} from '@/components/ui/separator'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
+
 import {DashboardContent} from '@/components/ui/kokonutui'
 import type {CompanyInfoResponse} from '@/services/intuit/types'
 import {redirect} from 'next/navigation'

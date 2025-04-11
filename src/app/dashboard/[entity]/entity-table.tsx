@@ -88,7 +88,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
         | Estimate
         | Payment
         | Employee
-        | {[key: string]: any} // Fallback for other entity types
+        | {[key: string]: unknown} // Fallback for other entity types
 
       // Process the initialData based on its structure
       if (Array.isArray(initialData)) {
@@ -147,8 +147,8 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
           ...otherKeys,
         ])
       }
-
-      setData(entityData || [])
+      // @ts-ignore
+      setData(entityData || ([] as unknown))
     } catch (err) {
       console.error(`Error processing ${entity} data:`, err)
       setError(

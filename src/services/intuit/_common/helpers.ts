@@ -16,7 +16,7 @@ import {
 } from "@/services/intuit/api";
 import type { EntityType } from "@/services/intuit/types";
 import { notFound } from "next/navigation";
-type ApiFunction = (params?: {
+export type ApiFunction = (params?: {
 	limit?: number;
 	[key: string]: any;
 }) => Promise<any>;
@@ -39,7 +39,7 @@ export const entityApiFunctionMap: Record<EntityType, ApiFunction> = {
 };
 
 // Server Component to handle data fetching
-export async function fetchEntityData(entity: string) {
+export async function fetchEntityData(entity: string, searchParams?) {
 	if (!entity || !entityApiFunctionMap[entity as EntityType]) {
 		return notFound();
 	}
@@ -48,6 +48,7 @@ export async function fetchEntityData(entity: string) {
 		// Call the appropriate API function with default parameters
 		const response: any = await entityApiFunctionMap[entity as EntityType]({
 			limit: 100,
+			...(searchParams || {}),
 		});
 
 		console.log("🚀 ~ fetchEntityData ~ response:", response);

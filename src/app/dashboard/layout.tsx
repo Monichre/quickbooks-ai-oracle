@@ -15,7 +15,7 @@ import {Drawer, DrawerContent, DrawerTrigger} from '@/components/ui/drawer'
 import {BrainIcon, Plus} from 'lucide-react'
 import {DynamicToolbar} from '@/components/toolbar'
 import {defaultNavLinks} from '@/constants'
-import {NavFavorites} from '@/components/nav-favorites'
+
 import {NavMain} from '@/components/nav-main'
 import Profile01, {type ClerkUser} from '@/components/ui/kokonutui/profile-01'
 import {currentUser} from '@clerk/nextjs/server'

@@ -8,8 +8,8 @@ import {Separator} from '@/components/ui/separator'
 import {cn} from '@/lib/utils'
 
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip'
-import type {Skeleton} from '@/components/ui/skeleton'
-import type {Slot} from '@radix-ui/react-slot'
+import {Skeleton} from '@/components/ui/skeleton'
+import {Slot} from '@radix-ui/react-slot'
 import {cva, type VariantProps} from 'class-variance-authority'
 import {Button} from './ui/moving-border'
 
