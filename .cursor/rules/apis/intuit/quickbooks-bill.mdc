@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Bill
 
 A bill is an AP (accounts payable) transaction that is typically created by a vendor. It is a request for payment.

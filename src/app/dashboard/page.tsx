@@ -94,7 +94,7 @@ export default async function DashboardPage() {
       <div className='flex flex-1 flex-col gap-4 p-4'>
         <DashboardContent />
       </div>
-      <DynamicToolbar />
+      {/* <DynamicToolbar /> */}
     </div>
   )
 }

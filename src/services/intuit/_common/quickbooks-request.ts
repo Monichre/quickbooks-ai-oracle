@@ -36,7 +36,7 @@ if (
 	console.error(
 		"Missing INTUIT_BASE_URL! Please set INTUIT_BASE_URL environment variable",
 	);
-	throw new Error("INTUIT_BASE_URL environment variable is required");
+	// throw new Error("INTUIT_BASE_URL environment variable is required");
 }
 
 // Validate company ID before any requests
@@ -65,7 +65,7 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 		console.error(
 			"Missing INTUIT_BASE_URL! Please set INTUIT_BASE_URL environment variable",
 		);
-		throw new Error("INTUIT_BASE_URL environment variable is required");
+		// throw new Error("INTUIT_BASE_URL environment variable is required");
 	}
 	// Refresh tokens if needed
 	const tokens = await refreshTokensIfNeeded();

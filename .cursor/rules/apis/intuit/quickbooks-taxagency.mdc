@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # TaxAgency
 
 A tax agency represents a government authority to which collected sales tax is remitted. A tax agency can be used with taxcode and taxrate.

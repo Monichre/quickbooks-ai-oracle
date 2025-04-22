@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # Account
 
 Accounts are used systematically track financial activities. To record transactions, you assign an account to the transaction. QuickBooks Online uses the double entry accounting system. Each transaction debits one account and credits another. The account types are "asset", "equity", "expense", "liability", or "income". Some accounts allow deposits, others can be marked as a tax account or placed on a balance sheet. Accounts can be "active" or "inactive". The current balance of an account is calculated from the Transaction table.
