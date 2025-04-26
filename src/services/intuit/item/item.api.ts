@@ -29,6 +29,9 @@ export async function getItem(itemId: string) {
  */
 export async function findItems(params: QueryParams = {}) {
 	const queryString = buildQueryString(params);
+
+	console.log("🚀 ~ findItems ~ queryString:", queryString);
+
 	return quickbooksRequest<{ QueryResponse: { Item: Item[] } }>(
 		`query?query=select * from Item${queryString}`,
 	);

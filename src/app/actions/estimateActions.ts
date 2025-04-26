@@ -7,7 +7,7 @@ import {
 	getEstimate,
 } from "@/services/intuit/estimate/estimate.api";
 import { createPurchase } from "@/services/intuit/purchase/purchase.api";
-import type { Estimate } from "@/services/intuit/types";
+import type { Estimate } from "@/services/intuit/estimate/estimate.types";
 
 // Schema for estimate creation validation
 const estimateSchema = z.object({

@@ -20,7 +20,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import {ArrowUpDown, ChevronLeft, ChevronRight} from 'lucide-react'
+import {
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  ExternalLink,
+} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input'
 import {
@@ -30,7 +36,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog'
 import {cn} from '@/lib/utils'
+import {useRouter} from 'next/navigation'
 import type {
   Item,
   Invoice,
@@ -61,6 +75,7 @@ interface EntityTableProps {
 }
 
 export default function EntityTable({entity, initialData}: EntityTableProps) {
+  const router = useRouter()
   const [data, setData] = useState<EntityObject[]>([])
   const [columnKeys, setColumnKeys] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -68,6 +83,10 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState<string>('')
   const [pageSize, setPageSize] = useState<number>(10)
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState<boolean>(false)
+  const [selectedEntity, setSelectedEntity] = useState<EntityObject | null>(
+    null
+  )
 
   useEffect(() => {
     try {
@@ -157,6 +176,27 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
     }
   }, [entity, initialData])
 
+  // Helper function to get entity ID
+  const getEntityId = (entityObject: EntityObject) => {
+    return entityObject?.Id || ''
+  }
+
+  // Navigate to entity detail page
+  const navigateToEntityDetail = (entityObject: EntityObject) => {
+    const id = getEntityId(entityObject)
+    if (!id) return
+
+    const entityPath = entity.endsWith('s') ? entity : `${entity}s` // Handle pluralization
+
+    router.push(`/dashboard/${entityPath}/${id}`)
+  }
+
+  // Open quick view modal
+  const openQuickView = (entityObject: EntityObject) => {
+    setSelectedEntity(entityObject)
+    setIsQuickViewOpen(true)
+  }
+
   // Memoize columns definition based on column keys
   const columns = useMemo<ColumnDef<EntityObject>[]>(() => {
     if (!columnKeys.length) return []
@@ -170,7 +210,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
       ? 'Id'
       : null
 
-    return columnKeys.map((key) => ({
+    const dataColumns = columnKeys.map((key) => ({
       id: key,
       accessorKey: key,
       enablePinning: true,
@@ -202,6 +242,50 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
       enableSorting: true,
       enableFiltering: true,
     }))
+
+    // Add action columns
+    const actionColumns: ColumnDef<EntityObject>[] = [
+      {
+        id: 'quickView',
+        enableSorting: false,
+        enablePinning: true,
+        pin: 'right',
+        header: () => <div className='text-center'>Quick View</div>,
+        cell: ({row}) => (
+          <div className='text-center'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => openQuickView(row.original)}
+              className='px-2'
+            >
+              <Eye className='h-4 w-4' />
+            </Button>
+          </div>
+        ),
+      },
+      {
+        id: 'view',
+        enableSorting: false,
+        enablePinning: true,
+        pin: 'right',
+        header: () => <div className='text-center'>View</div>,
+        cell: ({row}) => (
+          <div className='text-center'>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => navigateToEntityDetail(row.original)}
+              className='px-2'
+            >
+              <ExternalLink className='h-4 w-4' />
+            </Button>
+          </div>
+        ),
+      },
+    ]
+
+    return [...dataColumns, ...actionColumns]
   }, [columnKeys])
 
   const table = useReactTable({
@@ -391,6 +475,60 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
           </div>
         </div>
       </div>
+
+      {/* Quick View Modal */}
+      <Dialog open={isQuickViewOpen} onOpenChange={setIsQuickViewOpen}>
+        <DialogContent className='max-w-3xl max-h-[80vh] overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>
+              {entity.slice(0, -1).charAt(0).toUpperCase() +
+                entity.slice(0, -1).slice(1)}{' '}
+              Details
+            </DialogTitle>
+            <DialogDescription>
+              Showing details for{' '}
+              {selectedEntity?.Name ||
+                selectedEntity?.DisplayName ||
+                `${entity.slice(0, -1)} #${selectedEntity?.Id}`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
+            {selectedEntity &&
+              Object.entries(selectedEntity).map(([key, value]) => {
+                // Skip rendering complex objects and arrays
+                if (
+                  value === null ||
+                  typeof value === 'object' ||
+                  Array.isArray(value)
+                ) {
+                  return null
+                }
+
+                return (
+                  <div key={key} className='border-b pb-2'>
+                    <div className='font-medium text-sm text-gray-500'>
+                      {key}
+                    </div>
+                    <div>{value.toString()}</div>
+                  </div>
+                )
+              })}
+          </div>
+          <div className='flex justify-end mt-4'>
+            <Button
+              onClick={() =>
+                selectedEntity && navigateToEntityDetail(selectedEntity)
+              }
+              className='mr-2'
+            >
+              View Full Details
+            </Button>
+            <Button variant='outline' onClick={() => setIsQuickViewOpen(false)}>
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

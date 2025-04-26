@@ -1,0 +1,32 @@
+.purchase-orders-pages {
+}
+.purchase-orders-pages p {
+	color: black;
+}
+.purchase-orders-table {
+	border-collapse: collapse;
+	width: 100%;
+}
+.purchase-orders-table th,
+.purchase-orders-table td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+.purchase-orders-table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+.purchase-orders-table tr:hover {
+	background-color: #ddd;
+}
+
+.purchase-orders-table th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	color: black;
+	background-color: #f2f2f2;
+}
+.purchase-orders-table td {
+	color: black !important;
+}

@@ -182,3 +182,8 @@ body {
 		@apply bg-[--background] text-[--foreground];
 	}
 }
+
+.line-item-toggle > span {
+	background: blue !important;
+	background-color: blue !important;
+}

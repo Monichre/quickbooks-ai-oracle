@@ -77,29 +77,227 @@ An estimate represents a proposal for a financial transaction. It is a document 
 }
 ```
 
-## Create an estimate
+## **Create an estimate**
 
-### Request Body
+- An Estimate must have at least one line that describes an item.
+- An Estimate must have a reference to a customer.
+- If shipping address and billing address are not provided, the address from the referenced Customer object is used.
 
+### **Request Body**
+
+The minimum elements to create an estimate are listed here.
+
+ATTRIBUTES
+- **Line**
+
+  *** Required**
+
+  **Estimate line object**
+
+  The minimum line item required for the request is one of the following. Sales item line type Group item line type
+
+  SalesItemLine
+
+  Show child attributes 
+
+  GroupLine
+
+  Hide child attributes 
+  - **Id**
+
+    *** Required for update**
+
+    read only
+
+    system defined
+
+    **String**
+
+    The Id of the line item. Its use in requests is as folllows:
+  - If Idis greater than zero and exists for the company, the request is considered an update operation for a line item.
+  - If no Idis provided, the Idprovided is less than or equal to zero, or the Idprovided is greater than zero and does not exist for the company then the request is considered a create operation for a line item.
+
+  Available in all objects that use lines and support the update operation.
+- **GroupLineDetail**
+
+  *** Required**
+
+  **GroupLineDetail**
+
+  Show child attributes 
+- **DetailType**
+
+  *** Required**
+
+  **LineDetailTypeEnum**
+
+  Set to GroupLineDetailfor this type of line.
+- **LineNum**
+
+  Optional
+
+  **Decimal**
+
+  Specifies the position of the line in the collection of transaction lines. Positive integer
+- **Description**
+
+  Optional
+
+  max character: Max 4000 chars
+
+  **String**
+
+  Free form text description of the line item that appears in the printed record.
+
+**CustomerRef**
+
+*** Required**
+
+**ReferenceType** *, filterable*
+
+Reference to a customer or job. Query the Customer name list resource to determine the appropriate Customer object for this reference. Use Customer.Id and Customer.DisplayName from that object for CustomerRef.value and CustomerRef.name, respectively.
+
+Hide child attributes 
+- **value**
+
+  *** Required**
+
+  **string**
+
+  The ID for the referenced object as found in the Id field of the object payload. The context is set by the type of reference and is specific to the QuickBooks company file.
+- **name**
+
+  Optional
+
+  **string**
+
+  An identifying name for the object being referenced by value and is derived from the field that holds the common name of that object. This varies by context and specific type of object referenced. For example, references to a Customer object use Customer.DisplayName to populate this field. Optionally returned in responses, implementation dependent.
+
+  - 
+  - **ProjectRef**
+
+    *** Conditionally required**
+
+    minorVersion: 69
+
+    **ReferenceType** *, filterable*
+
+    Reference to the Project ID associated with this transaction. Available with Minor Version 69 and above
+
+    Hide child attributes 
+    - **value**
+
+      *** Required**
+
+      **string**
+
+      The ID for the referenced object as found in the Id field of the object payload. The context is set by the type of reference and is specific to the QuickBooks company file.
+    - **name**
+
+      Optional
+
+      **string**
+
+      An identifying name for the object being referenced by value and is derived from the field that holds the common name of that object. This varies by context and specific type of object referenced. For example, references to a Customer object use Customer.DisplayName to populate this field. Optionally returned in responses, implementation dependent.
+  - **CurrencyRef**
+
+    *** Conditionally required**
+
+    **CurrencyRefType**
+
+    Reference to the currency in which all amounts on the associated transaction are expressed. This must be defined if multicurrency is enabled for the company.
+    Multicurrency is enabled for the company if Preferences.MultiCurrencyEnabled is set to true. Read more about multicurrency support [here](https://developer.intuit.com/app/developer/qbo/docs/develop/tutorials/manage-multiple-currencies "Currency"). Required if multicurrency is enabled for the company
+
+    Hide child attributes 
+    - **value**
+
+      *** Required**
+
+      **String**
+
+      A three letter string representing the ISO 4217 code for the currency. For example, USD, AUD, EUR, and so on.
+    - **name**
+
+      Optional
+
+      **String**
+
+      The full name of the currency.
+**demo request body for Create**
 ```json
 {
+  "TotalAmt": 31.5, 
+  "BillEmail": {
+    "Address": "Cool_Cars@intuit.com"
+  }, 
+  "CustomerMemo": {
+    "value": "Thank you for your business and have a great day!"
+  }, 
+  "ShipAddr": {
+    "City": "Half Moon Bay", 
+    "Line1": "65 Ocean Dr.", 
+    "PostalCode": "94213", 
+    "Lat": "37.4300318", 
+    "Long": "-122.4336537", 
+    "CountrySubDivisionCode": "CA", 
+    "Id": "4"
+  }, 
+  "PrintStatus": "NeedToPrint", 
+  "EmailStatus": "NotSet", 
+  "BillAddr": {
+    "City": "Half Moon Bay", 
+    "Line1": "65 Ocean Dr.", 
+    "PostalCode": "94213", 
+    "Lat": "37.4300318", 
+    "Long": "-122.4336537", 
+    "CountrySubDivisionCode": "CA", 
+    "Id": "4"
+  }, 
   "Line": [
     {
-      "DetailType": "SalesItemLineDetail",
-      "Amount": 75.00,
+      "Description": "Pest Control Services", 
+      "DetailType": "SalesItemLineDetail", 
       "SalesItemLineDetail": {
+        "TaxCodeRef": {
+          "value": "NON"
+        }, 
+        "Qty": 1, 
+        "UnitPrice": 35, 
         "ItemRef": {
-          "value": "1",
-          "name": "Services"
-        },
-        "UnitPrice": 75.00,
-        "Qty": 1
+          "name": "Pest Control", 
+          "value": "10"
+        }
+      }, 
+      "LineNum": 1, 
+      "Amount": 35.0, 
+      "Id": "1"
+    }, 
+    {
+      "DetailType": "SubTotalLineDetail", 
+      "Amount": 35.0, 
+      "SubTotalLineDetail": {}
+    }, 
+    {
+      "DetailType": "DiscountLineDetail", 
+      "Amount": 3.5, 
+      "DiscountLineDetail": {
+        "DiscountAccountRef": {
+          "name": "Discounts given", 
+          "value": "86"
+        }, 
+        "PercentBased": true, 
+        "DiscountPercent": 10
       }
     }
-  ],
+  ], 
   "CustomerRef": {
-    "value": "1"
-  }
+    "name": "Cool Cars", 
+    "value": "3"
+  }, 
+  "TxnTaxDetail": {
+    "TotalTax": 0
+  }, 
+  "ApplyTaxAfterDiscount": false
 }
 ```
 

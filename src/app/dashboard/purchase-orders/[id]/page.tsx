@@ -12,7 +12,7 @@ export default async function PurchaseOrderDetailPage({
     const purchase = purchaseResponse.Purchase
 
     return (
-      <div>
+      <div className='py-4 px-12 purchase-order-detail h-screen w-full'>
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-3xl font-bold'>
             Purchase Order #{purchase.DocNumber || purchase.Id}

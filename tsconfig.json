@@ -35,7 +35,8 @@
 		],
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@/actions/*": ["./src/app/actions/*"]
 		}
 	},
 	"include": [

@@ -335,7 +335,7 @@ export function DynamicToolbar() {
   }
 
   return (
-    <div className='bg-neutral-950 bg-gradient-to-b from-black/90 border border-zinc-200 dark:border-zinc-800 rounded-xl p-2 shadow-lg w-fit relative z-50 mx-auto'>
+    <div className='bg-neutral-950 bg-gradient-to-b from-black/90 border border-zinc-200 dark:border-zinc-800 rounded-xl p-2 shadow-lg w-fit fixed bottom-4 left-1/2 -translate-x-1/2 z-50 mx-auto'>
       <div className='absolute -top-8 left-1/2 -translate-x-1/2 text-blue-600 font-medium rounded-md text-xs'>
         <AnimatePresence>
           {clickedButton && (
@@ -580,7 +580,7 @@ export function DynamicToolbar() {
                   {searchResults.map((result) => (
                     <motion.li
                       key={result.id}
-                      className='px-3 py-2 flex items-center justify-between cursor-pointer rounded-md hover:bg-zinc-800'
+                      className='px-3 py-2 flex items-center justify-between cursor-pointer rounded-md hover:border-zinc-800'
                       variants={item}
                       layout
                     >
@@ -628,7 +628,7 @@ export function DynamicToolbar() {
                   transition={{duration: 0.2}}
                 >
                   <DropdownMenuItem
-                    className='text-zinc-100 bg-zinc-900 hover:text-[#0C8CE9] hover:bg-zinc-800'
+                    className='text-zinc-100 bg-inherit hover:border-zinc-800'
                     onClick={() => setSelectedOption(option)}
                   >
                     {option}

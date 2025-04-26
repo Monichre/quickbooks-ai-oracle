@@ -45,7 +45,7 @@ export default async function DashboardLayout({
   }))
   return (
     <>
-      <div className='flex flex-col relative pt-16'>
+      <div className='flex flex-col relative pt-16 px-12'>
         <Drawer direction='left'>
           <DrawerContent className='!bg-black/90 bg-blur border-r border-gray-200 border-[#1F1F23]'>
             <Profile01 user={user as unknown as ClerkUser} />
