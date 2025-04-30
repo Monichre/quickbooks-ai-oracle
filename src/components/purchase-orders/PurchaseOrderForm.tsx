@@ -1,40 +1,13 @@
 'use client'
 
-import {useState} from 'react'
-import {useForm, Controller} from '@tanstack/react-form'
-import {zodValidator} from '@tanstack/zod-form-adapter'
-import {z} from 'zod'
+import {useState, useEffect} from 'react'
+import {useForm, Controller, useFieldArray, useWatch} from 'react-hook-form'
+import {zodResolver} from '@hookform/resolvers/zod'
 import {useRouter} from 'next/navigation'
 import type {Purchase, Vendor} from '@/services/intuit/types'
-import {POLineItemsEditor} from '@/components/purchase-orders/POLineItemsEditor'
 import {createPurchaseOrderAction} from '@/actions/purchaseOrderActions'
-
-const purchaseOrderSchema = z.object({
-  VendorRef: z.object({
-    value: z.string().min(1, 'Vendor is required'),
-  }),
-  Line: z
-    .array(
-      z.object({
-        DetailType: z.literal('ItemBasedExpenseLineDetail'),
-        Amount: z.number().min(0),
-        ItemBasedExpenseLineDetail: z.object({
-          ItemRef: z.object({
-            value: z.string().min(1, 'Item is required'),
-            name: z.string().optional(),
-          }),
-          UnitPrice: z.number().min(0),
-          Qty: z.number().min(1),
-        }),
-      })
-    )
-    .min(1, 'At least one line item is required'),
-  DocNumber: z.string().optional(),
-  PaymentType: z.enum(['Cash', 'Check', 'CreditCard']),
-  PrivateNote: z.string().optional(),
-  Id: z.string().optional(),
-  SyncToken: z.string().optional(),
-})
+import {POLineItemsEditor} from './POLineItemsEditor'
+import {purchaseOrderSchema, type PurchaseOrderFormData} from './types'
 
 type PurchaseOrderFormProps = {
   vendors: Vendor[]
@@ -49,73 +22,101 @@ export function PurchaseOrderForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const form = useForm({
-    defaultValues: initialData || {
-      VendorRef: {value: ''},
-      Line: [
-        {
-          DetailType: 'ItemBasedExpenseLineDetail' as const,
-          Amount: 0,
-          ItemBasedExpenseLineDetail: {
-            ItemRef: {value: '', name: ''},
-            UnitPrice: 0,
-            Qty: 1,
-          },
-        },
-      ],
-      DocNumber: '',
-      PaymentType: 'Check' as const,
-      PrivateNote: '',
-    },
-    onSubmit: async ({value}) => {
-      setIsSubmitting(true)
-      setError(null)
-
-      try {
-        const result = await createPurchaseOrderAction(value as Purchase)
-        if (result.success) {
-          router.push(`/dashboard/purchase-orders/${result.data.Purchase.Id}`)
-        } else {
-          setError(result.error)
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : 'An error occurred')
-      } finally {
-        setIsSubmitting(false)
+  const defaultValues: PurchaseOrderFormData = initialData
+    ? {
+        VendorRef: initialData.VendorRef || {value: ''},
+        Line:
+          initialData.Line?.map((line) => ({
+            DetailType: 'ItemBasedExpenseLineDetail' as const,
+            Amount: line.Amount || 0,
+            ItemBasedExpenseLineDetail: {
+              ItemRef: line.ItemBasedExpenseLineDetail?.ItemRef || {
+                value: '',
+                name: '',
+              },
+              UnitPrice: line.ItemBasedExpenseLineDetail?.UnitPrice || 0,
+              Qty: line.ItemBasedExpenseLineDetail?.Qty || 1,
+            },
+          })) || [],
+        DocNumber: initialData.DocNumber || '',
+        PaymentType:
+          (initialData.PaymentType as 'Cash' | 'Check' | 'CreditCard') ||
+          'Check',
+        PrivateNote: initialData.PrivateNote || '',
+        Id: initialData.Id,
+        SyncToken: initialData.SyncToken,
       }
-    },
-    validators: {
-      onSubmit: zodValidator(purchaseOrderSchema),
-    },
+    : {
+        VendorRef: {value: ''},
+        Line: [
+          {
+            DetailType: 'ItemBasedExpenseLineDetail' as const,
+            Amount: 0,
+            ItemBasedExpenseLineDetail: {
+              ItemRef: {value: '', name: ''},
+              UnitPrice: 0,
+              Qty: 1,
+            },
+          },
+        ],
+        DocNumber: '',
+        PaymentType: 'Check' as const,
+        PrivateNote: '',
+      }
+
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm<PurchaseOrderFormData>({
+    defaultValues,
+    resolver: zodResolver(purchaseOrderSchema),
   })
 
+  const onSubmit = async (data: PurchaseOrderFormData) => {
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      const result = await createPurchaseOrderAction(data as Purchase)
+      if (result.success) {
+        router.push(`/dashboard/purchase-orders/${result.data.Purchase.Id}`)
+      } else {
+        setError(result.error)
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'An error occurred')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}
-      className='space-y-6'
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       {error && (
         <div className='bg-red-100 p-4 rounded text-red-700 mb-4'>{error}</div>
       )}
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>
+          <label
+            htmlFor='vendorRef'
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
             Vendor *
           </label>
           <Controller
-            control={form.control}
+            control={control}
             name='VendorRef.value'
-            render={({field, state}) => (
+            render={({field}) => (
               <div>
                 <select
+                  id='vendorRef'
                   className='w-full px-3 py-2 border border-gray-300 rounded-md'
                   value={field.value}
-                  onChange={(e) => field.onChange(e.target.value)}
+                  onChange={field.onChange}
+                  ref={field.ref}
+                  onBlur={field.onBlur}
                 >
                   <option value=''>Select a vendor</option>
                   {vendors.map((vendor) => (
@@ -124,9 +125,9 @@ export function PurchaseOrderForm({
                     </option>
                   ))}
                 </select>
-                {state.error && (
+                {errors.VendorRef?.value && (
                   <div className='text-red-600 text-sm mt-1'>
-                    {state.error.message}
+                    {errors.VendorRef.value.message}
                   </div>
                 )}
               </div>
@@ -135,22 +136,26 @@ export function PurchaseOrderForm({
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>
+          <label
+            htmlFor='docNumber'
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
             Doc Number
           </label>
           <Controller
-            control={form.control}
+            control={control}
             name='DocNumber'
-            render={({field, state}) => (
+            render={({field}) => (
               <div>
                 <input
+                  id='docNumber'
                   type='text'
                   className='w-full px-3 py-2 border border-gray-300 rounded-md'
                   {...field}
                 />
-                {state.error && (
+                {errors.DocNumber && (
                   <div className='text-red-600 text-sm mt-1'>
-                    {state.error.message}
+                    {errors.DocNumber.message}
                   </div>
                 )}
               </div>
@@ -159,15 +164,19 @@ export function PurchaseOrderForm({
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 mb-1'>
+          <label
+            htmlFor='paymentType'
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
             Payment Type
           </label>
           <Controller
-            control={form.control}
+            control={control}
             name='PaymentType'
-            render={({field, state}) => (
+            render={({field}) => (
               <div>
                 <select
+                  id='paymentType'
                   className='w-full px-3 py-2 border border-gray-300 rounded-md'
                   value={field.value}
                   onChange={(e) =>
@@ -175,14 +184,16 @@ export function PurchaseOrderForm({
                       e.target.value as 'Cash' | 'Check' | 'CreditCard'
                     )
                   }
+                  ref={field.ref}
+                  onBlur={field.onBlur}
                 >
                   <option value='Cash'>Cash</option>
                   <option value='Check'>Check</option>
                   <option value='CreditCard'>Credit Card</option>
                 </select>
-                {state.error && (
+                {errors.PaymentType && (
                   <div className='text-red-600 text-sm mt-1'>
-                    {state.error.message}
+                    {errors.PaymentType.message}
                   </div>
                 )}
               </div>
@@ -193,26 +204,30 @@ export function PurchaseOrderForm({
 
       <div>
         <h2 className='text-xl font-semibold mb-2'>Line Items</h2>
-        <POLineItemsEditor form={form} name='Line' />
+        <POLineItemsEditor control={control} name='Line' />
       </div>
 
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>
+        <label
+          htmlFor='privateNote'
+          className='block text-sm font-medium text-gray-700 mb-1'
+        >
           Private Note
         </label>
         <Controller
-          control={form.control}
+          control={control}
           name='PrivateNote'
-          render={({field, state}) => (
+          render={({field}) => (
             <div>
               <textarea
+                id='privateNote'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md'
                 rows={3}
                 {...field}
               />
-              {state.error && (
+              {errors.PrivateNote && (
                 <div className='text-red-600 text-sm mt-1'>
-                  {state.error.message}
+                  {errors.PrivateNote.message}
                 </div>
               )}
             </div>

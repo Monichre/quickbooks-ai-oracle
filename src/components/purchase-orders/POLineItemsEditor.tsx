@@ -1,50 +1,58 @@
 'use client'
 
-import {useFieldset} from '@tanstack/react-form'
-import {useState} from 'react'
+import {useEffect} from 'react'
+import {
+  type Control,
+  useFieldArray,
+  Controller,
+  useWatch,
+} from 'react-hook-form'
+import type {PurchaseOrderFormData} from './types'
 
-export function POLineItemsEditor({form, name}: {form: any; name: string}) {
-  const {fieldset, update} = useFieldset(form, name)
-  const [items, setItems] = useState(fieldset.value)
+type POLineItemsEditorProps = {
+  control: Control<PurchaseOrderFormData>
+  name: string
+}
+
+export function POLineItemsEditor({control, name}: POLineItemsEditorProps) {
+  const {fields, append, remove, update} = useFieldArray({
+    control,
+    name,
+  })
+
+  // Watch for changes in UnitPrice and Qty to update Amount
+  const lineItems = useWatch({
+    control,
+    name,
+  })
+
+  useEffect(() => {
+    if (lineItems) {
+      lineItems.forEach((item, index) => {
+        const qty = item.ItemBasedExpenseLineDetail.Qty
+        const unitPrice = item.ItemBasedExpenseLineDetail.UnitPrice
+        const amount = qty * unitPrice
+
+        if (item.Amount !== amount) {
+          update(index, {
+            ...item,
+            Amount: amount,
+          })
+        }
+      })
+    }
+  }, [lineItems, update])
 
   const addLineItem = () => {
-    const newItems = [
-      ...items,
-      {
-        DetailType: 'ItemBasedExpenseLineDetail',
-        Amount: 0,
-        ItemBasedExpenseLineDetail: {
-          ItemRef: {value: '', name: ''},
-          UnitPrice: 0,
-          Qty: 1,
-        },
+    append({
+      DetailType: 'ItemBasedExpenseLineDetail' as const,
+      Amount: 0,
+      ItemBasedExpenseLineDetail: {
+        ItemRef: {value: '', name: ''},
+        UnitPrice: 0,
+        Qty: 1,
       },
-    ]
-    setItems(newItems)
-    update(newItems)
-  }
-
-  const removeLineItem = (index: number) => {
-    if (items.length <= 1) return
-    const newItems = items.filter((_, i) => i !== index)
-    setItems(newItems)
-    update(newItems)
-  }
-
-  const updateLineItem = (index: number, field: string, value: any) => {
-    const newItems = [...items]
-
-    if (field === 'UnitPrice' || field === 'Qty') {
-      newItems[index].ItemBasedExpenseLineDetail[field] = Number(value)
-      // Recalculate Amount based on UnitPrice and Qty
-      const {UnitPrice, Qty} = newItems[index].ItemBasedExpenseLineDetail
-      newItems[index].Amount = UnitPrice * Qty
-    } else if (field === 'ItemRef') {
-      newItems[index].ItemBasedExpenseLineDetail.ItemRef.value = value
-    }
-
-    setItems(newItems)
-    update(newItems)
+    })
   }
 
   return (
@@ -71,49 +79,66 @@ export function POLineItemsEditor({form, name}: {form: any; name: string}) {
             </tr>
           </thead>
           <tbody className='bg-white divide-y divide-gray-200'>
-            {items.map((item, index) => (
-              <tr key={index}>
+            {fields.map((field, index) => (
+              <tr key={field.id}>
                 <td className='px-6 py-4'>
-                  <input
-                    type='text'
-                    className='w-full px-2 py-1 border border-gray-300 rounded-md'
-                    value={item.ItemBasedExpenseLineDetail.ItemRef.value}
-                    onChange={(e) =>
-                      updateLineItem(index, 'ItemRef', e.target.value)
-                    }
-                    placeholder='Item code or name'
+                  <Controller
+                    control={control}
+                    name={`${name}.${index}.ItemBasedExpenseLineDetail.ItemRef.value`}
+                    render={({field}) => (
+                      <input
+                        type='text'
+                        className='w-full px-2 py-1 border border-gray-300 rounded-md'
+                        {...field}
+                        placeholder='Item code or name'
+                      />
+                    )}
                   />
                 </td>
                 <td className='px-6 py-4'>
-                  <input
-                    type='number'
-                    className='w-full px-2 py-1 border border-gray-300 rounded-md'
-                    value={item.ItemBasedExpenseLineDetail.Qty}
-                    onChange={(e) =>
-                      updateLineItem(index, 'Qty', e.target.value)
-                    }
-                    min='1'
+                  <Controller
+                    control={control}
+                    name={`${name}.${index}.ItemBasedExpenseLineDetail.Qty`}
+                    render={({field}) => (
+                      <input
+                        type='number'
+                        className='w-full px-2 py-1 border border-gray-300 rounded-md'
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        min='1'
+                      />
+                    )}
                   />
                 </td>
                 <td className='px-6 py-4'>
-                  <input
-                    type='number'
-                    className='w-full px-2 py-1 border border-gray-300 rounded-md'
-                    value={item.ItemBasedExpenseLineDetail.UnitPrice}
-                    onChange={(e) =>
-                      updateLineItem(index, 'UnitPrice', e.target.value)
-                    }
-                    min='0'
-                    step='0.01'
+                  <Controller
+                    control={control}
+                    name={`${name}.${index}.ItemBasedExpenseLineDetail.UnitPrice`}
+                    render={({field}) => (
+                      <input
+                        type='number'
+                        className='w-full px-2 py-1 border border-gray-300 rounded-md'
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        min='0'
+                        step='0.01'
+                      />
+                    )}
                   />
                 </td>
-                <td className='px-6 py-4'>${item.Amount.toFixed(2)}</td>
+                <td className='px-6 py-4'>
+                  <Controller
+                    control={control}
+                    name={`${name}.${index}.Amount`}
+                    render={({field}) => <div>${field.value.toFixed(2)}</div>}
+                  />
+                </td>
                 <td className='px-6 py-4'>
                   <button
                     type='button'
-                    onClick={() => removeLineItem(index)}
+                    onClick={() => fields.length > 1 && remove(index)}
                     className='text-red-600 hover:text-red-800'
-                    disabled={items.length <= 1}
+                    disabled={fields.length <= 1}
                   >
                     Remove
                   </button>
@@ -133,12 +158,6 @@ export function POLineItemsEditor({form, name}: {form: any; name: string}) {
           + Add Line Item
         </button>
       </div>
-
-      {fieldset.state.error && (
-        <div className='text-red-600 text-sm mt-1'>
-          {fieldset.state.error.message}
-        </div>
-      )}
     </div>
   )
 }

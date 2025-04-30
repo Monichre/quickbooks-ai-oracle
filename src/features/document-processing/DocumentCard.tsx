@@ -17,7 +17,7 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer'
 
-import {DocumentViewer} from './document'
+import {DocumentViewer} from './DocumentViewer'
 import {ScrollArea} from '@/components/ui/scroll-area'
 
 import {PdfFileIcon} from './UploadZone'
