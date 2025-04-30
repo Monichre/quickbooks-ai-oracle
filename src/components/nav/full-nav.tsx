@@ -32,8 +32,8 @@ export const FullNav = () => {
     {id: 1, tile: 'Home', href: '/'},
     {id: 2, tile: 'Quickbooks', href: '/dashboard'},
     {id: 3, tile: 'Sage', href: '/sage'},
-    {id: 7, tile: 'AI', href: '/ai'},
-    {id: 8, tile: 'Settings', href: '/settings'},
+    {id: 7, tile: 'Document Processing', href: '/document-processing'},
+    // {id: 8, tile: 'Settings', href: '/settings'},
   ]
 
   const pathname = usePathname()

@@ -333,9 +333,9 @@ export function DynamicToolbar() {
       }
     }, 100)
   }
-
+  // fixed bottom-4 left-1/2 -translate-x-1/2 z-50 mx-auto
   return (
-    <div className='bg-neutral-950 bg-gradient-to-b from-black/90 border border-zinc-200 dark:border-zinc-800 rounded-xl p-2 shadow-lg w-fit fixed bottom-4 left-1/2 -translate-x-1/2 z-50 mx-auto'>
+    <div className='bg-background bg-gradient-to-b from-black/90 border border-zinc-800 rounded-xl p-2 shadow-lg w-fit '>
       <div className='absolute -top-8 left-1/2 -translate-x-1/2 text-blue-600 font-medium rounded-md text-xs'>
         <AnimatePresence>
           {clickedButton && (

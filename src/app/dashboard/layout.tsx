@@ -12,7 +12,7 @@ import {getCompanyInfo, isAuthenticated} from '@/services/quickbooks/client'
 import type {CompanyInfoResponse} from '@/services/quickbooks/client'
 import {Button} from '@/components/ui/button'
 import {Drawer, DrawerContent, DrawerTrigger} from '@/components/ui/drawer'
-import {BrainIcon, Plus} from 'lucide-react'
+import {BrainIcon, MenuIcon, Plus} from 'lucide-react'
 import {DynamicToolbar} from '@/components/toolbar'
 import {defaultNavLinks} from '@/constants'
 
@@ -46,52 +46,55 @@ export default async function DashboardLayout({
   }))
   return (
     <>
-      <div className='flex flex-col relative pt-16 px-12'>
-        <Drawer direction='left'>
-          <DrawerContent className='!bg-black/90 bg-blur border-r border-gray-200 border-[#1F1F23]'>
-            <Profile01 user={user as unknown as ClerkUser} />
+      <div className='flex flex-col relative pt-16 px-12 '>
+        <header className='sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background'>
+          <div className='flex flex-1 items-center gap-2 px-3'>
+            <Drawer direction='left'>
+              <DrawerContent className='!bg-black/90 bg-blur border-r border-gray-200 border-[#1F1F23]'>
+                <Profile01 user={user as unknown as ClerkUser} />
 
-            <NavMain items={mainItems} />
+                <NavMain items={mainItems} />
 
-            <NavMain items={dashboardsItems} />
+                <NavMain items={dashboardsItems} />
 
-            <SignOutButton />
-          </DrawerContent>
-
-          <header className='sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background'>
-            <div className='flex flex-1 items-center gap-2 px-3'>
+                <SignOutButton />
+              </DrawerContent>
               <DrawerTrigger asChild>
-                <Button variant='outline' size='icon'>
-                  <BrainIcon className='size-4 ' />
+                <Button variant='ghost' size='icon'>
+                  <MenuIcon className='size-6' />
                 </Button>
               </DrawerTrigger>
               <Separator orientation='vertical' className='mr-2 h-4' />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPage className='line-clamp-1'>
-                      <strong>Legal Name:</strong>{' '}
-                      {companyData?.LegalName || companyData?.CompanyName}
-                    </BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+            </Drawer>
+
+            <Drawer direction='bottom' modal={false}>
               <div className='ml-auto'>
                 <DrawerTrigger asChild>
-                  <Button variant='outline' size='icon'>
-                    <BrainIcon className='size-4 ' />
+                  <Button variant='ghost' size='icon'>
+                    <BrainIcon className='size-6' />
                   </Button>
                 </DrawerTrigger>
               </div>
-            </div>
-          </header>
-        </Drawer>
+              <AiCHAT />
+            </Drawer>
+          </div>
+        </header>
+        <div className='sticky top-0 flex justify-between px-6'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbPage className='line-clamp-1'>
+                  <strong>Legal Name:</strong>{' '}
+                  {companyData?.LegalName || companyData?.CompanyName}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <DynamicToolbar />
+        </div>
         {children}
-        <DynamicToolbar />
+
         <Toaster />
-        <Drawer direction='bottom'>
-          <AiCHAT />
-        </Drawer>
       </div>
     </>
   )
