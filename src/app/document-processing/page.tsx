@@ -86,7 +86,7 @@ export default async function DocumentProcessingPage() {
 
   // Success case - show dashboard content
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col h-screen w-screen justify-center items-center align-middle'>
       <DocumentProcessingPipeline />
     </div>
   )

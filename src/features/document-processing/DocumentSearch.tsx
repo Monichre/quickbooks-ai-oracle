@@ -74,13 +74,13 @@ export function DocumentSearch({documentId, className}: DocumentSearchProps) {
   }, [debouncedQuery, documentId])
 
   return (
-    <div className={className}>
+    <div className={'bg-background'}>
       {/* Search Input */}
       <div className='relative mx-2 -mt-12'>
         <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
         <Input
           placeholder='Search document content...'
-          className='pl-9 pr-4 rounded-xl bg-white'
+          className='pl-9 pr-4 rounded-xl bg-background text-foreground '
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

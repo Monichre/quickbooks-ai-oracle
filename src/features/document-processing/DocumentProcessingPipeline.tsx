@@ -7,18 +7,18 @@ import {UploadZoneWrapper} from '@/features/document-processing/UploadZone'
 
 export async function DocumentProcessingPipeline() {
   return (
-    <div className='container max-w-5xl py-6 space-y-8'>
+    <div className='container max-w-5xl py-6 space-y-8 mx-auto'>
       <div className='flex flex-col items-start pt-6 pb-4 justify-start text-left'>
         <div className='flex gap-2 items-center'>
           <SupabaseIcon className='size-8' />
-          <div className='flex flex-col items-start justify-start text-left'>
+          <div className='flex flex-col items-center justify-center text-center'>
             <p className='text-sm text-muted-foreground'>Vector Embedding</p>
-            <h1 className='text-2xl lg:text-3xl  font-bold'>
+            <h1 className='text-2xl lg:text-3xl font-bold'>
               Document Processor Pipeline
             </h1>
           </div>
         </div>
-        <p className='text-muted-foreground  text-pretty text-sm max-w-2xl'>
+        <p className='text-muted-foreground text-pretty text-sm max-w-2xl'>
           This pipeline allows users to upload documents and store them in
           supabase. Then once uploaded the files are parsed, analyzed, and
           turned into chunked vector embedding documents.
