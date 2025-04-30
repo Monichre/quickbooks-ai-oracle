@@ -98,8 +98,10 @@ export default function EntityTable({
   const [selectedEntity, setSelectedEntity] = useState<EntityObject | null>(
     null
   )
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    setIsLoading(true)
     try {
       // Extract the data from the response based on entity type
       let entityData: EntityObject[] = []
@@ -189,6 +191,8 @@ export default function EntityTable({
       setError(
         err instanceof Error ? err.message : 'An error occurred processing data'
       )
+    } finally {
+      setIsLoading(false)
     }
   }, [entity, initialData, columnConfig])
 
@@ -319,7 +323,7 @@ export default function EntityTable({
     ]
 
     return [...dataColumns, ...actionColumns]
-  }, [columnKeys, columnConfig])
+  }, [columnKeys, columnConfig, navigateToEntityDetail, openQuickView])
 
   const table = useReactTable({
     data,
@@ -346,6 +350,13 @@ export default function EntityTable({
     },
   })
 
+  // Common loading UI that matches the Suspense fallback
+  const LoadingUI = () => (
+    <div className='flex justify-center items-center min-h-[400px]'>
+      <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary' />
+    </div>
+  )
+
   if (error) {
     return (
       <div className='p-4 bg-red-50 border border-red-200 rounded-md text-red-700'>
@@ -353,6 +364,10 @@ export default function EntityTable({
         <p>{error}</p>
       </div>
     )
+  }
+
+  if (isLoading) {
+    return <LoadingUI />
   }
 
   if (!data || data.length === 0) {

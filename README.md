@@ -1,16 +1,10 @@
 # Quickbooks/Intuit + Sage AI Oracle
 
-## Techstack
-
-- Supabase
-- Clerk Auth
-- NextJS
-- Shadcn/UI
-- OpenAI + Vercel AI SDK
-
 ## Intuit
 
-### Quickbooks Data Model
+[Product Requirements Doc](docs/PRD.md)
+
+**Intuit Data Model**
 
 The Quickbooks integration provides access to the following data model:
 
