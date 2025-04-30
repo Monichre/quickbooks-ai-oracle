@@ -3,6 +3,7 @@ import {findCustomers} from '@/services/intuit/customer/customer.api'
 
 export default async function CreateEstimatePage() {
   const customersResponse = await findCustomers({maxResults: 100})
+
   const customers = customersResponse.QueryResponse?.Customer || []
 
   return (

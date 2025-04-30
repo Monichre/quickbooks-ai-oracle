@@ -20,6 +20,7 @@ import {NavMain} from '@/components/nav-main'
 import Profile01, {type ClerkUser} from '@/components/ui/kokonutui/profile-01'
 import {currentUser} from '@clerk/nextjs/server'
 import {SignOutButton} from '@clerk/nextjs'
+import {Toaster} from '@/components/ui/sonner'
 
 export default async function DashboardLayout({
   children,
@@ -87,6 +88,7 @@ export default async function DashboardLayout({
         </Drawer>
         {children}
         <DynamicToolbar />
+        <Toaster />
         <Drawer direction='bottom'>
           <AiCHAT />
         </Drawer>

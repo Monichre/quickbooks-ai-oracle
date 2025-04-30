@@ -69,12 +69,23 @@ type QuickBooksResponse = {
   [key: string]: unknown
 }
 
-interface EntityTableProps {
-  entity: string
-  initialData: QuickBooksResponse
+// Add to the EntityTableProps interface
+type ColumnConfig = {
+  selectedColumns?: string[]
+  columnLabels?: Record<string, string>
 }
 
-export default function EntityTable({entity, initialData}: EntityTableProps) {
+type EntityTableProps = {
+  entity: string
+  initialData: QuickBooksResponse | EntityObject[]
+  columnConfig?: ColumnConfig
+}
+
+export default function EntityTable({
+  entity,
+  initialData,
+  columnConfig,
+}: EntityTableProps) {
   const router = useRouter()
   const [data, setData] = useState<EntityObject[]>([])
   const [columnKeys, setColumnKeys] = useState<string[]>([])
@@ -131,40 +142,45 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
 
       // If we found data, determine the columns
       if (entityData.length > 0) {
-        // Get all unique keys from all objects
-        const allKeys = entityData.reduce(
-          (keys: Set<string>, item: EntityObject) => {
-            for (const key of Object.keys(item)) {
-              // Filter out complex objects and arrays for table display
-              if (
-                item[key] !== null &&
-                typeof item[key] !== 'object' &&
-                !Array.isArray(item[key])
-              ) {
-                keys.add(key)
+        if (columnConfig?.selectedColumns) {
+          // Use the custom column configuration if provided
+          setColumnKeys(columnConfig.selectedColumns)
+        } else {
+          // Get all unique keys from all objects
+          const allKeys = entityData.reduce(
+            (keys: Set<string>, item: EntityObject) => {
+              for (const key of Object.keys(item)) {
+                // Filter out complex objects and arrays for table display
+                if (
+                  item[key] !== null &&
+                  typeof item[key] !== 'object' &&
+                  !Array.isArray(item[key])
+                ) {
+                  keys.add(key)
+                }
               }
-            }
-            return keys
-          },
-          new Set<string>()
-        )
+              return keys
+            },
+            new Set<string>()
+          )
 
-        // Convert the keys Set to an array and prioritize common fields
-        const priorityKeys = [
-          'Id',
-          'Name',
-          'DisplayName',
-          'DocNumber',
-          'Active',
-          'Balance',
-        ]
-        const otherKeys = Array.from(allKeys).filter(
-          (key) => !priorityKeys.includes(key)
-        )
-        setColumnKeys([
-          ...priorityKeys.filter((key) => allKeys.has(key)),
-          ...otherKeys,
-        ])
+          // Convert the keys Set to an array and prioritize common fields
+          const priorityKeys = [
+            'Id',
+            'Name',
+            'DisplayName',
+            'DocNumber',
+            'Active',
+            'Balance',
+          ]
+          const otherKeys = Array.from(allKeys).filter(
+            (key) => !priorityKeys.includes(key)
+          )
+          setColumnKeys([
+            ...priorityKeys.filter((key) => allKeys.has(key)),
+            ...otherKeys,
+          ])
+        }
       }
       // @ts-ignore
       setData(entityData || ([] as unknown))
@@ -174,7 +190,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
         err instanceof Error ? err.message : 'An error occurred processing data'
       )
     }
-  }, [entity, initialData])
+  }, [entity, initialData, columnConfig])
 
   // Helper function to get entity ID
   const getEntityId = (entityObject: EntityObject) => {
@@ -217,6 +233,9 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
       // Pin the DisplayName, Name or Id column to the left
       ...(key === pinnedColumnKey ? {pin: 'left'} : {}),
       header: ({column}) => {
+        // Use custom column label if provided
+        const displayName = columnConfig?.columnLabels?.[key] || key
+
         return (
           <Button
             variant='ghost'
@@ -226,12 +245,26 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
               column.getIsPinned() && 'bg-muted/50'
             )}
           >
-            {key}
+            {displayName}
             <ArrowUpDown className='ml-2 h-4 w-4' />
           </Button>
         )
       },
       cell: ({row}) => {
+        // Handle nested properties like CustomerRef.name
+        if (key.includes('.')) {
+          const [parent, child] = key.split('.')
+          const parentObj = row.original[parent] as
+            | Record<string, any>
+            | undefined
+          const value = parentObj && parentObj[child]
+          return (
+            <div className='truncate max-w-[200px]'>
+              {value?.toString() || '—'}
+            </div>
+          )
+        }
+
         const value = row.getValue(key)
         return (
           <div className='truncate max-w-[200px]'>
@@ -286,7 +319,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
     ]
 
     return [...dataColumns, ...actionColumns]
-  }, [columnKeys])
+  }, [columnKeys, columnConfig])
 
   const table = useReactTable({
     data,
@@ -478,7 +511,7 @@ export default function EntityTable({entity, initialData}: EntityTableProps) {
 
       {/* Quick View Modal */}
       <Dialog open={isQuickViewOpen} onOpenChange={setIsQuickViewOpen}>
-        <DialogContent className='max-w-3xl max-h-[80vh] overflow-y-auto'>
+        <DialogContent className='max-w-3xl max-h-[80vh] overflow-y-auto bg-black'>
           <DialogHeader>
             <DialogTitle>
               {entity.slice(0, -1).charAt(0).toUpperCase() +

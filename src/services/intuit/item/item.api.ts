@@ -38,6 +38,26 @@ export async function findItems(params: QueryParams = {}) {
 }
 
 /**
+ * Gets items of a specific type from QuickBooks
+ * @param type - The type of items to fetch (Service, Inventory, NonInventory, etc.)
+ * @param params - Additional query parameters and filters
+ * @returns Promise with the list of items matching the type
+ */
+export async function getItemsByType(
+	type: "Service" | "Inventory" | "NonInventory" | "Group",
+	params: QueryParams = {},
+) {
+	const queryString = buildQueryString(params);
+	const query = `select * from Item where Type='${type}'${queryString ? ` AND ${queryString.substring(1)}` : ""}`;
+
+	console.log("🚀 ~ getItemsByType ~ query:", query);
+
+	return quickbooksRequest<{ QueryResponse: { Item: Item[] } }>(
+		`query?query=${encodeURIComponent(query)}`,
+	);
+}
+
+/**
  * Updates an existing item in QuickBooks
  * @param itemData - Item data with Id and SyncToken
  * @returns Promise with the updated item

@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {
   useFieldArray,
   Controller,
@@ -17,8 +17,10 @@ import type {EstimateFormData} from '@/components/estimates/EstimateForm'
 import type {Item} from '@/services/intuit/item/item.types'
 import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
-import {findItems} from '@/services/intuit/item/item.api'
-import {Switch} from '@/components/ui/switch'
+import {getItemsByType} from '@/services/intuit/item/item.api'
+
+// Special flag to identify custom items - this should be removed before QuickBooks submission
+export const CUSTOM_ITEM_FLAG = 'custom-item-flag'
 
 interface LineItemsEditorProps {
   control: Control<EstimateFormData>
@@ -39,7 +41,11 @@ export function LineItemsEditor({
   const [items, setItems] = useState<Item[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [manualEntryModes, setManualEntryModes] = useState<boolean[]>([])
+  const [customItemIndices, setCustomItemIndices] = useState<number[]>([])
+  // Use an array to track each line item's selected type
+  const [lineItemTypes, setLineItemTypes] = useState<
+    ('Service' | 'Inventory')[]
+  >([])
 
   // Fetch items from QuickBooks API
   useEffect(() => {
@@ -47,15 +53,21 @@ export function LineItemsEditor({
       setIsLoading(true)
       setError(null)
       try {
-        const response = await findItems()
+        // Fetch both Service and Inventory items
+        const serviceResponse = await getItemsByType('Service')
+        const inventoryResponse = await getItemsByType('Inventory')
 
-        console.log('🚀 ~ fetchItems ~ response:', response)
+        console.log('🚀 ~ fetchItems ~ serviceResponse:', serviceResponse)
+        console.log('🚀 ~ fetchItems ~ inventoryResponse:', inventoryResponse)
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch items')
-        }
-        // const data = await response.json()
-        setItems(response.Items || [])
+        // Extract items from both responses and combine them
+        const serviceItems = serviceResponse.QueryResponse?.Item || []
+        const inventoryItems = inventoryResponse.QueryResponse?.Item || []
+
+        // Combine both arrays
+        const combinedItems = [...serviceItems, ...inventoryItems]
+
+        setItems(combinedItems)
       } catch (err) {
         console.error('Error fetching items:', err)
         setError('Failed to load inventory items. Please try again.')
@@ -67,12 +79,44 @@ export function LineItemsEditor({
     fetchItems()
   }, [])
 
-  // Initialize manual entry modes array when fields change
+  // Initialize arrays when fields change
   useEffect(() => {
-    if (fields.length !== manualEntryModes.length) {
-      setManualEntryModes(fields.map(() => false))
+    if (fields.length !== customItemIndices.length) {
+      // Check if we need to add or remove entries from the customItemIndices array
+      if (fields.length > customItemIndices.length) {
+        // Add new entries initialized to -1 (not custom)
+        setCustomItemIndices((prev) => [
+          ...prev,
+          ...Array(fields.length - prev.length).fill(-1),
+        ])
+      } else {
+        // Remove entries that no longer exist
+        setCustomItemIndices((prev) => prev.slice(0, fields.length))
+      }
     }
-  }, [fields.length, manualEntryModes.length])
+
+    // Initialize line item types array
+    if (fields.length !== lineItemTypes.length) {
+      if (fields.length > lineItemTypes.length) {
+        // Add new entries with default type "Service"
+        setLineItemTypes((prev) => [
+          ...prev,
+          ...Array(fields.length - prev.length).fill('Service'),
+        ])
+      } else {
+        // Remove entries that no longer exist
+        setLineItemTypes((prev) => prev.slice(0, fields.length))
+      }
+    }
+  }, [fields, fields.length, customItemIndices.length, lineItemTypes.length])
+
+  // Expose method to check which line items are custom
+  // This can be called by parent component before submission to QuickBooks
+  const getCustomItemIndices = useCallback(() => {
+    return customItemIndices
+      .map((value, index) => (value === index ? index : -1))
+      .filter((index) => index !== -1)
+  }, [customItemIndices])
 
   // Helper to reset a line item when type changes
   const getDefaultLine = (type: EstimateLine['DetailType']): EstimateLine => {
@@ -113,18 +157,37 @@ export function LineItemsEditor({
     idx: number,
     newType: EstimateLine['DetailType']
   ) => {
+    // Reset custom item flag when type changes
+    setCustomItemIndices((prev) => {
+      const newIndices = [...prev]
+      newIndices[idx] = -1
+      return newIndices
+    })
+
     update(idx, getDefaultLine(newType))
   }
 
   const addLineItem = () => {
     append(getDefaultLine('SalesItemLineDetail'))
-    setManualEntryModes((prev) => [...prev, false])
   }
 
   const removeLineItem = (idx: number) => {
     if (fields.length <= 1) return
     remove(idx)
-    setManualEntryModes((prev) => prev.filter((_, i) => i !== idx))
+
+    // Update custom item indices array
+    setCustomItemIndices((prev) => {
+      const newIndices = [...prev]
+      newIndices.splice(idx, 1)
+      return newIndices
+    })
+
+    // Update line item types array
+    setLineItemTypes((prev) => {
+      const newTypes = [...prev]
+      newTypes.splice(idx, 1)
+      return newTypes
+    })
   }
 
   // Format amount as currency
@@ -137,12 +200,15 @@ export function LineItemsEditor({
 
   // Update amount when quantity or unit price changes for SalesItemLineDetail
   const updateSalesItemAmount = (idx: number) => {
-    const type = getValues(`${name}.${idx}.DetailType`)
+    const type = getValues(`${name}.${idx}.DetailType` as any)
     if (type !== 'SalesItemLineDetail') return
 
     const unitPrice =
-      Number(getValues(`${name}.${idx}.SalesItemLineDetail.UnitPrice`)) || 0
-    const qty = Number(getValues(`${name}.${idx}.SalesItemLineDetail.Qty`)) || 0
+      Number(
+        getValues(`${name}.${idx}.SalesItemLineDetail.UnitPrice` as any)
+      ) || 0
+    const qty =
+      Number(getValues(`${name}.${idx}.SalesItemLineDetail.Qty` as any)) || 0
     const amount = unitPrice * qty
 
     setValue(`${name}.${idx}.Amount` as any, amount)
@@ -150,7 +216,36 @@ export function LineItemsEditor({
 
   // Handle selection of an item from the dropdown
   const handleItemSelect = (idx: number, itemId: string) => {
+    // Special case for "custom-item" which indicates user wants to add a custom item
+    if (itemId === 'custom-item') {
+      // Set this index as a custom item
+      setCustomItemIndices((prev) => {
+        const newIndices = [...prev]
+        newIndices[idx] = idx
+        return newIndices
+      })
+
+      // Set a special flag value for custom items
+      // This will be detected and handled by the form submission process
+      setValue(
+        `${name}.${idx}.SalesItemLineDetail.ItemRef.value` as any,
+        CUSTOM_ITEM_FLAG
+      )
+      setValue(`${name}.${idx}.SalesItemLineDetail.ItemRef.name` as any, '')
+      setValue(`${name}.${idx}.Description` as any, '')
+      setValue(`${name}.${idx}.SalesItemLineDetail.UnitPrice` as any, 0)
+      return
+    }
+
+    // Regular item selection
     const selectedItem = items.find((item) => item.Id === itemId)
+
+    // Reset custom item flag
+    setCustomItemIndices((prev) => {
+      const newIndices = [...prev]
+      newIndices[idx] = -1
+      return newIndices
+    })
 
     if (selectedItem) {
       // Update the line item with selected item details
@@ -176,28 +271,17 @@ export function LineItemsEditor({
     }
   }
 
-  // Toggle between manual entry and dropdown selection
-  const toggleManualEntry = (idx: number) => {
-    setManualEntryModes((prev) => {
-      const newModes = [...prev]
-      newModes[idx] = !newModes[idx]
-      return newModes
+  // Handle changing the item type for a specific line item
+  const handleItemTypeChange = (idx: number, type: 'Service' | 'Inventory') => {
+    setLineItemTypes((prev) => {
+      const newTypes = [...prev]
+      newTypes[idx] = type
+      return newTypes
     })
 
-    // Clear item reference when switching to manual entry
-    if (!manualEntryModes[idx]) {
-      setValue(
-        `${name}.${idx}.SalesItemLineDetail.ItemRef.value` as any,
-        'manual-entry'
-      )
-      setValue(
-        `${name}.${idx}.SalesItemLineDetail.ItemRef.name` as any,
-        'Manual Entry'
-      )
-    } else {
-      setValue(`${name}.${idx}.SalesItemLineDetail.ItemRef.value` as any, '')
-      setValue(`${name}.${idx}.SalesItemLineDetail.ItemRef.name` as any, '')
-    }
+    // Clear the selected item when changing item type
+    setValue(`${name}.${idx}.SalesItemLineDetail.ItemRef.value` as any, '')
+    setValue(`${name}.${idx}.SalesItemLineDetail.ItemRef.name` as any, '')
   }
 
   return (
@@ -216,6 +300,7 @@ export function LineItemsEditor({
           className='border rounded-md p-4 mb-2 bg-black text-white shadow-sm relative'
         >
           <div className='flex w-full gap-4 mb-2 justify-evenly'>
+            {/* DetailType selection (Sales Item / Group) */}
             {(() => {
               const typeId = `${name}-${idx}-type`
               return (
@@ -252,30 +337,59 @@ export function LineItemsEditor({
               switch (type) {
                 case 'SalesItemLineDetail':
                   return (
-                    <div className='grid grid-cols-1 md:grid-cols-4 gap-3'>
+                    <div className='grid grid-cols-1 md:grid-cols-5 gap-3'>
+                      {/* Item Type Selector (Service/Product) */}
+                      <div className='flex flex-col'>
+                        <Label className='mb-2 block'>Item Type</Label>
+                        <div className='flex'>
+                          <button
+                            type='button'
+                            className={`px-2 py-1 text-xs rounded-l ${
+                              lineItemTypes[idx] === 'Service'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-800'
+                            }`}
+                            onClick={() => handleItemTypeChange(idx, 'Service')}
+                          >
+                            Services
+                          </button>
+                          <button
+                            type='button'
+                            className={`px-2 py-1 text-xs rounded-r ${
+                              lineItemTypes[idx] === 'Inventory'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-800'
+                            }`}
+                            onClick={() =>
+                              handleItemTypeChange(idx, 'Inventory')
+                            }
+                          >
+                            Products
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Item Selection */}
                       {(() => {
                         const itemId = `${name}-${idx}-item`
+                        const isCustomItem = customItemIndices[idx] === idx
+
+                        // Filter items by the selected type for this line item
+                        const filteredItems = items.filter((item) =>
+                          lineItemTypes[idx] === 'Service'
+                            ? item.Type === 'Service'
+                            : item.Type === 'Inventory' ||
+                              item.Type === 'NonInventory'
+                        )
+
                         return (
                           <div className='flex flex-col'>
-                            <div className='flex justify-between mb-2'>
-                              <Label htmlFor={itemId}>Item</Label>
-                              <div className='flex items-center space-x-2'>
-                                <Label
-                                  htmlFor={`manual-entry-${idx}`}
-                                  className='text-sm'
-                                >
-                                  Manual Entry
-                                </Label>
-                                <Switch
-                                  className='bg-white line-item-toggle'
-                                  id={`manual-entry-${idx}`}
-                                  checked={manualEntryModes[idx] || false}
-                                  onCheckedChange={() => toggleManualEntry(idx)}
-                                />
-                              </div>
-                            </div>
+                            <Label className='mb-2 block' htmlFor={itemId}>
+                              Item
+                            </Label>
 
-                            {manualEntryModes[idx] ? (
+                            {isCustomItem ? (
+                              // Show text inputs for custom item
                               <div className='space-y-2'>
                                 <Controller
                                   control={control}
@@ -284,7 +398,8 @@ export function LineItemsEditor({
                                   }
                                   render={({field}) => (
                                     <Input
-                                      placeholder='Item Name'
+                                      id={itemId}
+                                      placeholder='Custom Item Name'
                                       className='w-full px-2 py-1 border border-gray-300 rounded-md'
                                       value={field.value || ''}
                                       onChange={field.onChange}
@@ -305,6 +420,7 @@ export function LineItemsEditor({
                                 />
                               </div>
                             ) : (
+                              // Show dropdown for regular item selection
                               <Controller
                                 control={control}
                                 name={
@@ -321,7 +437,10 @@ export function LineItemsEditor({
                                     }}
                                   >
                                     <option value=''>Select an item</option>
-                                    {items.map((item) => (
+                                    <option value='custom-item'>
+                                      + Add custom item
+                                    </option>
+                                    {filteredItems.map((item) => (
                                       <option key={item.Id} value={item.Id}>
                                         {item.Name}
                                       </option>
@@ -330,9 +449,18 @@ export function LineItemsEditor({
                                 )}
                               />
                             )}
+
+                            {isCustomItem && (
+                              <div className='mt-1 text-amber-400 text-xs'>
+                                Custom item (will be recognized but not saved in
+                                QuickBooks)
+                              </div>
+                            )}
                           </div>
                         )
                       })()}
+
+                      {/* Quantity */}
                       {(() => {
                         const qtyId = `${name}-${idx}-qty`
                         return (
@@ -367,6 +495,8 @@ export function LineItemsEditor({
                           </div>
                         )
                       })()}
+
+                      {/* Unit Price */}
                       {(() => {
                         const unitPriceId = `${name}-${idx}-unitprice`
                         return (
@@ -405,6 +535,8 @@ export function LineItemsEditor({
                           </div>
                         )
                       })()}
+
+                      {/* Amount */}
                       {(() => {
                         const amountId = `${name}-${idx}-amount`
                         return (
@@ -644,4 +776,22 @@ export function LineItemsEditor({
       )}
     </div>
   )
+}
+
+// Export a helper function to clean up the estimate form data
+// before submitting to QuickBooks
+export function cleanEstimateLineItems(lineItems: any[]) {
+  return lineItems.map((item) => {
+    // Create a deep copy to avoid modifying the original
+    const cleanedItem = JSON.parse(JSON.stringify(item))
+
+    // Check for custom items (has our special flag)
+    if (cleanedItem.SalesItemLineDetail?.ItemRef?.value === CUSTOM_ITEM_FLAG) {
+      // For custom items, remove the ItemRef property entirely so QuickBooks
+      // doesn't try to validate it as a reference
+      delete cleanedItem.SalesItemLineDetail.ItemRef
+    }
+
+    return cleanedItem
+  })
 }

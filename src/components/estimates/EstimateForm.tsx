@@ -1,7 +1,13 @@
 'use client'
 
 import {useState, useEffect} from 'react'
-import {useForm, Controller, useWatch} from 'react-hook-form'
+import {
+  useForm,
+  Controller,
+  useWatch,
+  type UseFormGetValues,
+  type UseFormSetValue,
+} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {z} from 'zod'
 import {useRouter} from 'next/navigation'
@@ -10,7 +16,10 @@ import type {
   Estimate,
   EstimateLine,
 } from '@/services/intuit/estimate/estimate.types'
-import {LineItemsEditor} from '@/components/estimates/LineItemsEditor'
+import {
+  LineItemsEditor,
+  cleanEstimateLineItems,
+} from '@/components/estimates/LineItemsEditor'
 import {createEstimateAction} from '@/actions/estimateActions'
 import {CreateCustomerDialog} from './CreateCustomerDialog'
 import {
@@ -25,13 +34,14 @@ import {
 
 import {Button} from '@/components/ui/button'
 import {createEstimate} from '@/services/intuit/estimate/estimate.api'
+import {toast} from 'sonner'
 
 const salesItemLineDetailSchema = z.object({
   DetailType: z.literal('SalesItemLineDetail'),
   Amount: z.number().min(0, 'Amount must be a positive number'),
   SalesItemLineDetail: z.object({
     ItemRef: z.object({
-      value: z.string().min(1, 'Item is required'),
+      value: z.string(), // Allow any string for now, we'll validate before submission
       name: z.string().optional(),
     }),
     TaxCodeRef: z
@@ -248,39 +258,71 @@ export function EstimateForm({
   function transformFormDataToEstimate(data: EstimateFormData): Estimate {
     console.log('🚀 ~ transformFormDataToEstimate ~ data:', data)
 
+    // Create a deep copy to avoid mutating the original data
+    const processedData = JSON.parse(JSON.stringify(data))
+
+    // Process line items to ensure valid ItemRef.value
+    if (processedData.Line) {
+      processedData.Line.forEach((line: any) => {
+        if (
+          line.DetailType === 'SalesItemLineDetail' &&
+          (!line.SalesItemLineDetail.ItemRef.value ||
+            line.SalesItemLineDetail.ItemRef.value === 'manual-entry')
+        ) {
+          // For manual entries or empty values, use a placeholder ID or generate one
+          // You may need to adjust this based on your QuickBooks requirements
+          const timestamp = Date.now().toString()
+          line.SalesItemLineDetail.ItemRef.value = `0` // Using "0" as a placeholder
+        }
+      })
+    }
+
     const estimateData: Estimate = {
-      CustomerRef: data.CustomerRef,
-      Line: data.Line as EstimateLine[],
+      CustomerRef: processedData.CustomerRef,
+      Line: processedData.Line as EstimateLine[],
     }
 
     // Only add non-empty optional fields
-    if (data.DocNumber) estimateData.DocNumber = data.DocNumber
-    if (data.TxnDate) estimateData.TxnDate = data.TxnDate
-    if (data.PrivateNote) estimateData.PrivateNote = data.PrivateNote
-    if (data.Id) estimateData.Id = data.Id
-    if (data.SyncToken) estimateData.SyncToken = data.SyncToken
+    if (processedData.DocNumber)
+      estimateData.DocNumber = processedData.DocNumber
+    if (processedData.TxnDate) estimateData.TxnDate = processedData.TxnDate
+    if (processedData.PrivateNote)
+      estimateData.PrivateNote = processedData.PrivateNote
+    if (processedData.Id) estimateData.Id = processedData.Id
+    if (processedData.SyncToken)
+      estimateData.SyncToken = processedData.SyncToken
 
-    if (data.BillAddr && Object.values(data.BillAddr).some((v) => v)) {
-      estimateData.BillAddr = data.BillAddr
+    if (
+      processedData.BillAddr &&
+      Object.values(processedData.BillAddr).some((v) => v)
+    ) {
+      estimateData.BillAddr = processedData.BillAddr
     }
 
-    if (data.ShipAddr && Object.values(data.ShipAddr).some((v) => v)) {
-      estimateData.ShipAddr = data.ShipAddr
+    if (
+      processedData.ShipAddr &&
+      Object.values(processedData.ShipAddr).some((v) => v)
+    ) {
+      estimateData.ShipAddr = processedData.ShipAddr
     }
 
-    if (data.BillEmail?.Address) {
-      estimateData.BillEmail = data.BillEmail
+    if (processedData.BillEmail?.Address) {
+      estimateData.BillEmail = processedData.BillEmail
     }
 
-    if (data.CurrencyRef?.value) {
-      estimateData.CurrencyRef = data.CurrencyRef
+    if (processedData.CurrencyRef?.value) {
+      estimateData.CurrencyRef = processedData.CurrencyRef
     }
 
-    if (data.DueDate) estimateData.DueDate = data.DueDate
-    if (data.ExpirationDate) estimateData.ExpirationDate = data.ExpirationDate
-    if (data.TxnStatus) estimateData.TxnStatus = data.TxnStatus
-    if (data.PrintStatus) estimateData.PrintStatus = data.PrintStatus
-    if (data.EmailStatus) estimateData.EmailStatus = data.EmailStatus
+    if (processedData.DueDate) estimateData.DueDate = processedData.DueDate
+    if (processedData.ExpirationDate)
+      estimateData.ExpirationDate = processedData.ExpirationDate
+    if (processedData.TxnStatus)
+      estimateData.TxnStatus = processedData.TxnStatus
+    if (processedData.PrintStatus)
+      estimateData.PrintStatus = processedData.PrintStatus
+    if (processedData.EmailStatus)
+      estimateData.EmailStatus = processedData.EmailStatus
 
     return estimateData
   }
@@ -377,10 +419,18 @@ export function EstimateForm({
       const estimateData = transformFormDataToEstimate(formData)
       console.log('🚀 ~ onSubmit ~ estimateData:', estimateData)
 
+      // Clean up any custom line items before submitting to QuickBooks
+      if (estimateData.Line) {
+        estimateData.Line = cleanEstimateLineItems(estimateData.Line)
+      }
+
       const response = await createEstimate(estimateData)
       console.log('🚀 ~ API response:', response)
 
       if (response?.Id) {
+        // Show success toast notification
+        toast.success('Estimate created successfully!')
+        // Redirect to detail page
         router.push(`/dashboard/estimates/${response.Id}`)
         return {success: true, data: response}
       }

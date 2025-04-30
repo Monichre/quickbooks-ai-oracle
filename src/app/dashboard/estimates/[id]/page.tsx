@@ -29,7 +29,7 @@ export default async function EstimateDetailPage({
           </div>
         </div>
 
-        <div className='bg-white shadow rounded-lg p-6 mb-6'>
+        <div className='bg-black shadow rounded-lg p-6 mb-6'>
           <div className='grid grid-cols-2 gap-6'>
             <div>
               <h2 className='text-xl font-semibold mb-2'>
@@ -60,7 +60,7 @@ export default async function EstimateDetailPage({
           </div>
         </div>
 
-        <div className='bg-white shadow rounded-lg overflow-hidden'>
+        <div className='bg-black shadow rounded-lg overflow-hidden'>
           <h2 className='text-xl font-semibold p-6 border-b'>Line Items</h2>
           <table className='min-w-full divide-y divide-gray-200'>
             <thead className='bg-gray-50'>
@@ -82,7 +82,7 @@ export default async function EstimateDetailPage({
                 </th>
               </tr>
             </thead>
-            <tbody className='bg-white divide-y divide-gray-200'>
+            <tbody className='bg-black divide-y divide-gray-200'>
               {estimate.Line?.map(
                 (line, index) =>
                   line.DetailType === 'SalesItemLineDetail' && (
@@ -122,7 +122,7 @@ export default async function EstimateDetailPage({
         </div>
 
         {estimate.PrivateNote && (
-          <div className='bg-white shadow rounded-lg p-6 mt-6'>
+          <div className='bg-black shadow rounded-lg p-6 mt-6'>
             <h2 className='text-xl font-semibold mb-2'>Notes</h2>
             <p>{estimate.PrivateNote}</p>
           </div>

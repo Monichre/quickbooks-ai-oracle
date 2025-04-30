@@ -9,6 +9,26 @@ const EntityTable = dynamic(() => import('../[entity]/entity-table'), {
 export default async function EstimatesPage() {
   const estimatesResponse = await findEstimates({maxResults: 100})
 
+  // Define columns to display for estimates
+  const columnConfig = {
+    selectedColumns: [
+      'TxnDate', // Date
+      'DocNumber', // Number
+      'Id', // ID
+      'CustomerRef.name', // Customer name
+      'TotalAmt', // Amount
+      'TxnStatus', // Status
+    ],
+    columnLabels: {
+      TxnDate: 'Date',
+      DocNumber: 'Number',
+      Id: 'ID',
+      'CustomerRef.name': 'Customer',
+      TotalAmt: 'Amount',
+      TxnStatus: 'Status',
+    },
+  }
+
   return (
     <div>
       <div className='flex justify-between items-center mb-6'>
@@ -20,7 +40,11 @@ export default async function EstimatesPage() {
           Create Estimate
         </Link>
       </div>
-      <EntityTable entity='estimates' initialData={estimatesResponse} />
+      <EntityTable
+        entity='estimates'
+        initialData={estimatesResponse}
+        columnConfig={columnConfig}
+      />
     </div>
   )
 }

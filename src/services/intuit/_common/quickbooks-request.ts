@@ -1,150 +1,211 @@
+"use server";
 import { refreshTokensIfNeeded } from "../auth";
+import {
+	QuickbooksConfigError,
+	QuickbooksAuthError,
+	QuickbooksApiError,
+} from "./quickbooks-errors";
 
-// Validate company ID before any requests
-// if (!companyId) {
-// 	throw new Error("QuickBooks company ID not found in environment variables");
-// }
-
-/**
- * Makes authenticated requests to the QuickBooks API
- * @param endpoint - The API endpoint to call
- * @param method - HTTP method (GET, POST, etc)
- * @param data - Optional data to send with the request
- * @returns Promise with the API response
- */
+// Type for object-based arguments
 export type QuickbooksRequestArgs<D = Record<string, unknown>> = {
 	endpoint: string;
 	method?: "GET" | "POST" | "PUT" | "DELETE";
 	data?: D;
+	timeout?: number; // Added timeout parameter
 };
 
+// Environment validation
+const validateEnvironment = () => {
+	const {
+		NEXT_PUBLIC_INTUIT_API_BASE_URL,
+
+		INTUIT_BASE_URL,
+		INTUIT_COMPANY_ID: COMPANY_ID,
+		QB_ENVIRONMENT = "sandbox",
+	} = process.env;
+
+	console.log("🚀 ~ validateEnvironment ~ process.env:", process.env);
+
+	const BASE_URL =
+		process.env.NEXT_PUBLIC_INTUIT_API_BASE_URL || process.env.INTUIT_BASE_URL;
+
+	console.log("🚀 ~ validateEnvironment ~ BASE_URL:", BASE_URL);
+
+	if (!BASE_URL) {
+		throw new QuickbooksConfigError(
+			"Environment variable NEXT_PUBLIC_INTUIT_API_BASE_URL is required",
+		);
+	}
+
+	if (!COMPANY_ID) {
+		throw new QuickbooksConfigError(
+			"Environment variable INTUIT_COMPANY_ID is required",
+		);
+	}
+
+	return { BASE_URL, COMPANY_ID, QB_ENVIRONMENT };
+};
+
+// Default timeout in ms
+const DEFAULT_TIMEOUT = 30000;
+
+// Parse API response with improved error handling
+const parseResponse = async <T>(response: Response): Promise<T> => {
+	console.log("🚀 ~ response:", response);
+
+	// Check status first before attempting to parse
+	if (!response.ok) {
+		const errorText = await response.text();
+
+		console.log("🚀 ~ errorText:", errorText);
+
+		let errorData: unknown;
+
+		try {
+			// Try to parse error body if possible
+			errorData = JSON.parse(errorText);
+
+			console.log("🚀 ~ errorData:", errorData);
+		} catch {
+			// If error body isn't valid JSON, use text directly
+			errorData = errorText;
+
+			console.log("🚀 ~ errorData:", errorData);
+		}
+
+		throw new QuickbooksApiError(
+			response.status,
+			response.statusText,
+			errorData,
+		);
+	}
+
+	// Only parse successful responses
+	const text = await response.text();
+
+	console.log("🚀 ~ text:", text);
+
+	try {
+		const parsedText = JSON.parse(text) as T;
+
+		console.log("🚀 ~ parsedText:", parsedText);
+
+		return parsedText;
+	} catch (err) {
+		throw new Error(
+			`Invalid JSON response from QuickBooks API: ${text.substring(0, 100)}...`,
+		);
+	}
+};
+
+// Function overloads to support all calling patterns
+// Overload 1: Full positional parameters with timeout
 export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	endpoint: string,
-	method = "GET",
+	method: "GET" | "POST" | "PUT" | "DELETE",
+	data: D,
+	timeout?: number,
+): Promise<T>;
+
+// Overload 2: Endpoint and data (common case)
+export async function quickbooksRequest<T, D = Record<string, unknown>>(
+	endpoint: string,
+	data: D,
+): Promise<T>;
+
+// Overload 3: Just endpoint (for GET requests)
+export async function quickbooksRequest<T>(endpoint: string): Promise<T>;
+
+// Overload 4: Object parameter
+export async function quickbooksRequest<T, D = Record<string, unknown>>(
+	args: QuickbooksRequestArgs<D>,
+): Promise<T>;
+
+// Implementation that handles all overloads
+export async function quickbooksRequest<T, D = Record<string, unknown>>(
+	endpointOrArgs: string | QuickbooksRequestArgs<D>,
+	methodOrData?: "GET" | "POST" | "PUT" | "DELETE" | D,
 	data?: D,
+	timeout?: number,
 ): Promise<T> {
-	// Check for required environment variables
-	if (!process.env.QB_ENVIRONMENT) {
-		console.warn("QB_ENVIRONMENT is not set. Defaulting to 'sandbox'.");
+	let endpoint: string;
+	let requestMethod: "GET" | "POST" | "PUT" | "DELETE";
+	let requestData: D | undefined;
+	let requestTimeout: number = DEFAULT_TIMEOUT;
+
+	if (typeof endpointOrArgs === "string") {
+		endpoint = endpointOrArgs;
+
+		// Handle the case where the second parameter is the data (not a method)
+		if (methodOrData && typeof methodOrData !== "string") {
+			requestMethod = "GET"; // Default to GET
+			requestData = methodOrData as D;
+		} else {
+			requestMethod =
+				(methodOrData as "GET" | "POST" | "PUT" | "DELETE") || "GET";
+			requestData = data;
+		}
+
+		// Use provided timeout or default
+		if (timeout !== undefined) {
+			requestTimeout = timeout;
+		}
+	} else {
+		// Using object parameter
+		endpoint = endpointOrArgs.endpoint;
+		requestMethod = endpointOrArgs.method || "GET";
+		requestData = endpointOrArgs.data;
+
+		// Use provided timeout or default
+		if (endpointOrArgs.timeout !== undefined) {
+			requestTimeout = endpointOrArgs.timeout;
+		}
 	}
 
-	console.log("🚀 ~ process.env.QB_COMPANY_ID:", process.env.QB_COMPANY_ID);
-	console.log(
-		"🚀 ~ process.env.INTUIT_COMPANY_ID:",
-		process.env.INTUIT_COMPANY_ID,
-	);
-	if (!process.env.QB_COMPANY_ID && !process.env.INTUIT_COMPANY_ID) {
-		console.error(
-			"Missing company ID! Please set QB_COMPANY_ID or INTUIT_SANDBOX_COMPANY_ID",
-		);
-	}
+	const env = validateEnvironment();
 
-	// Base URL for QuickBooks API
-	if (
-		!process.env.NEXT_PUBLIC_INTUIT_API_BASE_URL ||
-		!process.env.INTUIT_API_BASE_URL ||
-		!process.env.INTUIT_BASE_URL ||
-		!process.env.NEXT_PUBLIC_INTUIT_BASE_URL
-	) {
-		console.error(
-			"Missing INTUIT_BASE_URL! Please set INTUIT_BASE_URL environment variable",
-		);
-		// throw new Error("INTUIT_BASE_URL environment variable is required");
-	}
-	if (
-		!process.env.NEXT_PUBLIC_INTUIT_API_BASE_URL ||
-		!process.env.INTUIT_API_BASE_URL
-	) {
-		console.error(
-			"Missing INTUIT_BASE_URL! Please set INTUIT_BASE_URL environment variable",
-		);
-		// throw new Error("INTUIT_BASE_URL environment variable is required");
-	}
-	const companyId = process.env.INTUIT_COMPANY_ID;
-	const apiRoot = `${process.env.NEXT_PUBLIC_INTUIT_API_BASE_URL}/v3/company/${companyId}`;
-
-	// Refresh tokens if needed
+	// Ensure tokens are fresh
 	const tokens = await refreshTokensIfNeeded();
-
 	if (!tokens) {
-		throw new Error("Not authenticated with QuickBooks");
+		throw new QuickbooksAuthError("Not authenticated with QuickBooks");
 	}
 
-	// Full API URL
-	const url = `${apiRoot}/${endpoint}`;
+	const API_ROOT = `${env.BASE_URL}/v3/company/${env.COMPANY_ID}`;
+	const url = `${API_ROOT}/${endpoint}`;
 
-	console.log(`Making QuickBooks API request to: ${url}`);
-	console.log(`Using token: ${tokens.access_token.substring(0, 10)}...`);
-	console.log(`Company ID: ${companyId}`);
-	console.log(`Environment: ${process.env.QB_ENVIRONMENT || "undefined"}`);
-
-	// API request options
-	const options: RequestInit = {
-		method,
-		headers: {
-			Authorization: `Bearer ${tokens.access_token}`,
-			Accept: "application/json, text/plain, */*",
-			"Content-Type": method === "GET" ? "text/plain" : "application/json",
-		},
+	// Build request options
+	const headers: Record<string, string> = {
+		Authorization: `Bearer ${tokens.access_token}`,
+		"Content-Type": "application/json",
+		Accept: "application/json",
 	};
 
-	if (data && method !== "GET") {
-		// Add body data for non-GET requests
-		options.body = JSON.stringify(data);
-	}
-	console.log("🚀 ~ options.body:", options.body);
+	// AbortController for timeout
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
 
-	// Make the request
-	console.log("🚀 ~ Making request to:", url);
-	console.log("🚀 ~ With options:", {
-		method: options.method,
-		headers: options.headers,
-		body: options.body ? JSON.parse(options.body) : undefined
-	});
-	
-	let response;
 	try {
-		response = await fetch(url, options);
-		console.log(`🚀 ~${endpoint} response status:`, response.status);
-		console.log(`🚀 ~${endpoint} response headers:`, Object.fromEntries(response.headers.entries()));
-	} catch (err) {
-		console.error("🚀 ~ Network error:", err);
-		throw new Error(`Network error connecting to QuickBooks API: ${err.message}`);
-	}
-	
-	let res;
-	try {
-		const textResponse = await response.text();
-		console.log(`🚀 ~${endpoint} raw response:`, textResponse.substring(0, 500) + (textResponse.length > 500 ? '...' : ''));
-		
-		try {
-			res = JSON.parse(textResponse);
-			console.log("🚀 ~ parsed response:", res);
-		} catch (parseErr) {
-			console.error("🚀 ~ JSON parse error:", parseErr);
-			throw new Error(`Invalid JSON response from QuickBooks API: ${textResponse.substring(0, 100)}...`);
-		}
-	} catch (err) {
-		console.error("🚀 ~ Error reading response body:", err);
-		throw new Error(`Error reading QuickBooks API response: ${err.message}`);
-	}
-
-	if (!response.ok) {
-		// Handle non-successful responses
-		console.error("QuickBooks API error details:", {
-			status: response.status,
-			statusText: response.statusText,
-			url,
-			errorData: res,
-			headers: Object.fromEntries(response.headers.entries()),
+		const response = await fetch(url, {
+			method: requestMethod,
+			headers,
+			body:
+				requestMethod !== "GET" && requestData
+					? JSON.stringify(requestData)
+					: undefined,
+			signal: controller.signal,
 		});
 
-		throw new Error(
-			`QuickBooks API error: ${response.status} ${response.statusText}`,
-			{ cause: res },
-		);
-	}
+		console.log("🚀 ~ response:", response);
 
-	// Parse and return the JSON response
-	return res;
+		return await parseResponse<T>(response);
+	} catch (error) {
+		if (error instanceof DOMException && error.name === "AbortError") {
+			throw new Error(
+				`QuickBooks API request timed out after ${requestTimeout}ms`,
+			);
+		}
+		throw error;
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
