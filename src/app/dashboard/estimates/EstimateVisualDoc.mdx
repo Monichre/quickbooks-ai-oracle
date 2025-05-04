@@ -1,0 +1,556 @@
+
+```tsx
+import React, { useState } from 'react';
+
+const QBOEstimateAPIVisualization = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [expandedSections, setExpandedSections] = useState({
+    required: true,
+    conditional: false,
+    optional: false
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections({
+      ...expandedSections,
+      [section]: !expandedSections[section]
+    });
+  };
+
+  return (
+    <div className="flex flex-col p-4 max-w-full bg-slate-50 rounded-lg">
+      <h1 className="text-2xl font-bold text-blue-800 mb-4">QuickBooks Online Estimate API</h1>
+      
+      {/* Navigation Tabs */}
+      <div className="flex flex-wrap mb-6 border-b border-gray-200 gap-1">
+        <button 
+          className={`px-4 py-2 rounded-t-lg font-medium ${activeTab === 'overview' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          onClick={() => setActiveTab('overview')}>
+          Overview
+        </button>
+        <button 
+          className={`px-4 py-2 rounded-t-lg font-medium ${activeTab === 'object' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          onClick={() => setActiveTab('object')}>
+          Estimate Object
+        </button>
+        <button 
+          className={`px-4 py-2 rounded-t-lg font-medium ${activeTab === 'operations' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          onClick={() => setActiveTab('operations')}>
+          API Operations
+        </button>
+        <button 
+          className={`px-4 py-2 rounded-t-lg font-medium ${activeTab === 'flow' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          onClick={() => setActiveTab('flow')}>
+          Workflow
+        </button>
+      </div>
+      
+      {/* Content Area */}
+      <div className="bg-white p-4 rounded-lg shadow">
+        {activeTab === 'overview' && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-blue-700">What is an Estimate?</h2>
+            <p className="text-gray-700">
+              An Estimate represents a proposal for a financial transaction from a business to a customer for 
+              goods or services, including proposed pricing. It's essentially a quote that can later be converted 
+              to an invoice.
+            </p>
+            
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-semibold text-blue-800 mb-2">Key Features</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Create and send estimates to customers</li>
+                <li>Track estimate status (pending, accepted, closed, rejected)</li>
+                <li>Convert estimates to invoices</li>
+                <li>Apply discounts and taxes</li>
+                <li>Include multiple line items with descriptions</li>
+                <li>Customize billing and shipping addresses</li>
+              </ul>
+            </div>
+            
+            <div className="mt-6 flex flex-col md:flex-row gap-4">
+              <div className="flex-1 p-4 bg-green-50 rounded-lg border border-green-200">
+                <h3 className="font-semibold text-green-800 mb-2">Estimate Lifecycle</h3>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">1</div>
+                    <div className="ml-3">Create Estimate</div>
+                  </div>
+                  <div className="w-0.5 h-6 bg-green-300 ml-4"></div>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">2</div>
+                    <div className="ml-3">Send to Customer</div>
+                  </div>
+                  <div className="w-0.5 h-6 bg-green-300 ml-4"></div>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">3</div>
+                    <div className="ml-3">Customer Accepts/Rejects</div>
+                  </div>
+                  <div className="w-0.5 h-6 bg-green-300 ml-4"></div>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">4</div>
+                    <div className="ml-3">Convert to Invoice (Optional)</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex-1 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <h3 className="font-semibold text-purple-800 mb-2">API Endpoints</h3>
+                <div className="space-y-2">
+                  <div className="p-2 bg-white rounded border border-purple-200">
+                    <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded mr-2 text-sm">POST</span>
+                    <span className="text-gray-700 font-mono text-sm">/v3/company/&lt;realmID&gt;/estimate</span>
+                  </div>
+                  <div className="p-2 bg-white rounded border border-purple-200">
+                    <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded mr-2 text-sm">GET</span>
+                    <span className="text-gray-700 font-mono text-sm">/v3/company/&lt;realmID&gt;/estimate/&lt;id&gt;</span>
+                  </div>
+                  <div className="p-2 bg-white rounded border border-purple-200">
+                    <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded mr-2 text-sm">POST</span>
+                    <span className="text-gray-700 font-mono text-sm">/v3/company/&lt;realmID&gt;/estimate?operation=delete</span>
+                  </div>
+                  <div className="p-2 bg-white rounded border border-purple-200">
+                    <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded mr-2 text-sm">GET</span>
+                    <span className="text-gray-700 font-mono text-sm">/v3/company/&lt;realmID&gt;/query?query=...</span>
+                  </div>
+                  <div className="p-2 bg-white rounded border border-purple-200">
+                    <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded mr-2 text-sm">POST</span>
+                    <span className="text-gray-700 font-mono text-sm">/v3/company/&lt;realmID&gt;/estimate/&lt;id&gt;/send</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'object' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-blue-700">Estimate Object Structure</h2>
+            
+            <div className="mb-4">
+              <button 
+                className={`mb-2 flex justify-between w-full p-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200`}
+                onClick={() => toggleSection('required')}
+              >
+                <span className="font-semibold text-blue-800">Required Fields</span>
+                <span>{expandedSections.required ? '−' : '+'}</span>
+              </button>
+              
+              {expandedSections.required && (
+                <div className="pl-4 pr-2 py-3 bg-white border-l-2 border-blue-400">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-blue-700">Id</h4>
+                      <p className="text-sm text-gray-600">Unique identifier</p>
+                      <p className="text-xs text-gray-500 italic">String, read-only, system defined</p>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-blue-700">CustomerRef</h4>
+                      <p className="text-sm text-gray-600">Reference to customer</p>
+                      <p className="text-xs text-gray-500 italic">ReferenceType, filterable</p>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-blue-700">SyncToken</h4>
+                      <p className="text-sm text-gray-600">Version number</p>
+                      <p className="text-xs text-gray-500 italic">String, read-only, system defined</p>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-blue-700">Line</h4>
+                      <p className="text-sm text-gray-600">Line items for the transaction</p>
+                      <p className="text-xs text-gray-500 italic">At least one line required</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mb-4">
+              <button 
+                className={`mb-2 flex justify-between w-full p-3 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200`}
+                onClick={() => toggleSection('conditional')}
+              >
+                <span className="font-semibold text-amber-800">Conditionally Required Fields</span>
+                <span>{expandedSections.conditional ? '−' : '+'}</span>
+              </button>
+              
+              {expandedSections.conditional && (
+                <div className="pl-4 pr-2 py-3 bg-white border-l-2 border-amber-400">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-amber-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-amber-700">BillEmail</h4>
+                      <p className="text-sm text-gray-600">Email where estimate is sent</p>
+                      <p className="text-xs text-gray-500 italic">Required if EmailStatus=NeedToSend</p>
+                    </div>
+                    <div className="bg-amber-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-amber-700">CurrencyRef</h4>
+                      <p className="text-sm text-gray-600">Currency reference</p>
+                      <p className="text-xs text-gray-500 italic">Required if multicurrency enabled</p>
+                    </div>
+                    <div className="bg-amber-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-amber-700">GlobalTaxCalculation</h4>
+                      <p className="text-sm text-gray-600">Tax application method</p>
+                      <p className="text-xs text-gray-500 italic">Required for non-US companies</p>
+                    </div>
+                    <div className="bg-amber-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-amber-700">ShipFromAddr</h4>
+                      <p className="text-sm text-gray-600">Address goods ship from</p>
+                      <p className="text-xs text-gray-500 italic">Required if automated tax enabled</p>
+                    </div>
+                    <div className="bg-amber-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-amber-700">ProjectRef</h4>
+                      <p className="text-sm text-gray-600">Project reference</p>
+                      <p className="text-xs text-gray-500 italic">Minor Version 69+</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mb-4">
+              <button 
+                className={`mb-2 flex justify-between w-full p-3 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200`}
+                onClick={() => toggleSection('optional')}
+              >
+                <span className="font-semibold text-green-800">Optional Fields (Selected)</span>
+                <span>{expandedSections.optional ? '−' : '+'}</span>
+              </button>
+              
+              {expandedSections.optional && (
+                <div className="pl-4 pr-2 py-3 bg-white border-l-2 border-green-400">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">TxnDate</h4>
+                      <p className="text-xs text-gray-500 italic">Date, filterable</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">ShipDate</h4>
+                      <p className="text-xs text-gray-500 italic">Date</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">DocNumber</h4>
+                      <p className="text-xs text-gray-500 italic">String (max 21 chars)</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">CustomerMemo</h4>
+                      <p className="text-xs text-gray-500 italic">MemoRef</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">PrintStatus</h4>
+                      <p className="text-xs text-gray-500 italic">String</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">EmailStatus</h4>
+                      <p className="text-xs text-gray-500 italic">String</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">BillAddr</h4>
+                      <p className="text-xs text-gray-500 italic">PhysicalAddress</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">ShipAddr</h4>
+                      <p className="text-xs text-gray-500 italic">PhysicalAddress</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">TxnStatus</h4>
+                      <p className="text-xs text-gray-500 italic">String</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">ClassRef</h4>
+                      <p className="text-xs text-gray-500 italic">ReferenceType</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">SalesTermRef</h4>
+                      <p className="text-xs text-gray-500 italic">ReferenceType</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <h4 className="font-medium text-green-700">CustomField</h4>
+                      <p className="text-xs text-gray-500 italic">CustomField</p>
+                    </div>
+                  </div>
+                  <div className="text-center mt-4 text-gray-600 text-sm">
+                    <em>Many more optional fields available - see documentation for full list</em>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold text-blue-700 mb-3">Line Types</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-medium text-indigo-700">SalesItemLine</h4>
+                  <p className="text-sm text-gray-600">Products or services</p>
+                </div>
+                <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-medium text-indigo-700">GroupLine</h4>
+                  <p className="text-sm text-gray-600">Group of items</p>
+                </div>
+                <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-medium text-indigo-700">DescriptionOnlyLine</h4>
+                  <p className="text-sm text-gray-600">Text description</p>
+                </div>
+                <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-medium text-indigo-700">DiscountLine</h4>
+                  <p className="text-sm text-gray-600">Discount amount</p>
+                </div>
+                <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                  <h4 className="font-medium text-indigo-700">SubTotalLine</h4>
+                  <p className="text-sm text-gray-600">Subtotal calculation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'operations' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-blue-700">API Operations</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-green-500 text-white font-medium mr-3">POST</div>
+                  <h3 className="font-semibold text-green-800">Create an Estimate</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Creates a new estimate with at least one line item and customer reference.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">POST /v3/company/&lt;realmID&gt;/estimate</div>
+                  <div className="font-mono text-xs text-gray-600">Required: Line, CustomerRef</div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-blue-500 text-white font-medium mr-3">GET</div>
+                  <h3 className="font-semibold text-blue-800">Read an Estimate</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Retrieves details of a previously created estimate by ID.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">GET /v3/company/&lt;realmID&gt;/estimate/&lt;estimateId&gt;</div>
+                  <div className="font-mono text-xs text-gray-600">Required: estimateId in URL</div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-amber-500 text-white font-medium mr-3">POST</div>
+                  <h3 className="font-semibold text-amber-800">Update an Estimate</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Two options for updating estimates:</p>
+                <div className="space-y-3">
+                  <div className="bg-white p-3 rounded-lg border border-gray-200">
+                    <div className="font-medium text-amber-700 mb-1">Sparse Update</div>
+                    <div className="font-mono text-xs text-gray-600">Updates only specified fields</div>
+                    <div className="font-mono text-xs text-gray-600">Required: Id, SyncToken, sparse: true</div>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-gray-200">
+                    <div className="font-medium text-amber-700 mb-1">Full Update</div>
+                    <div className="font-mono text-xs text-gray-600">Updates all writable fields</div>
+                    <div className="font-mono text-xs text-gray-600">Required: Id, SyncToken, all fields</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-red-500 text-white font-medium mr-3">POST</div>
+                  <h3 className="font-semibold text-red-800">Delete an Estimate</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Deletes the specified estimate from the system.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">POST /v3/company/&lt;realmID&gt;/estimate?operation=delete</div>
+                  <div className="font-mono text-xs text-gray-600">Required: Id, SyncToken in body</div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-blue-500 text-white font-medium mr-3">GET</div>
+                  <h3 className="font-semibold text-blue-800">Query Estimates</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Search for estimates matching specific criteria.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">GET /v3/company/&lt;realmID&gt;/query?query=&lt;selectStatement&gt;</div>
+                  <div className="font-mono text-xs text-gray-600">Example: select * from estimate where TxnDate &lt; '2023-01-01'</div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-indigo-500 text-white font-medium mr-3">POST</div>
+                  <h3 className="font-semibold text-indigo-800">Send an Estimate</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Sends the estimate to the customer via email.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">POST /v3/company/&lt;realmID&gt;/estimate/&lt;estimateId&gt;/send</div>
+                  <div className="font-mono text-xs text-gray-600">Optional: ?sendTo=&lt;emailAddr&gt;</div>
+                </div>
+              </div>
+              
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="flex items-center mb-3">
+                  <div className="px-2 py-1 rounded bg-purple-500 text-white font-medium mr-3">GET</div>
+                  <h3 className="font-semibold text-purple-800">Get as PDF</h3>
+                </div>
+                <p className="text-gray-700 mb-3">Retrieves the estimate in PDF format.</p>
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <div className="font-mono text-sm text-gray-700 mb-2">GET /v3/company/&lt;realmID&gt;/estimate/&lt;estimateId&gt;/pdf</div>
+                  <div className="font-mono text-xs text-gray-600">Returns PDF in response body</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeTab === 'flow' && (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-blue-700">Estimate API Workflow</h2>
+            
+            <div className="relative overflow-auto">
+              <div className="min-w-min bg-white p-6 rounded-lg border border-gray-200">
+                {/* API Workflow Diagram */}
+                <div className="flex flex-col items-center">
+                  {/* Start */}
+                  <div className="w-32 h-16 rounded-full bg-green-500 text-white flex items-center justify-center text-lg font-medium">
+                    Start
+                  </div>
+                  
+                  {/* Arrow */}
+                  <div className="h-8 w-1 bg-gray-300"></div>
+                  
+                  {/* Create Estimate */}
+                  <div className="w-64 py-4 px-6 rounded-lg bg-blue-100 border border-blue-300 flex flex-col items-center text-center mb-1">
+                    <div className="font-semibold text-blue-800">Create Estimate</div>
+                    <div className="text-sm text-gray-600">POST /estimate</div>
+                  </div>
+                  
+                  {/* Arrow */}
+                  <div className="h-8 w-1 bg-gray-300"></div>
+                  
+                  {/* Decision Branch */}
+                  <div className="flex flex-row items-start relative">
+                    {/* Send Branch */}
+                    <div className="flex flex-col items-center">
+                      <div className="px-4 py-3 rounded-lg bg-indigo-100 border border-indigo-300 w-48 flex flex-col items-center text-center">
+                        <div className="font-semibold text-indigo-800">Send to Customer</div>
+                        <div className="text-sm text-gray-600">POST /estimate/id/send</div>
+                      </div>
+                      
+                      {/* Arrow */}
+                      <div className="h-8 w-1 bg-gray-300"></div>
+                      
+                      {/* Status Update */}
+                      <div className="px-4 py-3 rounded-lg bg-amber-100 border border-amber-300 w-48 flex flex-col items-center text-center">
+                        <div className="font-semibold text-amber-800">Update Status</div>
+                        <div className="text-sm text-gray-600">Customer accepts/rejects</div>
+                      </div>
+                      
+                      {/* Arrow */}
+                      <div className="h-8 w-1 bg-gray-300"></div>
+                      
+                      {/* Convert to Invoice */}
+                      <div className="px-4 py-3 rounded-lg bg-green-100 border border-green-300 w-48 flex flex-col items-center text-center">
+                        <div className="font-semibold text-green-800">Convert to Invoice</div>
+                        <div className="text-sm text-gray-600">(Done in QuickBooks UI)</div>
+                      </div>
+                    </div>
+                    
+                    {/* Update Branch */}
+                    <div className="flex flex-col items-center ml-12">
+                      <div className="w-48 py-3 px-4 rounded-lg bg-amber-100 border border-amber-300 flex flex-col items-center text-center">
+                        <div className="font-semibold text-amber-800">Update Estimate</div>
+                        <div className="text-sm text-gray-600">POST /estimate (sparse)</div>
+                      </div>
+                      
+                      {/* Arrow */}
+                      <div className="h-8 w-1 bg-gray-300"></div>
+                      
+                      {/* Read */}
+                      <div className="w-48 py-3 px-4 rounded-lg bg-blue-100 border border-blue-300 flex flex-col items-center text-center">
+                        <div className="font-semibold text-blue-800">Read Estimate</div>
+                        <div className="text-sm text-gray-600">GET /estimate/id</div>
+                      </div>
+                    </div>
+                    
+                    {/* Delete Branch */}
+                    <div className="flex flex-col items-center ml-12">
+                      <div className="w-48 py-3 px-4 rounded-lg bg-red-100 border border-red-300 flex flex-col items-center text-center">
+                        <div className="font-semibold text-red-800">Delete Estimate</div>
+                        <div className="text-sm text-gray-600">POST /estimate?operation=delete</div>
+                      </div>
+                    </div>
+                    
+                    {/* Connecting Lines */}
+                    <div className="absolute h-1 bg-gray-300 top-6 left-24 w-36"></div>
+                    <div className="absolute h-1 bg-gray-300 top-6 right-24 w-36"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-8 space-y-4">
+              <h3 className="text-lg font-semibold text-blue-700">Integration Best Practices</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h4 className="font-medium text-green-800 mb-2">✅ Do</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">•</span>
+                      <span>Use SyncToken to prevent concurrent update issues</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">•</span>
+                      <span>Include proper error handling for API responses</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">•</span>
+                      <span>Check for required fields based on company settings</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">•</span>
+                      <span>Use sparse updates when modifying specific fields</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-green-500 mr-2">•</span>
+                      <span>Validate tax codes are appropriate for your region</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                  <h4 className="font-medium text-red-800 mb-2">❌ Don't</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span>Modify the Id field which is system-generated</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span>Forget to include CustomerRef when creating estimates</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span>Use older SyncToken values in update requests</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span>Create estimates with empty Line arrays</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-red-500 mr-2">•</span>
+                      <span>Assume field requirements are the same for all countries</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default QBOEstimateAPIVisualization;
+```
