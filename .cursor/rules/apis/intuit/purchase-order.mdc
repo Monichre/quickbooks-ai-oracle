@@ -1,0 +1,419 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+I'll use the firecrawl_scrape tool to fetch the Purchase Order API documentation page and convert it to markdown for you.
+
+I see that I couldn't directly access the Intuit Developer documentation with the firecrawl_scrape tool as it requires authentication. Instead, I'll use the web search tool to find information about the QuickBooks Online Purchase Order API and format it in markdown for you.
+
+Let me try a more direct approach by using web_fetch to access the specific URL:
+
+I see that I'm having difficulty directly accessing the content from the QuickBooks Online Purchase Order API documentation page. The page requires authentication which is preventing me from fetching it directly. Let me search for more detailed information about the Purchase Order API structure:
+
+I see that I'm unable to directly access the QuickBooks Online Purchase Order API documentation due to authentication requirements. Based on my search results, I can provide you with a markdown representation of what the Purchase Order API documentation typically contains, based on the information available and the common structure of QuickBooks API endpoints.
+
+# QuickBooks Online Purchase Order API Documentation
+
+## Introduction
+
+The Purchase Order API in QuickBooks Online allows developers to create, read, update, and delete purchase orders through the QuickBooks Online Accounting API. Purchase orders represent requests to vendors for goods or services and can be linked to bills and other transactions.
+
+## Base URL
+
+```
+https://quickbooks.api.intuit.com/v3/company/{realmId}/purchaseorder
+```
+
+## API Endpoints
+
+### Create a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`
+
+### Read a Purchase Order
+
+**Request Method:** GET  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder/{id}`
+
+### Update a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`  
+**Note:** Include the ID in the request body
+
+### Delete a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`  
+**Operation:** Set `Active` field to `false`
+
+## Data Model
+
+Purchase Orders in QuickBooks Online contain the following key elements:
+
+### Main Fields
+
+- **Id** - Unique identifier for the purchase order
+- **DocNumber** - Purchase order number that appears on the transaction
+- **TxnDate** - Date of the transaction
+- **PrivateNote** - Private note for internal use
+- **TotalAmt** - Total amount of the purchase order
+- **VendorRef** - Reference to the vendor
+- **APAccountRef** - Reference to the accounts payable account
+- **POStatus** - Status of the purchase order (Open, Closed)
+- **ClassRef** - Reference to class for tracking purposes
+- **SalesTermRef** - Reference to sales terms
+- **DueDate** - Due date for the purchase order
+- **ShipMethodRef** - Reference to shipping method
+- **ShipTo** - Shipping address information
+- **VendorAddr** - Vendor address information
+- **CurrencyRef** - Reference to currency used
+- **ExchangeRate** - Exchange rate if using multiple currencies
+- **DepartmentRef** - Reference to department for tracking purposes
+- **Memo** - Memo field visible to vendor
+
+### Line Items
+
+Each purchase order contains line items with the following structure:
+
+- **LineNum** - Line number
+- **Description** - Description of the item
+- **Amount** - Amount for this line
+- **DetailType** - Type of line item (ItemBasedExpenseLine, AccountBasedExpenseLine)
+- **ItemBasedExpenseLine** - Details for item-based lines:
+  - **ItemRef** - Reference to the item
+  - **UnitPrice** - Price per unit
+  - **Qty** - Quantity
+  - **TaxCodeRef** - Reference to tax code
+- **AccountBasedExpenseLine** - Details for account-based lines:
+  - **AccountRef** - Reference to the account
+  - **TaxCodeRef** - Reference to tax code
+
+## Request and Response Format
+
+All requests and responses use JSON format. Here's an example structure of a Purchase Order:
+
+```json
+{
+  "PurchaseOrder": {
+    "DocNumber": "1001",
+    "TxnDate": "2025-05-06",
+    "VendorRef": {
+      "value": "56",
+      "name": "Vendor Company"
+    },
+    "Line": [
+      {
+        "DetailType": "ItemBasedExpenseLine",
+        "ItemBasedExpenseLine": {
+          "ItemRef": {
+            "value": "5",
+            "name": "Office Supplies"
+          },
+          "UnitPrice": 25.00,
+          "Qty": 2
+        },
+        "Amount": 50.00,
+        "Description": "Printer Paper"
+      }
+    ],
+    "TotalAmt": 50.00,
+    "POStatus": "Open"
+  }
+}
+```
+
+## Authentication
+
+The QuickBooks Online API uses OAuth 2.0 for authentication. Requests must include the authorization header with a valid OAuth token.
+
+## Minor Versions
+
+QuickBooks Online API supports minor versions to manage API changes. Include the `minorversion` parameter in your requests to use specific features:
+
+```
+GET /v3/company/{realmId}/purchaseorder/{id}?minorversion=65
+```
+
+## Error Handling
+
+The API returns standard HTTP status codes and detailed error information in the response body for failed requests.
+
+## Best Practices
+
+1. Always specify the minor version in your requests
+2. Handle pagination properly for list operations
+3. Use sparse updates when modifying resources
+4. Implement proper error handling
+5. Follow rate limiting guidelines
+
+---
+
+You're right, there would be more content on the official QuickBooks Online Purchase Order API documentation page. Since I couldn't access the actual content of the page, I created a general representation based on the standard structure of API documentation and what I know about the QuickBooks API.
+
+Let me try to search again with a different approach to see if I can find more specific information about the Purchase Order API endpoint:
+
+Let me try a different approach to find a better resource for the Purchase Order API documentation:
+
+Let me try one more approach by looking for sample code that might show the Purchase Order structure:
+
+Let me try one more search to find sample code or JSON for the Purchase Order structure:
+
+Based on my search results, I've found examples of JSON structures for Purchase Orders in QuickBooks Online API. Let me create a comprehensive markdown documentation for the Purchase Order endpoint:
+
+# QuickBooks Online Purchase Order API Documentation
+
+## Overview
+
+The Purchase Order API in QuickBooks Online allows you to create, read, update, and delete purchase orders through the QuickBooks Online Accounting API. Purchase orders represent requests to vendors for goods or services.
+
+## Endpoint URL
+
+```
+https://quickbooks.api.intuit.com/v3/company/{realmId}/purchaseorder
+```
+
+## API Operations
+
+### Create a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`
+
+### Read a Purchase Order
+
+**Request Method:** GET  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder/{id}`
+
+Example from Pipedream component description: "Returns details about a purchase order."
+
+### Update a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`  
+**Note:** Include the ID in the request body
+
+### Delete a Purchase Order
+
+**Request Method:** POST  
+**Endpoint:** `/v3/company/{realmId}/purchaseorder`  
+**Operation:** Set `Active` field to `false`
+
+## Request and Response Format
+
+All requests and responses use JSON format.
+
+## Authentication
+
+The QuickBooks Online API uses OAuth 2.0 for authentication. You'll need to set up an AuthClient with your CLIENT_ID, CLIENT_SECRET, and ACCESS_TOKEN.
+
+## Minor Versions
+
+QuickBooks Online API supports minor versions to manage API changes. Include the `minorversion` parameter in your requests to use specific features.
+
+Example request:
+```
+GET /v3/company/{realmId}/purchaseorder/{id}?minorversion=70
+```
+
+## Data Model
+
+### Purchase Order Object Structure
+
+```json
+{
+  "PurchaseOrder": {
+    "DocNumber": "1005",
+    "SyncToken": "0",
+    "domain": "QBO",
+    "APAccountRef": {
+      "name": "Accounts Payable (A/P)",
+      "value": "33"
+    },
+    "CurrencyRef": {
+      "name": "United States Dollar",
+      "value": "USD"
+    },
+    "TxnDate": "2025-05-06",
+    "TotalAmt": 25.0,
+    "ShipAddr": {
+      "Line4": "Half Moon Bay, CA 94213",
+      "Line3": "65 Ocean Dr.",
+      "Id": "121",
+      "Line1": "Grace Pariente",
+      "Line2": "Cool Cars"
+    },
+    "VendorAddr": {
+      "Line4": "Middlefield, CA 94303",
+      "Line3": "42 Main St.",
+      "Id": "120",
+      "Line1": "Geoff Hicks",
+      "Line2": "Hicks Hardware"
+    },
+    "POStatus": "Open",
+    "sparse": false,
+    "VendorRef": {
+      "name": "Hicks Hardware",
+      "value": "41"
+    },
+    "Line": [
+      {
+        "DetailType": "ItemBasedExpenseLine",
+        "ItemBasedExpenseLine": {
+          "ItemRef": {
+            "name": "Garden Supplies",
+            "value": "5"
+          },
+          "Qty": 1,
+          "UnitPrice": 25.0
+        },
+        "Amount": 25.0,
+        "Description": "Garden Hose"
+      }
+    ]
+  }
+}
+```
+
+## Main Fields
+
+- **Id** - Unique identifier for the purchase order
+- **DocNumber** - Purchase order number that appears on the transaction
+- **SyncToken** - Version number of the object
+- **TxnDate** - Date of the transaction
+- **CurrencyRef** - Reference to currency used
+- **TotalAmt** - Total amount of the purchase order
+- **APAccountRef** - Reference to accounts payable account
+- **VendorRef** - Reference to the vendor
+- **POStatus** - Status of the purchase order (Open, Closed)
+- **ShipAddr** - Shipping address information
+- **VendorAddr** - Vendor address information
+- **EmailStatus** - Indicates if the purchase order has been emailed
+- **sparse** - Indicates if this is a sparse update
+
+## Line Items
+
+Each purchase order contains line items with the following structure:
+
+- **LineNum** - Line number
+- **Description** - Description of the item
+- **Amount** - Amount for this line
+- **DetailType** - Type of line item (ItemBasedExpenseLine, AccountBasedExpenseLine)
+- **ItemBasedExpenseLine** - Details for item-based lines:
+  - **ItemRef** - Reference to the item
+  - **UnitPrice** - Price per unit
+  - **Qty** - Quantity
+- **AccountBasedExpenseLine** - Details for account-based lines:
+  - **AccountRef** - Reference to the account
+
+## Query Operations
+
+You can query purchase orders using SQL-like syntax. The maximum number of entities that can be returned in a response is 1000. If the result size is not specified, the default number is 100.
+
+Example query:
+```
+SELECT * FROM PurchaseOrder WHERE VendorRef = '41'
+```
+
+## Pagination
+
+For queries that return many entities, fetch the entities in chunks using STARTPOSITION and MAXRESULTS:
+
+```
+SELECT * FROM PurchaseOrder STARTPOSITION 1 MAXRESULTS 10
+```
+
+## Error Handling
+
+The API returns standard HTTP status codes and detailed error information in the response body for failed requests.
+
+## Best Practices
+
+1. Always specify the minor version in your requests
+2. Handle pagination properly for list operations
+3. Use sparse updates when modifying resources
+4. Implement proper error handling
+5. Follow rate limiting guidelines
+
+## Common Issues
+
+When creating a purchase order, you might encounter a "Business Validation Error: Please enter a valid email address" if email-related fields aren't properly set.
+
+## Examples
+
+### Creating a Purchase Order
+
+```json
+{
+  "PurchaseOrder": {
+    "DocNumber": "1005",
+    "APAccountRef": {
+      "name": "Accounts Payable (A/P)",
+      "value": "33"
+    },
+    "VendorRef": {
+      "name": "Hicks Hardware",
+      "value": "41"
+    },
+    "Line": [
+      {
+        "DetailType": "ItemBasedExpenseLine",
+        "ItemBasedExpenseLine": {
+          "ItemRef": {
+            "name": "Garden Supplies",
+            "value": "5"
+          },
+          "Qty": 1,
+          "UnitPrice": 25.0
+        },
+        "Amount": 25.0,
+        "Description": "Garden Hose"
+      }
+    ],
+    "EmailStatus": 0
+  }
+}
+```
+
+### Reading a Purchase Order
+
+To get a specific purchase order by ID:
+
+```
+GET /v3/company/{realmId}/purchaseorder/{id}
+```
+
+### Updating a Purchase Order
+
+When updating a purchase order, include the ID and SyncToken:
+
+```json
+{
+  "PurchaseOrder": {
+    "Id": "123",
+    "SyncToken": "1",
+    "sparse": true,
+    "POStatus": "Closed"
+  }
+}
+```
+
+### Deleting a Purchase Order
+
+To delete a purchase order, update it with Active set to false:
+
+```json
+{
+  "PurchaseOrder": {
+    "Id": "123",
+    "SyncToken": "2",
+    "Active": false
+  }
+}
+```
+
+## Reference Documentation
+
+For more detailed information, please refer to the official [QuickBooks Online API documentation](https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/purchaseorder).
