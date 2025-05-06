@@ -35,8 +35,13 @@ export async function POST(req: Request) {
 
 			console.log("data:", data);
 			console.log("error:", error);
+			return new Response(
+				`Webhook received: User Created ${JSON.stringify(data)}`,
+				{
+					status: 200,
+				},
+			);
 		}
-
 		return new Response("Webhook received", { status: 200 });
 	} catch (err) {
 		console.error("Error verifying webhook:", err);
