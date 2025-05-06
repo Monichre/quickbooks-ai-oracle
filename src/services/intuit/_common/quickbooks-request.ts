@@ -1,10 +1,12 @@
 "use server";
-import { refreshTokensIfNeeded } from "../auth";
+
+import { redirectToAuth, refreshTokensIfNeeded } from "@/services/intuit/auth";
 import {
 	QuickbooksConfigError,
 	QuickbooksAuthError,
 	QuickbooksApiError,
 } from "./quickbooks-errors";
+import { TokenStatus } from "@/services/intuit/auth";
 
 // Type for object-based arguments
 export type QuickbooksRequestArgs<D = Record<string, unknown>> = {
@@ -71,6 +73,17 @@ const parseResponse = async <T>(response: Response): Promise<T> => {
 			errorData = errorText;
 
 			console.log("🚀 ~ errorData:", errorData);
+		}
+
+		// Check for auth-related errors (401, 403)
+		if (response.status === 401 || response.status === 403) {
+			// Force token refresh on auth errors
+			console.log("Auth error detected, forcing token refresh");
+			const tokenResult = await refreshTokensIfNeeded(true);
+
+			if (tokenResult.status === TokenStatus.REFRESH_EXPIRED) {
+				await redirectToAuth();
+			}
 		}
 
 		throw new QuickbooksApiError(
@@ -165,10 +178,25 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 	const env = validateEnvironment();
 
 	// Ensure tokens are fresh
-	const tokens = await refreshTokensIfNeeded();
-	if (!tokens) {
+	const tokenResult = await refreshTokensIfNeeded();
+
+	// Handle token status
+	if (tokenResult.status === TokenStatus.REFRESH_EXPIRED) {
+		console.log(
+			"Refresh token has expired, redirecting to authentication flow",
+		);
+		await redirectToAuth();
+	}
+
+	if (
+		tokenResult.status !== TokenStatus.VALID &&
+		tokenResult.status !== TokenStatus.ROTATED &&
+		!tokenResult.tokens
+	) {
 		throw new QuickbooksAuthError("Not authenticated with QuickBooks");
 	}
+
+	const tokens = tokenResult.tokens;
 
 	const API_ROOT = `${env.BASE_URL}/v3/company/${env.COMPANY_ID}`;
 	const url = `${API_ROOT}/${endpoint}`;
@@ -204,6 +232,49 @@ export async function quickbooksRequest<T, D = Record<string, unknown>>(
 				`QuickBooks API request timed out after ${requestTimeout}ms`,
 			);
 		}
+
+		// Handle network errors that might be due to expired tokens
+		if (
+			error instanceof Error &&
+			(error.message.includes("network") ||
+				error.message.includes("authentication required") ||
+				error.message.includes("failed") ||
+				error.message.includes("expired"))
+		) {
+			// Force token refresh and retry once
+			console.log(
+				"Network or auth error, attempting token refresh:",
+				error.message,
+			);
+			const tokenResult = await refreshTokensIfNeeded(true); // Force refresh
+
+			if (tokenResult.status === TokenStatus.REFRESH_EXPIRED) {
+				await redirectToAuth();
+			}
+
+			if (
+				(tokenResult.status === TokenStatus.VALID ||
+					tokenResult.status === TokenStatus.ROTATED) &&
+				tokenResult.tokens
+			) {
+				// Retry the request with new token
+				console.log("Retrying request with fresh token");
+				const retryResponse = await fetch(url, {
+					method: requestMethod,
+					headers: {
+						...headers,
+						Authorization: `Bearer ${tokenResult.tokens.access_token}`,
+					},
+					body:
+						requestMethod !== "GET" && requestData
+							? JSON.stringify(requestData)
+							: undefined,
+				});
+
+				return await parseResponse<T>(retryResponse);
+			}
+		}
+
 		throw error;
 	} finally {
 		clearTimeout(timeoutId);

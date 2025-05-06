@@ -8,8 +8,14 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb'
 import {Separator} from '@radix-ui/react-dropdown-menu'
-import {getCompanyInfo, isAuthenticated} from '@/services/quickbooks/client'
-import type {CompanyInfoResponse} from '@/services/quickbooks/client'
+import {getCompanyInfo} from '@/services/intuit/api'
+import {
+  isAuthenticated,
+  refreshTokensIfNeeded,
+  redirectToAuth,
+  TokenStatus,
+} from '@/services/intuit/auth'
+import type {CompanyInfoResponse} from '@/services/intuit/types'
 import {Button} from '@/components/ui/button'
 import {Drawer, DrawerContent, DrawerTrigger} from '@/components/ui/drawer'
 import {BrainIcon, MenuIcon, Plus} from 'lucide-react'
@@ -27,10 +33,36 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const authenticated = await isAuthenticated()
-  const companyData: CompanyInfoResponse = authenticated
-    ? await getCompanyInfo()
-    : null
+  let authenticated = await isAuthenticated()
+
+  if (!authenticated) {
+    const tokenResult = await refreshTokensIfNeeded()
+    if (tokenResult.status === TokenStatus.EXPIRED) {
+      await redirectToAuth()
+    }
+
+    authenticated = await isAuthenticated()
+
+    if (!authenticated) {
+      await redirectToAuth()
+    }
+  }
+
+  let companyData = null
+
+  try {
+    companyData = authenticated ? await getCompanyInfo() : null
+  } catch (error) {
+    console.error('Error fetching company data:', error)
+
+    if (
+      error.message?.includes('Not authenticated') ||
+      error.message?.includes('invalid_grant')
+    ) {
+      await redirectToAuth()
+    }
+  }
+
   const [main, dashboards] = defaultNavLinks
   const user = await currentUser()
 

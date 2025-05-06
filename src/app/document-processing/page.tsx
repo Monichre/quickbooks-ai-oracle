@@ -6,7 +6,7 @@ import {
   refreshTokensIfNeeded,
   isAuthenticated,
   getAuthorizationUrl,
-} from '@/services/intuit/auth'
+} from '@/services/intuit/auth/auth'
 
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert'
 import {Button} from '@/components/ui/button'

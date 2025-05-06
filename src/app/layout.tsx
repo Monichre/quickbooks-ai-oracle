@@ -11,8 +11,9 @@ import {ThemeProvider} from 'next-themes'
 import {cn} from '@/lib/utils'
 import {Navbar} from '@/components/ui/navbar-menu'
 import {FullNav} from '@/components/nav/full-nav'
-
+import {Toaster} from '@/components/ui/sonner'
 import {NuqsAdapter} from 'nuqs/adapters/next/app'
+import {AuthProvider} from '@/components/auth-provider'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -51,28 +52,31 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider appearance={{baseTheme: dark, signIn: {baseTheme: dark}}}>
-      <html lang='en' suppressHydrationWarning>
-        <body
-          className={cn(
-            `${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} dark`,
-            'antialiased'
-          )}
-        >
-          <NuqsAdapter>
-            <ThemeProvider
-              attribute={['class', 'data-theme']}
-              defaultTheme='dark'
-              enableSystem
-              disableTransitionOnChange
-              enableColorScheme
-              style={{colorScheme: 'dark'}}
-            >
-              <FullNav />
-              {children}
-            </ThemeProvider>
-          </NuqsAdapter>
-        </body>
-      </html>
+      <AuthProvider>
+        <html lang='en' suppressHydrationWarning>
+          <body
+            className={cn(
+              `${GeistSans.variable} ${GeistMono.variable} ${roboto.variable} ${robotoCondensed.variable} ${robotoMono.variable} dark`,
+              'antialiased'
+            )}
+          >
+            <NuqsAdapter>
+              <ThemeProvider
+                attribute={['class', 'data-theme']}
+                defaultTheme='dark'
+                enableSystem
+                disableTransitionOnChange
+                enableColorScheme
+                style={{colorScheme: 'dark'}}
+              >
+                <FullNav />
+                {children}
+                <Toaster />
+              </ThemeProvider>
+            </NuqsAdapter>
+          </body>
+        </html>
+      </AuthProvider>
     </ClerkProvider>
   )
 }

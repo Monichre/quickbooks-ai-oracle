@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { isAuthenticated, refreshTokensIfNeeded } from "@/services/intuit/auth";
+import {
+	isAuthenticated,
+	refreshTokensIfNeeded,
+	TokenStatus,
+} from "@/services/intuit/auth";
 import { auth } from "@clerk/nextjs/server";
 
 export async function GET(request: NextRequest) {
@@ -15,13 +19,21 @@ export async function GET(request: NextRequest) {
 
 	try {
 		// Check if tokens exist and refresh if needed
-		const tokens = await refreshTokensIfNeeded(true); // Force refresh tokens
+		const tokenResult = await refreshTokensIfNeeded(true); // Force refresh tokens
 
-		if (!tokens) {
-			// No tokens or refresh failed - redirect to connect page
+		if (tokenResult.status === TokenStatus.REFRESH_EXPIRED) {
+			// Refresh token expired - redirect to auth
 			return NextResponse.redirect(
-				new URL("/api/intuit/auth/connect", request.url),
+				new URL("/api/intuit/auth?state=tokenExpired", request.url),
 			);
+		}
+
+		if (
+			tokenResult.status !== TokenStatus.VALID &&
+			tokenResult.status !== TokenStatus.ROTATED
+		) {
+			// No tokens or refresh failed - redirect to connect page
+			return NextResponse.redirect(new URL("/api/intuit/auth", request.url));
 		}
 
 		// Successfully authenticated, redirect to original destination
@@ -29,8 +41,6 @@ export async function GET(request: NextRequest) {
 	} catch (error) {
 		console.error("Error checking Intuit authentication:", error);
 		// Authentication error - redirect to connect page
-		return NextResponse.redirect(
-			new URL("/api/intuit/auth/connect", request.url),
-		);
+		return NextResponse.redirect(new URL("/api/intuit/auth", request.url));
 	}
 }

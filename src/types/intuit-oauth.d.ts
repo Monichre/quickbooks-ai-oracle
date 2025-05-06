@@ -21,5 +21,18 @@ declare module "intuit-oauth" {
 		revoke(options: { token: string }): Promise<any>;
 		getToken(): any;
 		setToken(token: any): void;
+		scopes: {
+			Accounting: "com.intuit.quickbooks.accounting";
+			Payment: "com.intuit.quickbooks.payment";
+			Payroll: "com.intuit.quickbooks.payroll";
+			TimeTracking: "com.intuit.quickbooks.payroll.timetracking";
+			Benefits: "com.intuit.quickbooks.payroll.benefits";
+			Profile: "profile";
+			Email: "email";
+			Phone: "phone";
+			Address: "address";
+			OpenId: "openid";
+			Intuit_name: "intuit_name";
+		};
 	}
 }
