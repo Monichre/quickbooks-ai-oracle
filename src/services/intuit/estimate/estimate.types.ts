@@ -29,6 +29,7 @@ export interface EstimateLine {
 		UnitPrice?: number;
 		Qty?: number;
 		ServiceDate?: string;
+		VendorRef?: ReferenceType;
 	};
 
 	// For SubTotalLineDetail

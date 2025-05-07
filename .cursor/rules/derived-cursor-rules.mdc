@@ -29,11 +29,12 @@ This project utilizes Next.js, React, and TypeScript for frontend development.  
 *   Error handling should be robust and informative. Custom error types should be used where appropriate (e.g., `BadRequestError`).
 *   Unit tests should aim for high branch coverage (≥90%).
 *   All callback functions should utilize `useCallback` to prevent unnecessary re-renders.
+*  All tests should be written using Bun's native testing capabilities (`bun test`).  Avoid using Jest.
 
 
 ## WORKFLOW & RELEASE RULES
 
-The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.  New features should be documented with clear acceptance criteria and implementation details in the relevant ticket.
+The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.  New features should be documented with clear acceptance criteria and implementation details in the relevant ticket.  Progress updates should be provided during task completion.
 
 
 ## DEBUGGING
