@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState, useMemo} from 'react'
+import {useEffect, useState, useMemo, useCallback} from 'react'
 import {
   Table,
   TableHeader,
@@ -26,6 +26,7 @@ import {
   ChevronRight,
   Eye,
   ExternalLink,
+  MoreHorizontal,
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {Input} from '@/components/ui/input'
@@ -43,6 +44,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {cn} from '@/lib/utils'
 import {useRouter} from 'next/navigation'
 import type {
@@ -79,12 +86,16 @@ type EntityTableProps = {
   entity: string
   initialData: QuickBooksResponse | EntityObject[]
   columnConfig?: ColumnConfig
+  onCreatePurchaseOrder?: (estimate: Estimate) => void
+  onCreateInvoice?: (estimate: Estimate) => void
 }
 
 export default function EntityTable({
   entity,
   initialData,
   columnConfig,
+  onCreatePurchaseOrder,
+  onCreateInvoice,
 }: EntityTableProps) {
   const router = useRouter()
   const [data, setData] = useState<EntityObject[]>([])
@@ -201,21 +212,44 @@ export default function EntityTable({
     return entityObject?.Id || ''
   }
 
-  // Navigate to entity detail page
-  const navigateToEntityDetail = (entityObject: EntityObject) => {
-    const id = getEntityId(entityObject)
-    if (!id) return
+  // Navigate to entity detail page - wrapped in useCallback
+  const navigateToEntityDetail = useCallback(
+    (entityObject: EntityObject) => {
+      const id = getEntityId(entityObject)
+      if (!id) return
 
-    const entityPath = entity.endsWith('s') ? entity : `${entity}s` // Handle pluralization
+      const entityPath = entity.endsWith('s') ? entity : `${entity}s` // Handle pluralization
 
-    router.push(`/dashboard/${entityPath}/${id}`)
-  }
+      router.push(`/dashboard/${entityPath}/${id}`)
+    },
+    [entity, router]
+  )
 
-  // Open quick view modal
-  const openQuickView = (entityObject: EntityObject) => {
+  // Open quick view modal - wrapped in useCallback
+  const openQuickView = useCallback((entityObject: EntityObject) => {
     setSelectedEntity(entityObject)
     setIsQuickViewOpen(true)
-  }
+  }, [])
+
+  // Handler for create purchase order - wrapped in useCallback
+  const handleCreatePurchaseOrder = useCallback(
+    (entityObject: EntityObject) => {
+      if (onCreatePurchaseOrder && entity === 'estimates') {
+        onCreatePurchaseOrder(entityObject as Estimate)
+      }
+    },
+    [entity, onCreatePurchaseOrder]
+  )
+
+  // Handler for create invoice - wrapped in useCallback
+  const handleCreateInvoice = useCallback(
+    (entityObject: EntityObject) => {
+      if (onCreateInvoice && entity === 'estimates') {
+        onCreateInvoice(entityObject as Estimate)
+      }
+    },
+    [entity, onCreateInvoice]
+  )
 
   // Memoize columns definition based on column keys
   const columns = useMemo<ColumnDef<EntityObject>[]>(() => {
@@ -322,8 +356,56 @@ export default function EntityTable({
       },
     ]
 
+    // Add dropdown actions column for estimates only
+    if (entity === 'estimates' && (onCreatePurchaseOrder || onCreateInvoice)) {
+      actionColumns.unshift({
+        id: 'actions',
+        enableSorting: false,
+        enablePinning: true,
+        pin: 'right',
+        header: () => <div className='text-center'>Actions</div>,
+        cell: ({row}) => (
+          <div className='text-center'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='outline' size='sm' className='px-2'>
+                  <MoreHorizontal className='h-4 w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                {onCreatePurchaseOrder && (
+                  <DropdownMenuItem
+                    onClick={() => handleCreatePurchaseOrder(row.original)}
+                  >
+                    Create Purchase Order
+                  </DropdownMenuItem>
+                )}
+                {onCreateInvoice && (
+                  <DropdownMenuItem
+                    onClick={() => handleCreateInvoice(row.original)}
+                  >
+                    Create Invoice
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ),
+      })
+    }
+
     return [...dataColumns, ...actionColumns]
-  }, [columnKeys, columnConfig, navigateToEntityDetail, openQuickView])
+  }, [
+    columnKeys,
+    columnConfig,
+    entity,
+    navigateToEntityDetail,
+    openQuickView,
+    onCreatePurchaseOrder,
+    onCreateInvoice,
+    handleCreatePurchaseOrder,
+    handleCreateInvoice,
+  ])
 
   const table = useReactTable({
     data,

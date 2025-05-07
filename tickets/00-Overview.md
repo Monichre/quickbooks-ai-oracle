@@ -18,7 +18,7 @@ Reference: _tickets/TODO.md_ (initial master ticket).
 
 | ID | Title | Depends On | Status |
 |----|-------|------------|--------|
-| 01 | UI – Add Dropdown Action Column | – | ⏳ |
+| 01 | UI – Add Dropdown Action Column | – | ✅ |
 | 02 | Utility – Map Estimate ➜ PurchaseOrder | – | ⏳ |
 | 03 | Utility – Map Estimate ➜ Invoice | – | ⏳ |
 | 04 | API – Invoice Service Wrapper | – | ⏳ |

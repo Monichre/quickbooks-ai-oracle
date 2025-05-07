@@ -13,12 +13,12 @@ All project documentation, including coding standards, workflow guidelines, and 
 
 ### Ticket Tracking
 
-Tickets will be managed using Markdown files in the `tickets` directory.  Each ticket will follow a consistent template outlining its goal, acceptance criteria, implementation notes, out-of-scope items, and test strategy. The status of each ticket will be indicated using the following keys: ✅ done, ⏳ pending, 🛑 blocked.  The `tickets/README.md` file will contain an overview of the ticket system and naming conventions.
+Tickets will be managed using Markdown files in the `tickets` directory.  Each ticket will follow a consistent template outlining its goal, acceptance criteria, implementation notes, out-of-scope items, and test strategy. The status of each ticket will be indicated using the following keys: ✅ done, ⏳ pending, 🛑 blocked.  The `tickets/README.md` file will contain an overview of the ticket system and naming conventions.  Example ticket documentation can be found in `/docs/intuit/UI-AddDropdownActionColumn.md`
 
 
 ## TECH STACK
 
-This project utilizes Next.js, React, and TypeScript for frontend development.  The backend utilizes a combination of serverless functions and potentially other APIs as needed.  Specific libraries include `react-hook-form`, `@hookform/resolvers/zod`, `zod`, and `shadcn` UI components.  Cypress is used for end-to-end testing, and Vitest with `@vitest/coverage-c8` for unit testing.  The Intuit QuickBooks Online API is integrated for purchase order management.
+This project utilizes Next.js, React, and TypeScript for frontend development.  The backend utilizes a combination of serverless functions and potentially other APIs as needed.  Specific libraries include `react-hook-form`, `@hookform/resolvers/zod`, `zod`, `shadcn` UI components, `lucide-react`, and `@testing-library/react`. Cypress is used for end-to-end testing, and Vitest with `@vitest/coverage-c8` for unit testing.  The Intuit QuickBooks Online API is integrated for purchase order management.
 
 
 ## CODING STANDARDS
@@ -28,11 +28,12 @@ This project utilizes Next.js, React, and TypeScript for frontend development.  
 *   Use named exports for functions, avoiding default exports.
 *   Error handling should be robust and informative. Custom error types should be used where appropriate (e.g., `BadRequestError`).
 *   Unit tests should aim for high branch coverage (≥90%).
+*   All callback functions should utilize `useCallback` to prevent unnecessary re-renders.
 
 
 ## WORKFLOW & RELEASE RULES
 
-The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.
+The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.  New features should be documented with clear acceptance criteria and implementation details in the relevant ticket.
 
 
 ## DEBUGGING
@@ -47,4 +48,4 @@ The Intuit QuickBooks Online API is the primary source for purchase order data. 
 
 ## UI DEVELOPMENT GUIDELINES
 
-UI development should adhere to the shadcn UI component library patterns and specifications.  All UI elements must be accessible and pass accessibility audits (e.g., axe-core).  Visual consistency should be maintained throughout the application.
+UI development should adhere to the shadcn UI component library patterns and specifications.  All UI elements must be accessible and pass accessibility audits (e.g., axe-core).  Visual consistency should be maintained throughout the application.  New UI elements should follow existing design patterns where applicable.  Dropdown actions should be consistently implemented using shadcn's `DropdownMenu` components.
