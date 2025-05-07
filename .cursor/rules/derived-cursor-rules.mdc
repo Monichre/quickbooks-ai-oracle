@@ -1,0 +1,50 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+
+All project documentation, including coding standards, workflow guidelines, and API specifications, will be stored in Markdown (.md) files.  These files should be concise and easily understandable.  File naming should follow the convention `XX-title.md` where `XX` is the sequence order (e.g., `16-UI-CopyToPurchaseOrderAction.md`).
+
+### .mdc Files
+
+`.mdc` files (Markdown Context Documents) will be used to store API specifications, data schemas, and other crucial context information.  These files will be referenced in other documentation and code comments.  Examples include `purchase-order.mdc`, `linking-itemreciept-bill-to-purchase-order-invoice-to-sales-order.mdc`, and `purchase-order-vendor-expense-bill-flow.mdc`.
+
+### Ticket Tracking
+
+Tickets will be managed using Markdown files in the `tickets` directory.  Each ticket will follow a consistent template outlining its goal, acceptance criteria, implementation notes, out-of-scope items, and test strategy. The status of each ticket will be indicated using the following keys: ✅ done, ⏳ pending, 🛑 blocked.  The `tickets/README.md` file will contain an overview of the ticket system and naming conventions.
+
+
+## TECH STACK
+
+This project utilizes Next.js, React, and TypeScript for frontend development.  The backend utilizes a combination of serverless functions and potentially other APIs as needed.  Specific libraries include `react-hook-form`, `@hookform/resolvers/zod`, `zod`, and `shadcn` UI components.  Cypress is used for end-to-end testing, and Vitest with `@vitest/coverage-c8` for unit testing.  The Intuit QuickBooks Online API is integrated for purchase order management.
+
+
+## CODING STANDARDS
+
+*   Code should be well-documented and follow consistent formatting.
+*   All code must adhere to TypeScript type safety.
+*   Use named exports for functions, avoiding default exports.
+*   Error handling should be robust and informative. Custom error types should be used where appropriate (e.g., `BadRequestError`).
+*   Unit tests should aim for high branch coverage (≥90%).
+
+
+## WORKFLOW & RELEASE RULES
+
+The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.
+
+
+## DEBUGGING
+
+When debugging, utilize the browser's developer tools extensively.  Leverage logging statements and breakpoints effectively.  For complex issues, consider using a debugger.
+
+
+## API INTEGRATION RULES
+
+The Intuit QuickBooks Online API is the primary source for purchase order data.  All interactions with this API should be carefully documented and tested.  Error handling must be implemented to gracefully manage API failures.  The `.mdc` files will serve as the central repository for API specifications and schemas.
+
+
+## UI DEVELOPMENT GUIDELINES
+
+UI development should adhere to the shadcn UI component library patterns and specifications.  All UI elements must be accessible and pass accessibility audits (e.g., axe-core).  Visual consistency should be maintained throughout the application.

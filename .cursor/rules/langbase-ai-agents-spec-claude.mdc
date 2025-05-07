@@ -1,0 +1,182 @@
+---
+description: AI workflows
+globs: 
+alwaysApply: false
+---
+# Intuit Transaction Agent: AI-Powered Accounting Workflow Management
+
+## Overview
+
+Create an AI-powered transaction processing agent specifically designed for QuickBooks and Intuit workflows. This system intelligently monitors, analyzes, and takes action on accounting documents like estimates, purchase orders, and invoices. The agent determines transaction status, identifies next steps, and can automate document creation while maintaining compliance with accounting standards.
+
+## Features
+
+### 📊 AI Transaction Agent — Built with multiple AI Pipes on ⌘ Langbase
+
+- **Document Classifier** – A pipe that identifies document type (estimate, purchase order, invoice, etc.) and extracts key metadata
+- **Status Analyzer** – Determines the current status of transactions and their position in the workflow
+- **Workflow Decision Maker** – Decides whether a transaction requires follow-up actions (e.g., creating a PO from an estimate)
+- **Entity Extractor** – Identifies and extracts critical information about customers, vendors, items, and accounts
+- **Transaction Writer** – Generates properly formatted transaction documents (POs, invoices) based on source documents
+- **Validation Engine** – Ensures all generated documents comply with accounting standards and contain required fields
+
+### ⚡️ Workflow Automation
+- Seamless progression from estimate to purchase order to invoice
+- Intelligent vendor assignment based on item preferences
+- Automatic customer information preservation across document types
+- Context-aware document generation with appropriate references
+
+### 🔄 Integration Capabilities
+- Direct connection to QuickBooks API
+- Support for multiple authentication methods
+- Batch processing capability with rate limiting protection
+- Document history tracking and audit trail
+
+## Pipe Architecture
+
+### 1. Document Classifier Pipe
+```yaml
+name: Document Classifier
+description: Analyzes document content and classifies by type while extracting key metadata
+input: Raw document (PDF, JSON, or structured text)
+output: 
+  - Document type (Estimate, PO, Invoice, etc.)
+  - Document ID
+  - Creation date
+  - Total amount
+  - Primary entities (customer/vendor)
+  - Line items summary
+prompt_template: |
+  You are a specialized accounting document analyzer.
+  Examine the following document and classify it as one of:
+  Estimate, Purchase Order, Invoice, Bill, Receipt, or Other.
+  Extract key metadata including document number, date, total amount,
+  customer/vendor information, and summarize line items.
+  Format your response as JSON.
+```
+
+### 2. Status Analyzer Pipe
+```yaml
+name: Status Analyzer
+description: Determines current status of transaction and its position in workflow
+input: Classified document with metadata
+output:
+  - Transaction status (Draft, Final, Approved, Paid, etc.)
+  - Workflow position (1-Estimate, 2-PO, 3-Invoice, etc.)
+  - Completion percentage
+  - Blocking issues (if any)
+prompt_template: |
+  You are a transaction status analyzer for accounting workflows.
+  Analyze this [Document Type] and determine:
+  1. Current status (Draft, Final, Approved, Paid, etc.)
+  2. Position in standard workflow (Estimate → PO → Invoice)
+  3. Estimated completion percentage
+  4. Any blocking issues preventing progress
+  Format response as JSON with reasoning.
+```
+
+### 3. Workflow Decision Maker Pipe
+```yaml
+name: Workflow Decision Maker
+description: Decides whether transaction requires follow-up actions
+input: Document with status analysis
+output:
+  - Decision (No action, Create PO, Create Invoice, etc.)
+  - Reasoning
+  - Priority (Low, Medium, High)
+  - Recommended timeline
+prompt_template: |
+  You are a workflow decision maker for accounting processes.
+  Based on this [Document Type] with status [Status]:
+  1. Determine if any follow-up action is required
+  2. Specifically decide if it's ready to progress to next stage
+     (e.g., Estimate → PO, PO → Invoice)
+  3. Assign priority (Low, Medium, High)
+  4. Recommend timeline for action
+  Include clear reasoning for your decision.
+```
+
+### 4. Entity Extractor Pipe
+```yaml
+name: Entity Extractor
+description: Identifies and extracts entities from documents
+input: Classified document
+output:
+  - Customer information (ID, name, address, contact)
+  - Vendor information (ID, name, address, contact)
+  - Item details (IDs, descriptions, quantities, rates)
+  - Account references (A/P, A/R, etc.)
+prompt_template: |
+  You are an entity extraction specialist for accounting documents.
+  Extract all relevant entities from this [Document Type]:
+  1. Customer details (complete information)
+  2. Vendor details (complete information)
+  3. All line items with full detail
+  4. Account references
+  Format as structured JSON matching QuickBooks API schema.
+```
+
+### 5. Transaction Writer Pipe
+```yaml
+name: Transaction Writer
+description: Generates properly formatted transaction documents
+input: 
+  - Source document
+  - Entity information
+  - Decision details
+output: Properly formatted transaction document (PO, Invoice)
+prompt_template: |
+  You are a transaction document writer for QuickBooks.
+  Create a complete [Target Document Type] based on this
+  [Source Document Type] with the following requirements:
+  
+  1. Maintain all entity relationships (customer, vendor)
+  2. Preserve line item details with proper mapping
+  3. Include appropriate references to source document
+  4. Format according to QuickBooks API requirements
+  
+  Output complete transaction JSON payload.
+```
+
+### 6. Validation Engine Pipe
+```yaml
+name: Validation Engine
+description: Validates generated documents for compliance
+input: Generated transaction document
+output:
+  - Validation result (Pass/Fail)
+  - Issues list (if any)
+  - Correction suggestions
+prompt_template: |
+  You are a QuickBooks transaction validator.
+  Validate this [Document Type] against QuickBooks requirements:
+  
+  1. Check for all required fields
+  2. Validate entity references
+  3. Verify calculation accuracy
+  4. Ensure proper relationships maintained
+  
+  Provide pass/fail result, list any issues,
+  and suggest specific corrections.
+```
+
+## Workflow Example
+
+1. User submits an Estimate document to the system
+2. **Document Classifier** identifies it as an Estimate and extracts key information
+3. **Status Analyzer** determines it's in "Final" status and ready for next steps
+4. **Workflow Decision Maker** decides a Purchase Order should be created
+5. **Entity Extractor** pulls customer, vendor, and item information
+6. **Transaction Writer** generates appropriate Purchase Order document(s), grouping by vendor
+7. **Validation Engine** verifies the PO is properly formatted and contains all required fields
+8. System returns validated PO(s) ready for submission to QuickBooks
+
+## Implementation Benefits
+
+- **Time Savings**: Automates document progression through accounting workflow
+- **Error Reduction**: Validates transactions before submission to QuickBooks
+- **Consistency**: Ensures proper relationships between documents
+- **Auditability**: Maintains clear record of document progression and decisions
+- **Scalability**: Handles increasing transaction volume through parallel processing
+
+This agent system could be expanded with additional pipes for specific use cases such as payment matching, budget alignment, or anomaly detection in transaction patterns.

@@ -1,0 +1,164 @@
+---
+description: Purchase orders, estimates, creating a purchase order, creating an estimate
+globs: 
+alwaysApply: false
+---
+# Purchase Order Creation from Estimates Feature Implementation
+
+## Context
+Our application integrates with QuickBooks Online, and we need to enhance it by allowing users to create Purchase Orders directly from Estimates. The Estimate creation feature is already complete. This new functionality must align with QuickBooks' standard workflow while maintaining data integrity between Estimates and Purchase Orders.
+
+## Objective
+Implement a feature that enables users to convert Estimates to either Purchase Orders (for vendors) or Invoices (for customers) via a dropdown menu in the Estimates view. The system should intelligently group line items by vendor, creating one Purchase Order per vendor.
+
+## Technical Requirements
+
+### 1. Frontend Implementation
+- Add a dropdown menu to the Estimates table/view in `entity-table.tsx` on `EstimatesPage()`
+- Include two options: "Create Purchase Order" and "Create Invoice"
+- Implement a confirmation modal with:
+  - Left column: List of vendors (with badges showing vendor name + PO amount)
+  - Right pane: Table of line items for selected vendor
+  - Editable fields: Quantity, UnitPrice, DocNumber, PODate
+  - Primary CTA: "Create POs in QuickBooks"
+  - Secondary: Cancel
+
+### 2. Backend Implementation
+- Create a Next.js API route: `/pages/api/estimates/[id]/purchase-orders.ts`
+- Fetch the Estimate with line items and preferred vendor information
+- Group line items by vendor (using preferredVendor reference)
+- Map Estimate line items to Purchase Order line items
+- Preserve customer reference to maintain traceability
+- Handle API communication with QuickBooks (use minorversion=75)
+- Return draft POs for confirmation before final submission
+
+### 3. Data Mapping Requirements
+- Each Purchase Order requires:
+  - VendorRef (from item's preferred vendor)
+  - APAccountRef (default Accounts Payable)
+  - Line items (mapped from Estimate)
+- Each Line item requires:
+  - DetailType: "ItemBasedExpenseLine"
+  - Amount, Description from original line
+  - ItemBasedExpenseLineDetail containing:
+    - ItemRef (from Estimate)
+    - Qty, UnitPrice (from Estimate)
+    - CustomerRef (preserve from Estimate for traceability)
+    - TaxCodeRef (from Estimate or default "NON")
+
+### 4. Pre-flight Validation
+- Confirm items have preferredVendor references
+- Set minorversion=75 for all API calls
+- Cache default Accounts Payable account ID
+
+## Implementation Steps
+
+```javascript
+// Sample code for backend implementation
+// /pages/api/estimates/[id]/purchase-orders.ts
+import { getEstimate, createPurchaseOrder } from '@/apis/intuit'; // wrappers
+import { groupBy } from 'lodash';
+
+export default async function handler(req, res) {
+  const { id } = req.query;                         // Estimate Id
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const est = await getEstimate(id, { minorversion: 75 });  // includes item lines + PrefVendorRef
+  const groups = groupBy(est.Line, l =>
+    l.SalesItemLineDetail?.ItemRef?.preferredVendor?.value
+  );
+
+  // Build PO drafts (don't call QBO yet – UI will confirm)
+  const drafts = Object.entries(groups).map(([vendorId, lines]) => ({
+    VendorRef: { value: vendorId },
+    APAccountRef: { value: process.env.AP_DEFAULT },
+    Line: lines.map(mapEstimateLineToPOLine(est.CustomerRef)),
+  }));
+
+  res.status(200).json({ drafts });
+}
+
+function mapEstimateLineToPOLine(customer) {
+  return (l, idx) => ({
+    DetailType: 'ItemBasedExpenseLine',
+    LineNum: idx + 1,
+    Amount: l.Amount,
+    Description: l.Description,
+    ItemBasedExpenseLineDetail: {
+      ItemRef: l.SalesItemLineDetail.ItemRef,
+      Qty: l.SalesItemLineDetail.Qty,
+      UnitPrice: l.SalesItemLineDetail.UnitPrice,
+      CustomerRef: customer,          // keeps customer traceability
+      TaxCodeRef: l.SalesItemLineDetail.TaxCodeRef ?? { value: 'NON' }
+    }
+  });
+}
+```
+
+## Testing Requirements
+- **Unit tests**: Verify data mapping logic works correctly
+- **Integration tests**: 
+  - Verify single estimate with multiple vendors creates multiple POs
+  - Test error handling with invalid data
+- **E2E tests**: Test full workflow using Cypress
+- **Sandbox validation**: Verify POs appear in QBO sandbox environment
+
+## Potential Challenges & Mitigations
+1. **Missing vendor references**: Implement pre-validation to check all items have vendor references
+2. **API version compatibility**: Hardcode minorversion=75 (Intuit deprecates ≤74 on Aug 1, 2025)
+3. **QBO rate limits**: Implement batch processing (10 req/s) with exponential backoff retry
+4. **Multi-currency support**: Check if any companies have multi-currency enabled and handle accordingly
+
+## Stretch Goal: AI-Assisted Conversion
+Consider implementing an AI-assisted approach that can:
+1. Extract data from uploaded Estimate documents or React state
+2. Structure correct Purchase Order payload using OpenAI
+3. Present for confirmation before sending to QuickBooks
+
+```javascript
+// Sample implementation
+import OpenAI from "openai";
+const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+
+export async function estimateToPO(estimateJson) {
+  const system = `You are a JSON-only generator. Convert estimate lines to an array of draft POs grouped by preferred vendor.`;
+  const user = JSON.stringify(estimateJson);
+  const { choices } = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    temperature: 0,
+    messages: [{ role: 'system', content: system }, { role: 'user', content: user }]
+  });
+  return JSON.parse(choices[0].message.content);
+}
+```
+
+## Questions to Resolve Before Implementation
+1. Should users be able to add custom lines (shipping, discounts) in the confirmation modal?
+2. Should we allow AP Account selection per PO or always use default?
+3. How should we handle multi-currency scenarios if applicable?
+4. Should DocNumber be auto-assigned by QBO or derived from the Estimate?
+5. What permissions/roles should have access to this feature?
+
+## Deliverables
+1. Frontend dropdown implementation with confirmation modal
+2. Backend API route for PO generation
+3. Data mapping and validation logic
+4. Error handling and feedback mechanisms
+5. Comprehensive test suite
+6. Documentation of the feature
+
+## API References
+- Purchase Order API: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/purchaseorder
+- Estimate API: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/estimate
+- Vendor API: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendor
+- Customer API: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/customer
+- Item API: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/item
+
+## First Steps for Development
+1. Scaffold the Next.js API route
+2. Create UI component for dropdown in the Estimates table
+3. Implement the confirmation modal with vendor tabs
+4. Wire up the frontend to backend
+5. Test with sandbox environment
+
+Review 

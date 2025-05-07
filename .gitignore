@@ -66,3 +66,5 @@ tasks/
 # SpecStory explanation file
 .specstory/.what-is-this.md
 .specstory/
+# SpecStory project identity file
+.specstory/.project.json

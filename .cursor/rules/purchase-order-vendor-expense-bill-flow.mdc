@@ -1,0 +1,106 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Relationship Between Purchase Orders, Vendors, Bills, and Expenses in QuickBooks
+
+## Data Flow Relationships
+
+The relationship between these entities forms the core of the accounts payable workflow in QuickBooks. Understanding how they connect is essential for implementing a robust purchase order system.
+
+### Core Entity Relationships
+
+**Vendors** are the central entity that other transaction types connect to. Each vendor can have multiple purchase orders, bills, and expenses associated with them.
+
+**Purchase Orders (POs)** are non-posting transactions (don't affect financial statements) that represent a commitment to buy goods/services from a vendor. They serve as a precursor to either bills or expenses.
+
+**Bills** are posting transactions that create actual financial liability (Accounts Payable) and will appear on financial statements. They can be generated from purchase orders or created independently.
+
+**Expenses** are direct payments for goods/services that are typically paid immediately rather than creating a liability. Like bills, they can come from purchase orders or be created independently.
+
+## User Experience Journey
+
+From a UX perspective, the typical workflow follows this progression:
+
+1. **Vendor Selection**: User selects or creates a vendor
+2. **Purchase Order Creation** (optional): User creates a PO for the vendor
+   - Specifies items/services to purchase
+   - Sets quantities and prices
+   - Marks the PO as "Open"
+   - Sends to vendor
+3. **Converting to Financial Transaction**:
+   - When goods arrive, user can convert the PO to either:
+     - A **Bill** (if paying later) - creates Accounts Payable
+     - An **Expense** (if paying immediately) - direct expense transaction
+4. **PO Status Change**: The PO status updates to reflect fulfillment
+5. **Payment Processing**: For bills, a separate payment step occurs later
+
+## Entity Relationship Diagram (ERD)
+
+```
+┌─────────┐       
+│         │       
+│  Vendor │       
+│         │       
+└────┬────┘       
+     │            
+     │ 1:many     
+     ▼            
+┌─────────┐       ┌─────────┐      ┌─────────┐
+│         │ 1:many│         │      │         │
+│   PO    ├──────►│  Bill   │      │ Expense │
+│         │       │         │      │         │
+└─────┬───┘       └─────────┘      └────▲────┘
+      │                                  │
+      │              1:many              │
+      └──────────────────────────────────┘
+```
+
+### Key Relationships in the ERD:
+
+1. **Vendor to PO**: One vendor can have many purchase orders (1:many)
+2. **Vendor to Bill**: One vendor can have many bills (1:many)
+3. **Vendor to Expense**: One vendor can have many expenses (1:many)
+4. **PO to Bill**: One purchase order can generate one or more bills (1:many)
+5. **PO to Expense**: One purchase order can generate one or more expenses (1:many)
+
+## Data Entity Attributes
+
+### Vendor
+- ID (Primary Key)
+- Name
+- Contact Information
+- Payment Terms
+- Default Expense Account
+
+### Purchase Order
+- ID (Primary Key)
+- Vendor ID (Foreign Key)
+- Date
+- Status (Open/Closed)
+- Line Items
+- Ship To Information
+- Total Amount
+
+### Bill
+- ID (Primary Key)
+- Vendor ID (Foreign Key)
+- Purchase Order ID (Foreign Key, optional)
+- Date
+- Due Date
+- Payment Status
+- Line Items
+- Total Amount
+
+### Expense
+- ID (Primary Key)
+- Vendor ID (Foreign Key)
+- Purchase Order ID (Foreign Key, optional)
+- Date
+- Payment Method
+- Account
+- Line Items
+- Total Amount
+
+This structure allows for a flexible workflow where purchase orders are optional precursors to financial transactions, while maintaining proper relationships for reporting and tracking purposes.
