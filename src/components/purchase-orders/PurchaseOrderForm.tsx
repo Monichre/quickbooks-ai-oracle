@@ -5,7 +5,7 @@ import {useForm, Controller, useFieldArray, useWatch} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useRouter} from 'next/navigation'
 import type {Purchase, Vendor} from '@/services/intuit/types'
-import {createPurchaseOrderAction} from '@/actions/purchaseOrderActions'
+import {createPurchaseOrderAction} from '@/app/actions/purchaseOrderActions'
 import {POLineItemsEditor} from './POLineItemsEditor'
 import {purchaseOrderSchema, type PurchaseOrderFormData} from './types'
 

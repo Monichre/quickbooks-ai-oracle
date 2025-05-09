@@ -10,26 +10,37 @@ Enhance our invoice generation, preview, and editing capabilities by integrating
    - React PDF template supporting Tiptap JSON format
    - Rich formatting capabilities for professional-looking invoices
    - Customizable layout and styling
+   - https://midday.ai/components/invoice/
 
 2. **Invoice React Template**
    - Interactive invoice preview component
    - Supports Tiptap JSON format for rich content
    - Themeable design to match our application
+   - https://midday.ai/components/invoice-react/
 
 3. **Invoice Open Graph Template**
    - Next.js template for generating shareable invoice previews
    - Social media and messaging platform compatible
    - Brand-consistent presentation
+   - https://midday.ai/components/invoice-og/
 
 4. **Invoice Toolbar**
    - Collaborative editing tools with comments and avatars
    - Annotation capabilities for review workflows
    - Customizable action buttons
+   - https://midday.ai/components/invoice-toolbar/
 
 5. **Invoice Editor** (future integration, currently marked as "Coming Soon")
    - Visual drag-and-drop invoice editor
    - Highly customizable template system
    - Real-time preview capabilities
+   - https://midday.ai/components/editor/
+  
+6. [Invoice PDF Template Source](https://github.com/midday-ai/midday/tree/main/packages/invoice)
+7. [UI Component Library](https://github.com/midday-ai/midday/tree/main/packages/ui/src/components)
+8. [Dashboard Assistant Components](https://github.com/midday-ai/midday/tree/main/apps/dashboard/src/components/assistant)
+9. [Invoice Editor Components](https://github.com/midday-ai/midday/tree/main/packages/ui/src/components/editor)
+10. [Document Processor](https://github.com/midday-ai/midday/tree/main/packages/documents)
 
 ## Integration Steps
 

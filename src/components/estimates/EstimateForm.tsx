@@ -33,6 +33,10 @@ import {
 
 import {Button} from '@/components/ui/button'
 import {createEstimate} from '@/services/intuit/estimate/estimate.api'
+import {
+  createEstimateAction,
+  updateEstimateAction,
+} from '@/app/actions/estimateActions'
 import {toast} from 'sonner'
 
 const salesItemLineDetailSchema = z.object({
@@ -173,6 +177,8 @@ export function EstimateForm({
     null
   )
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
+  const MAX_RETRIES = 3
 
   const {
     control,
@@ -423,24 +429,67 @@ export function EstimateForm({
         estimateData.Line = cleanEstimateLineItems(estimateData.Line)
       }
 
-      const response = await createEstimate(estimateData)
-      console.log('🚀 ~ API response:', response)
+      let response
+      let successMessage
+
+      // Determine if this is a create or update operation
+      if (initialData && estimateData.Id && estimateData.SyncToken) {
+        // This is an update operation
+        const result = await updateEstimateAction({
+          ...estimateData,
+        })
+
+        console.log('🚀 ~ onSubmit ~ result:', result)
+
+        if (result.data.success) {
+          successMessage = 'Estimate updated successfully!'
+          response = result.data.Estimate
+
+          console.log('🚀 ~ onSubmit ~ response:', response)
+        } else {
+          throw new Error(result.error || 'Failed to update estimate')
+        }
+      } else {
+        // This is a create operation
+        const result = await createEstimateAction({
+          ...estimateData,
+        })
+
+        if (result.data.success) {
+          successMessage = 'Estimate created successfully!'
+          response = result.data.Estimate
+        } else {
+          throw new Error(result.error || 'Failed to create estimate')
+        }
+      }
 
       if (response?.Id) {
         // Show success toast notification
-        toast.success('Estimate created successfully!')
+        toast.success(successMessage)
         // Redirect to detail page
         router.push(`/dashboard/estimates/${response.Id}`)
         return {success: true, data: response}
       }
 
-      setError('Failed to create estimate - invalid response from API')
+      setError('Failed to process estimate - invalid response from API')
       return {success: false, error: 'Invalid API response'}
     } catch (error) {
-      console.error('Failed to create estimate:', error)
+      console.error('Failed to process estimate:', error)
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred'
-      setError(`Failed to create estimate: ${errorMessage}`)
+
+      // Display a more user-friendly message for concurrent update errors
+      if (
+        errorMessage.includes('5010') ||
+        errorMessage.includes('concurrent')
+      ) {
+        setError(
+          'This estimate was modified by another user. The latest version has been loaded. Please try saving again.'
+        )
+      } else {
+        setError(`Failed to process estimate: ${errorMessage}`)
+      }
+
       return {success: false, error: errorMessage}
     } finally {
       setIsSubmitting(false)

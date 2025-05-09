@@ -1,0 +1,71 @@
+---
+description: Purchase Orders, Estimates, Invoices and Vendors
+globs: 
+alwaysApply: false
+---
+## Required Fields and Data to Generate a Purchase Order from an Estimate in QuickBooks
+
+### Necessary Fields and Data
+
+To generate a purchase order (PO) from an estimate in QuickBooks, the following conditions and fields must be met:
+
+- **Purchase Orders Feature Enabled**: You must turn on the purchase order feature in QuickBooks (either Desktop or Online) before creating POs from estimates[8][12].
+- **Estimate Status**: The estimate must have a status of either *Accepted* or *Pending*, not *Closed*[9].
+- **Line Items on Estimate**: Only line items marked as “purchased from a vendor” in your Products and Services list can be copied to a PO. Each item must have the “I purchase this product or service from a vendor” option checked in its setup[9].
+- **Vendor Assignment**: When creating the PO, you must select a vendor for each item. If items on the estimate are sourced from multiple vendors, you can choose to generate separate POs for each vendor[9].
+- **Other Required PO Fields**: When generating the PO, you must fill in the PO date, PO number (auto-generated), and shipping information. Each line item should have quantity, description, and price[8][12].
+
+### What If There Are No Line Items on the Estimate?
+
+- **No Line Items = No Purchase Order**: If your estimate does not have any line items, you cannot generate a purchase order from it. The PO generation process relies on the presence of line items that specify what needs to be ordered[6][9].
+- **Best Practice**: Always ensure your estimates include specific line items for products or services you intend to order. Without these, the system has nothing to transfer to the PO.
+
+### How to Properly Configure an Estimate
+
+- **Add Line Items**: Enter all products and services as line items in the estimate. Use the Line Items grid to add, edit, and detail each item[6][11].
+- **Mark Items as Purchasable**: In your Products and Services list, ensure each item you plan to order from a vendor is marked as purchasable[9].
+- **Customer/Job Details**: Assign the estimate to the correct customer or job, and include relevant dates and descriptions[7][11].
+- **Recurring Templates**: For frequently used estimates, you can create recurring transactions or templates with pre-filled line items for efficiency[10].
+- **Save Your Work**: Line items are not saved until the entire estimate is saved. Always save after entering or editing line items[6].
+
+### Other Ways to Generate a Purchase Order in QuickBooks
+
+- **From Scratch**: You can always create a PO directly, independent of any estimate, by navigating to the Vendors menu (Desktop) or the +New button (Online), then selecting Purchase Order and filling in the required details[8][12].
+- **From Bills or Expenses**: In some workflows, you can generate POs from bills or expense entries, though this is less common and typically used for back-ordering or drop shipments.
+- **Using Recurring Transactions**: For regular purchases, set up recurring POs for standard items or vendors[10].
+- **Manual Entry**: If your workflow does not start with an estimate, simply enter the PO manually, specifying vendor, items, quantities, and other details[8][12].
+
+---
+
+**Summary Table: Key Requirements for PO Creation from Estimate**
+
+| Requirement                        | Details                                                                                  |
+|-------------------------------------|------------------------------------------------------------------------------------------|
+| Purchase Orders Enabled             | Must be turned on in QuickBooks settings                                                 |
+| Estimate Status                    | Must be Accepted or Pending                                                              |
+| Line Items Present                  | Must have line items marked as purchasable                                               |
+| Vendor Selection                    | Assign vendor(s) for each item                                                           |
+| Required PO Fields                  | Date, PO number, shipping info, item details                                             |
+| No Line Items                       | Cannot generate a PO; add line items to the estimate first                               |
+| Other PO Creation Methods           | Direct entry, recurring transactions, or from bills/expenses                             |
+
+---
+
+**Best Practice:** Always build your estimates with detailed, purchasable line items and keep your Products and Services list updated to ensure seamless PO creation and accurate procurement tracking[6][9][10][11].
+
+Citations:
+[1] https://quickbooks.intuit.com/learn-support/en-us/help-article/new-subscriptions/copy-estimate-purchase-order/L7Z08es7a_US_en_US
+[2] https://quickbooks.intuit.com/learn-support/en-ca/help-article/new-subscriptions/copy-estimate-purchase-order/L7Z08es7a_CA_en_CA
+[3] https://www.youtube.com/watch?v=v-GAWeKr5vA
+[4] https://quickbooks.intuit.com/learn-support/en-uk/account-management/convert-purchase-order-or-bill-to-an-estimate/00/1058861
+[5] https://www.myvao.com/2022/11/24/how-to-create-a-purchase-order-from-an-estimate-in-quickbooks/
+[6] https://help.method.me/en/articles/3738794-create-an-estimate-for-quickbooks-online-accounts
+[7] https://www.workyard.com/quickbooks-construction/estimates-in-quickbooks
+[8] https://www.workyard.com/quickbooks-construction/quickbooks-purchase-order
+[9] https://www.youtube.com/watch?v=dDlVpETfvcY
+[10] https://quickbooks.intuit.com/learn-support/en-us/do-more-with-quickbooks/can-i-create-an-estimate-form-template-that-includes-specific/00/752651
+[11] https://www.accountingdepartment.com/blog/how-to-create-and-manage-estimates-in-quickbooks-accounting-software
+[12] https://www.saasant.com/articles/mastering-purchase-order-setup-in-quickbooks/
+
+---
+Answer from Perplexity: pplx.ai/share

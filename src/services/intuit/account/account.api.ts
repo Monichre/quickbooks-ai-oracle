@@ -31,6 +31,9 @@ export async function getAccount(accountId: string) {
  */
 export async function findAccounts(params: QueryParams = {}) {
 	const queryString = buildQueryString(params);
+
+	console.log("🚀 ~ findAccounts ~ queryString:", queryString);
+
 	return quickbooksRequest<{ QueryResponse: { Account: Account[] } }>(
 		`query?query=select * from Account${queryString}`,
 	);

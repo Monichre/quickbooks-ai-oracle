@@ -1,6 +1,6 @@
 import React from 'react'
 import {render, screen, fireEvent} from '@testing-library/react'
-import {CopyToPurchaseOrderAction} from '../CopyToPurchaseOrderAction'
+import {CopyToPurchaseOrderAction} from '../CopyToPurchaseOrder'
 import {useRouter} from 'next/navigation'
 
 // Mock the Next.js router

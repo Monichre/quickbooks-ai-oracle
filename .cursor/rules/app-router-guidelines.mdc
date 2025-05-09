@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Next .js 15 App Router structure, routing, metadata, and async request APIs
+globs: app/**/*.{ts,tsx}
+alwaysApply: true
+---
+
+- **Route structure & naming**
+  - Every folder under `app` is a segment. Use `page.tsx`, `layout.tsx`, optional `loading.tsx`/`error.tsx`.
+  - ✅ `@app/dashboard/page.tsx`  ❌ `@app/dashboard/index.tsx`
+
+- **Server Components by default**
+  - Omit `"use client"` unless you need browser-only hooks/APIs.
+  - ✅ _Server component_  
+    ```tsx
+    export default function Page() { return <div>SSR</div>; }
+    ```  
+    ❌ Unneeded client directive.
+
+- **Async request-specific APIs**
+  - `params`, `cookies()`, `headers()`, `searchParams` are **async** in 15.  
+    ```tsx
+    export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+      const { id } = await params;
+      /* … */
+    }
+    ```
+
+- **Metadata**
+  - Static: export `metadata`.  
+  - Dynamic: export `async generateMetadata()` and `await params`.  
+
+- **Static generation for dynamic routes**
+  - Export `generateStaticParams()` and `await params` inside the page.
+
+- **Intercepting (`(..)`) & parallel (`@slot`) routes**
+  - Use for modals/side-by-side layouts; give each segment its own `loading.tsx` & `error.tsx`.

@@ -1,4 +1,4 @@
-# Ticket: Copy Estimate to Purchase Order / Invoice
+# Ticket: Create Purchase Order / Invoice From Estimate
 
 ## Overview
 
@@ -60,30 +60,11 @@ Enable users to generate a QuickBooks **Purchase Order** (vendor-facing) or **In
    • Author `PurchaseOrderCreationProcess.md` (PascalCase) documenting flow.  
    • (Optional) Record Loom demo.
 
-## Technical Notes
+## Components to Integrate
 
-- UI stack: React 18 + Next.js (RSC where possible) + shadcn/tailwind.
-- Follow SOLID, functional utilities, descriptive names, no `any`.
-- Re-use `apis/intuit/purchase-order.mdc` & `linking-itemreceipt-bill-to-purchase-order-invoice-to-sales-order.mdc` for compliance.
-- Ensure new API wrappers honour QuickBooks *minorversion* query param.
-
-## Success Criteria
-
-- Dropdown renders without significant performance loss (<50 ms additional render time).
-- Creating a PO from an Estimate with two vendors produces **two** POs in QuickBooks and shows success toast.
-- Mapping utilities reach ≥90 % unit-test coverage.
-- AI-Assist returns schema-valid payload in ≥3 manual tests.
-
-## Integrate Midday Components
-
-### Overview
-Integrate open-source invoice components from Midday (https://midday.ai/components/) to enhance our invoice creation, preview, and PDF generation capabilities.
-
-### Components to Integrate
-1. **Invoice PDF Template** - React PDF template supporting Tiptap JSON for invoice generation
-2. **Invoice React Template** - React template for invoices supporting Tiptap JSON format
-3. **Invoice Open Graph Template** - Next.js Open Graph template for invoice sharing
-4. **Invoice Toolbar** - Toolbar with comments and avatars for invoice collaboration
+** Integrate Midday Components**
+Integrate open-source invoice components from Midday (https://midday.ai/components/) to enhance our invoice creation, preview, and PDF generation capabilities. See [Midday Integration](./MiddayComponentsIntegration.md)
+`./MiddayComponentsIntegration.md`
 
 ### Sub-Tasks
 1. **Evaluate Component Compatibility**
@@ -106,54 +87,22 @@ Integrate open-source invoice components from Midday (https://midday.ai/componen
    • Update invoice creation pages to utilize new templates
    • Ensure QuickBooks API compatibility is maintained
 
+
+## Technical Notes
+
+- UI stack: React 18 + Next.js (RSC where possible) + shadcn/tailwind.
+- Follow SOLID, functional utilities, descriptive names, no `any`.
+- Re-use `apis/intuit/purchase-order.mdc` & `linking-itemreceipt-bill-to-purchase-order-invoice-to-sales-order.mdc` for compliance.
+- Ensure new API wrappers honour QuickBooks *minorversion* query param.
+
+## Success Criteria
+
+- Dropdown renders without significant performance loss (<50 ms additional render time).
+- Creating a PO from an Estimate with two vendors produces **two** POs in QuickBooks and shows success toast.
+- Mapping utilities reach ≥90 % unit-test coverage.
+- AI-Assist returns schema-valid payload in ≥3 manual tests.
+
 ### Dependencies
 - Requires completion of Invoice Service Wrapper (Ticket #04)
 - Should be implemented after Invoice Create page (Ticket #07)
 - May require updates to the Invoice data model
-
----
-*Last updated: {{DATE}}*
-
-[Copy an estimate to a purchase order](https://quickbooks.intuit.com/learn-support/en-us/help-article/new-subscriptions/copy-estimate-purchase-order/L7Z08es7a_US_en_US)
-
-**QuickBooksHelp**Intuit
-
-# **Copy an estimate to a purchase order**
-
-**by Intuit•207•Updated about 21 hours ago**
-
-Learn how to copy an estimate onto a purchase order in QuickBooks Online.
-
- Purchase orders are only available in QuickBooks Online Plus and QuickBooks Online Advanced. If you need to, you can [**upgrade your plan**](https://app.qbo.intuit.com/app/login?pagereq=billing/?cid=OHH-CS_SDR-US-QBO-QBOAV-NA-XSLL-EDU-NA-PB-SDR_IAPers_Unknown).
-
-To streamline your process once a customer approves your estimate you can easily copy it to a purchase order. In this article, we'll show you how.
-
-**Note**: This option isn't available yet for the new estimate and invoice layout. [**Find out which layout you have**](https://community.intuit.com/oicms/L9jVVT2GY_US_en_US).
-
-## **Step 1: Turn on the purchase order feature**
-
-1. Go to **Settings** , then select **Account and settings**.
-2. Go to **Expenses**.
-3. Select the **pencil**✎ icon in the **Purchase orders** section.
-4. Turn on the **Use purchase orders** switch.
-5. Select **Save**, then **Done**.
-
-## **Step 2: Copy estimate to a purchase order**
-
-1. Select **+ New**.
-2. Select Estimate.
-3. Enter customer and product or service details. Then select **Save**.
-4. A dropdown choice of **Create invoice** or**Copy to purchase order** will appear next to the amount.
-5. Select **Copy to purchase order**.
-6. Select a **Vendor**.
-7. In the Item details section, select the same customer mentioned on the purchase order.
-8. Select **Save and close**.
-
-## **Why didn't some of my items copy over to the purchase order?**
-
-Only items marked as purchased from vendors get copied over to purchase orders. Verify that your products or services are marked accordingly.
-
-1. Go to **Settings**⚙, then select **Products & services** ([**Take me there**](https://c1.qbo.intuit.com/qbo1/login?pagereq=items)).
-2. Find the product or service. Then select **Edit**.
-3. In the **Purchasing information** section, select the **I purchase this product/service from a vendor** checkbox.
-4. Select **Save and close**.

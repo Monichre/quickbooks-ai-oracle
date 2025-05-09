@@ -1,5 +1,5 @@
 ---
-description: 
+description: Purchase Order creation, estimate to purchase order, invoices
 globs: 
 alwaysApply: false
 ---

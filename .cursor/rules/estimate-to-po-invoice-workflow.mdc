@@ -1,0 +1,85 @@
+---
+description: Any work regarding estimates, purchase orders, or invoices
+globs: 
+alwaysApply: false
+---
+# QuickBooks Estimate to PurchaseOrder/Invoice Workflow
+
+This rule documents the core workflow for generating QuickBooks **Purchase Orders** (PO) or **Invoices** from existing **Estimates**.
+
+First review [estimate-to-purchase-order-necessary-data.mdc](mdc:quickbooks-oracle/.cursor/rules/estimate-to-purchase-order-necessary-data.mdc)
+
+## Overview
+
+The feature enables users to select an existing Estimate and generate either:
+- **Purchase Orders** (vendor-facing documents) - One PO per vendor
+- **Invoices** (customer-facing documents) - One Invoice per Estimate
+
+## Core Components
+
+### 1. Data Mapping Utilities
+
+- **[map-estimate-to-purchase-order.ts](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/src/services/intuit/purchase-order/map-estimate-to-purchase-order.ts)**
+  - Maps an Estimate to one or more PurchaseOrder objects (one per vendor)
+  - Handles vendor grouping and field mapping
+  - Returns an array of PurchaseOrder objects
+
+- **[map-estimate-to-invoice.ts](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/src/services/intuit/invoice/map-estimate-to-invoice.ts)**
+  - Maps an Estimate to a single Invoice object
+  - Preserves customer information and line items
+  - Returns a single Invoice object
+
+### 2. API Services
+
+- **[purchase-order.api.ts](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/src/services/intuit/purchase-order/purchase-order.api.ts)**
+  - Handles CRUD operations for Purchase Orders via QuickBooks API
+  - Supports bulk creation
+
+- **[invoice.api.ts](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/src/services/intuit/invoice/invoice.api.ts)**
+  - Handles CRUD operations for Invoices via QuickBooks API
+  - Additional functionality for PDF generation and email
+
+### 3. UI Components
+
+- **Action Dropdown** on Estimate rows:
+  - "Create Purchase Order" option
+  - "Create Invoice" option
+
+- **Prefill Pages**:
+  - `/dashboard/purchase-orders/create?estimate=<id>&vendor=<id>`
+  - `/dashboard/invoices/create?estimate=<id>`
+
+## Implementation Details
+
+### PurchaseOrder Creation Flow
+
+```
+Estimate → mapEstimateToPurchaseOrder() → PurchaseOrder[] → createPurchaseOrder() → QuickBooks API
+```
+
+- Creates one PurchaseOrder per Vendor
+- Groups line items by Vendor
+- Properly maps fields with appropriate references
+
+### Invoice Creation Flow
+
+```
+Estimate → mapEstimateToInvoice() → Invoice → createInvoice() → QuickBooks API
+```
+
+- Creates a single Invoice from an Estimate
+- Preserves all relevant fields and line items
+- Sets appropriate DueDate and other invoice-specific fields
+
+## Error Handling Guidelines
+
+- Validate input Estimates for completeness before mapping
+- Handle missing data gracefully with clear error messages
+- Surface QuickBooks API validation errors via toast notifications
+- Log backend errors to Sentry
+
+## Related Documentation
+
+- [PurchaseOrder API](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/.cursor/rules/apis/intuit/purchase-order.mdc)
+- [Invoice API](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/.cursor/rules/apis/intuit/intuit-invoice.mdc)
+- [Entity Linking](mdc:quickbooks-oracle/quickbooks-oracle/quickbooks-oracle/.cursor/rules/apis/intuit/linking-itemreciept-bill-to-purchase-order-invoice-to-sales-order.mdc)

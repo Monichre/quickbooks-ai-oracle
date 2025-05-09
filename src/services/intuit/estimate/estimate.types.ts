@@ -209,14 +209,16 @@ export interface EstimateQueryParams {
 }
 
 /**
- * Interface for the Estimate query response
+ * Interface for the Estimate query response (findEstimates method)
  */
 export interface EstimateQueryResponse {
-	QueryResponse: {
+	QueryResponse?: {
 		Estimate?: Estimate[];
 		startPosition?: number;
 		maxResults?: number;
 		totalCount?: number;
 	};
+	// For direct fetch by ID (getEstimate method)
+	Estimate?: Estimate;
 	time?: string;
 }

@@ -37,25 +37,27 @@ const customerSchema = z.object({
 	SyncToken: z.string().optional(),
 });
 
-export const createCustomerAction = action(customerSchema, async (data) => {
-	try {
-		// If Id and SyncToken are present, we're updating
-		if (data.Id && data.SyncToken) {
-			const response = await updateCustomer(
-				data as Customer & { Id: string; SyncToken: string },
-			);
-			return { success: true, data: response };
-		} else {
+export const createCustomerAction = action
+	.schema(customerSchema)
+	.action(async ({ parsedInput }) => {
+		try {
+			// If Id and SyncToken are present, we're updating
+			if (parsedInput.Id && parsedInput.SyncToken) {
+				const response = await updateCustomer(
+					parsedInput as Customer & { Id: string; SyncToken: string },
+				);
+				return { success: true, data: response };
+			}
+
 			// Otherwise, creating new
-			const response = await createCustomer(data as Customer);
+			const response = await createCustomer(parsedInput as Customer);
 			return { success: true, data: response };
+		} catch (error) {
+			console.error("Failed to handle customer:", error);
+			return {
+				success: false,
+				error:
+					error instanceof Error ? error.message : "Failed to handle customer",
+			};
 		}
-	} catch (error) {
-		console.error("Failed to handle customer:", error);
-		return {
-			success: false,
-			error:
-				error instanceof Error ? error.message : "Failed to handle customer",
-		};
-	}
-});
+	});

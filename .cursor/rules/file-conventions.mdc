@@ -1,0 +1,92 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# File Naming and Organization Conventions
+
+This rule documents the file naming, organization, and code style conventions for the QuickBooks Oracle project.
+
+## File Naming Conventions
+
+- **kebab-case** for file names (e.g., `map-estimate-to-invoice.ts`)
+- **PascalCase** for React component files (e.g., `EstimateTable.tsx`)
+- **camelCase** for utility/hook files (e.g., `useEstimate.ts`)
+
+### Example Directory Structure
+
+```
+src/
+  services/
+    intuit/
+      purchase-order/
+        index.ts                        # Exports from the module
+        purchase-order.api.ts           # API service wrapper
+        map-estimate-to-purchase-order.ts  # Utility function
+        __tests__/                      # Test directory
+          purchase-order.test.ts        # Tests for API
+          map-estimate-to-purchase-order.test.ts # Tests for utility
+```
+
+## Code Organization Patterns
+
+### Service Organization
+
+- **API Services** (`*.api.ts`)
+  - Self-contained wrapper for external API
+  - Pure functions for API operations
+  - Consistent error handling
+  - Named exports (no default exports)
+
+- **Mapping Utilities** (`map-*.ts`)
+  - Pure functions for data transformation
+  - Strong type safety
+  - Explicit error handling
+  - Unit tests with ≥90% coverage
+
+### Test Organization
+
+- Place tests in `__tests__/` subdirectory within the module
+- Test filenames should match implementation files
+- Use proper Jest/testing-library conventions
+- Include edge case and error testing
+
+## Export Patterns
+
+- Use **named exports** instead of default exports
+- Export via `index.ts` barrel files
+- Example:
+  ```typescript
+  // In map-estimate-to-invoice.ts
+  export function mapEstimateToInvoice(est: Estimate): Invoice { /* ... */ }
+  
+  // In index.ts
+  export * from "./map-estimate-to-invoice";
+  export * from "./invoice.api";
+  ```
+
+## Documentation Conventions
+
+- Use JSDoc comments for functions and types
+- Include parameter and return type documentation
+- Document thrown errors and edge cases
+- For major utilities, create a documentation file in `docs/intuit/`
+
+## Error Handling
+
+- Use descriptive error messages
+- Include context in error messages (e.g., entity IDs)
+- Prefer early validation and clear errors
+- Example:
+  ```typescript
+  if (!est.Line || est.Line.length === 0) {
+    throw new Error("Cannot map an empty Estimate (no line items)");
+  }
+  ```
+
+## Type Safety
+
+- Use explicit TypeScript types
+- Avoid using `any` type
+- Define interfaces and types in appropriate files
+- Use generics appropriately for reusable code

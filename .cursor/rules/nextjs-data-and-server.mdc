@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Server Actions, API route handlers, caching, ISR, and error boundaries
+globs: app/**/*.{ts,tsx}, app/api/**/route.ts
+alwaysApply: true
+---
+
+- **Server Actions for mutations**
+  - Mark with `'use server'`. Revalidate with `revalidatePath`/`revalidateTag`.
+  - ✅  
+    ```tsx
+    'use server';
+    export async function addItem(fd: FormData) {
+      await db.item.create({ name: fd.get('name') as string });
+      revalidatePath('/');
+    }
+    ```
+
+- **Form UX helpers (client)**
+  - Use `useFormStatus`, `useFormState`, `useOptimistic` for loading & optimistic UI.
+
+- **Route Handlers (`app/api/**/route.ts`)**
+  - Export async `GET`, `POST`, etc.  
+    ```ts
+    export const revalidate = 60; // cache for 60 s
+    export async function GET() { return Response.json({ ok: true }); }
+    ```
+
+- **Caching & revalidation**
+  - In server components: `fetch(url, { next: { revalidate: 3600 } })`.
+  - GET handlers are uncached unless you set `revalidate` or manual headers.
+
+- **ISR & streaming**
+  - Combine `fetch` + `Suspense` to stream data.
+  - Use `Promise.all` and `React.cache` for parallel/duplicated fetches.
+
+- **Error boundaries**
+  - `error.tsx` must be a client component receiving `error` & `reset`.
+  - Place nearest to the failing segment.
