@@ -1,7 +1,7 @@
 import './global.css'
 
 import {ClerkProvider, SignUpButton, SignedIn, UserButton} from '@clerk/nextjs'
-import {SignInButton} from '@clerk/nextjs'
+
 import {dark} from '@clerk/themes'
 import {GeistMono} from 'geist/font/mono'
 import {GeistSans} from 'geist/font/sans'
@@ -14,6 +14,7 @@ import {FullNav} from '@/components/nav/full-nav'
 import {Toaster} from '@/components/ui/sonner'
 import {NuqsAdapter} from 'nuqs/adapters/next/app'
 import {AuthProvider} from '@/components/auth-provider'
+import {AiRuntimeProvider} from '@/providers/ai-runtime-provider'
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -60,20 +61,22 @@ export default function RootLayout({
               'antialiased'
             )}
           >
-            <NuqsAdapter>
-              <ThemeProvider
-                attribute={['class', 'data-theme']}
-                defaultTheme='dark'
-                enableSystem
-                disableTransitionOnChange
-                enableColorScheme
-                style={{colorScheme: 'dark'}}
-              >
-                <FullNav />
-                {children}
-                <Toaster />
-              </ThemeProvider>
-            </NuqsAdapter>
+            <AiRuntimeProvider>
+              <NuqsAdapter>
+                <ThemeProvider
+                  attribute={['class', 'data-theme']}
+                  defaultTheme='dark'
+                  enableSystem
+                  disableTransitionOnChange
+                  enableColorScheme
+                  style={{colorScheme: 'dark'}}
+                >
+                  <FullNav />
+                  {children}
+                  <Toaster />
+                </ThemeProvider>
+              </NuqsAdapter>
+            </AiRuntimeProvider>
           </body>
         </html>
       </AuthProvider>

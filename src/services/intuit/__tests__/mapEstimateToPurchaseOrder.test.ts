@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import type { Estimate } from "../estimate/estimate.types";
 import { PurchaseOrder } from "../types";
-import { mapEstimateToPurchaseOrder } from "../purchase-order/mapEstimateToPurchaseOrder";
+import { mapEstimateToPurchaseOrder } from "../purchase-order/map-estimate-to-purchase-order";
 
 describe("mapEstimateToPurchaseOrder", () => {
 	const mockAPAccountRef = {

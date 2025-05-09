@@ -1,3 +1,3 @@
 export * from "./purchase-order.api";
-export * from "./mapEstimateToPurchaseOrder";
+export * from "./map-estimate-to-purchase-order";
 export * from "./config";

@@ -1,0 +1,219 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Customer
+
+A customer is the consumer of the service or product that your business offers. QuickBooks Online allows you to use SubCustomer to relate a customer (the parent) to another customer (the subcustomer).
+
+## The customer object
+
+```json
+{
+  "PrimaryEmailAddr": {
+    "Address": "Surf@Intuit.com"
+  },
+  "PrimaryPhone": {
+    "FreeFormNumber": "(555) 555-5555"
+  },
+  "ShipAddr": {
+    "City": "Half Moon Bay",
+    "Line1": "1234 Ocean View Blvd",
+    "PostalCode": "94213",
+    "CountrySubDivisionCode": "CA",
+    "Id": "3"
+  },
+  "BillAddr": {
+    "City": "Half Moon Bay",
+    "Line1": "1234 Ocean Ave.",
+    "PostalCode": "94213",
+    "Lat": "37.4307072",
+    "Long": "-122.4295234",
+    "CountrySubDivisionCode": "CA",
+    "Id": "2"
+  },
+  "Job": false,
+  "BillWithParent": false,
+  "Balance": 2000.00,
+  "BalanceWithJobs": 2000.00,
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "PreferredDeliveryMethod": "Email",
+  "IsProject": false,
+  "ClientCompanyId": "1",
+  "GivenName": "John",
+  "FamilyName": "Doe",
+  "FullyQualifiedName": "Surf Boards Unlimited",
+  "CompanyName": "Surf Boards Unlimited",
+  "DisplayName": "Surf Boards Unlimited",
+  "PrintOnCheckName": "Surf Boards Unlimited",
+  "Active": true,
+  "Taxable": true,
+  "MetaData": {
+    "CreateTime": "2023-05-01T08:41:44-07:00",
+    "LastUpdatedTime": "2023-05-01T08:41:44-07:00"
+  },
+  "Id": "1"
+}
+```
+
+## Create a customer
+
+### Request Body
+
+```json
+{
+  "DisplayName": "Surf Boards Unlimited",
+  "CompanyName": "Surf Boards Unlimited",
+  "GivenName": "John",
+  "FamilyName": "Doe",
+  "BillAddr": {
+    "Line1": "1234 Ocean Ave.",
+    "City": "Half Moon Bay",
+    "PostalCode": "94213",
+    "CountrySubDivisionCode": "CA"
+  },
+  "PrimaryPhone": {
+    "FreeFormNumber": "(555) 555-5555"
+  },
+  "PrimaryEmailAddr": {
+    "Address": "Surf@Intuit.com"
+  }
+}
+```
+
+## Query a customer
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Customer where DisplayName = 'Surf Boards Unlimited'
+```
+
+## Read a customer
+
+### Request
+
+```
+GET /v3/company/<realmId>/customer/<id>
+```
+
+### Response
+
+```json
+{
+  "Customer": {
+    "PrimaryEmailAddr": {
+      "Address": "Surf@Intuit.com"
+    },
+    "PrimaryPhone": {
+      "FreeFormNumber": "(555) 555-5555"
+    },
+    "BillAddr": {
+      "City": "Half Moon Bay",
+      "Line1": "1234 Ocean Ave.",
+      "PostalCode": "94213",
+      "Lat": "37.4307072",
+      "Long": "-122.4295234",
+      "CountrySubDivisionCode": "CA",
+      "Id": "2"
+    },
+    "Job": false,
+    "BillWithParent": false,
+    "Balance": 2000.00,
+    "BalanceWithJobs": 2000.00,
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "PreferredDeliveryMethod": "Email",
+    "IsProject": false,
+    "GivenName": "John",
+    "FamilyName": "Doe",
+    "FullyQualifiedName": "Surf Boards Unlimited",
+    "CompanyName": "Surf Boards Unlimited",
+    "DisplayName": "Surf Boards Unlimited",
+    "PrintOnCheckName": "Surf Boards Unlimited",
+    "Active": true,
+    "Taxable": true,
+    "MetaData": {
+      "CreateTime": "2023-05-01T08:41:44-07:00",
+      "LastUpdatedTime": "2023-05-01T08:41:44-07:00"
+    },
+    "Id": "1",
+    "SyncToken": "0"
+  },
+  "time": "2023-05-01T08:41:44-07:00"
+}
+```
+
+## Full update a customer
+
+### Request Body
+
+```json
+{
+  "DisplayName": "Surf Boards Unlimited",
+  "CompanyName": "Surf Boards Unlimited",
+  "GivenName": "John",
+  "FamilyName": "Doe",
+  "BillAddr": {
+    "Line1": "1234 Ocean Ave.",
+    "City": "Half Moon Bay",
+    "PostalCode": "94213",
+    "CountrySubDivisionCode": "CA"
+  },
+  "ShipAddr": {
+    "Line1": "1234 Ocean View Blvd",
+    "City": "Half Moon Bay",
+    "PostalCode": "94213",
+    "CountrySubDivisionCode": "CA"
+  },
+  "PrimaryPhone": {
+    "FreeFormNumber": "(555) 555-5555"
+  },
+  "PrimaryEmailAddr": {
+    "Address": "Surf@Intuit.com"
+  },
+  "Id": "1",
+  "SyncToken": "0"
+}
+```
+
+## Sparse update a customer
+
+### Request Body
+
+```json
+{
+  "BillAddr": {
+    "Line1": "1234 New Ocean Ave.",
+    "City": "Half Moon Bay",
+    "PostalCode": "94213",
+    "CountrySubDivisionCode": "CA"
+  },
+  "sparse": true,
+  "Id": "1",
+  "SyncToken": "0"
+}
+```
+
+## Delete a customer
+
+### Request
+
+```
+POST /v3/company/<realmId>/customer?operation=delete
+```
+
+### Request Body
+
+```json
+{
+  "Id": "1",
+  "SyncToken": "0"
+}
+```

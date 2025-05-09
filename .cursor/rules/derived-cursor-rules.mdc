@@ -13,12 +13,12 @@ All project documentation, including coding standards, workflow guidelines, and 
 
 ### Ticket Tracking
 
-Tickets will be managed using Markdown files in the `tickets` directory.  Each ticket will follow a consistent template outlining its goal, acceptance criteria, implementation notes, out-of-scope items, and test strategy. The status of each ticket will be indicated using the following keys: ✅ done, ⏳ pending, 🛑 blocked.  The `tickets/README.md` file will contain an overview of the ticket system and naming conventions.  Example ticket documentation can be found in `/docs/intuit/UI-AddDropdownActionColumn.md`
+Tickets will be managed using Markdown files in the `tickets` directory.  Each ticket will follow a consistent template outlining its goal, acceptance criteria, implementation notes, out-of-scope items, and test strategy. The status of each ticket will be indicated using the following keys: ✅ done, ⏳ pending, 🛑 blocked.  The `tickets/README.md` file will contain an overview of the ticket system and naming conventions.  Example ticket documentation can be found in `/docs/intuit/UI-AddDropdownActionColumn.md`.  The AI assistant should review `@TODO.md` and `@README.md` before starting work on a ticket.  New utility functions should have accompanying test files created in a `__tests__` subdirectory within the relevant module directory.  All documentation for new utility functions should follow the template in `02-Utility-MapEstimateToPurchaseOrder.md`.  The AI assistant should utilize and enforce the criteria outlined in `@MapEstimateToPurchaseOrder.md` when working on tickets `@11-Utility-GenerateEstimatePDF.md`, `@12-UI-PrintEstimatePage.md`, and `@16-UI-CopyToPurchaseOrderAction.md`.  All new utility functions must have accompanying test files created in a `__tests__` subdirectory within the relevant module directory.  All documentation for new utility functions should follow the template in `02-Utility-MapEstimateToPurchaseOrder.md`.
 
 
 ## TECH STACK
 
-This project utilizes Next.js, React, and TypeScript for frontend development.  The backend utilizes a combination of serverless functions and potentially other APIs as needed.  Specific libraries include `react-hook-form`, `@hookform/resolvers/zod`, `zod`, `shadcn` UI components, `lucide-react`, and `@testing-library/react`. Cypress is used for end-to-end testing, and Vitest with `@vitest/coverage-c8` for unit testing.  The Intuit QuickBooks Online API is integrated for purchase order management.
+This project utilizes Next.js, React, and TypeScript for frontend development.  The backend utilizes a combination of serverless functions and potentially other APIs as needed.  Specific libraries include `react-hook-form`, `@hookform/resolvers/zod`, `zod`, `shadcn` UI components, `lucide-react`, `@testing-library/react`, `@playwright/test`, `react-dom/server`, `@puppeteer`, `chromium`. Cypress is used for end-to-end testing, and Vitest with `@vitest/coverage-c8` for unit testing.  The Intuit QuickBooks Online API is integrated for purchase order management.  Additional libraries include `chromium`, `@playwright/test`.
 
 
 ## CODING STANDARDS
@@ -30,21 +30,22 @@ This project utilizes Next.js, React, and TypeScript for frontend development.  
 *   Unit tests should aim for high branch coverage (≥90%).
 *   All callback functions should utilize `useCallback` to prevent unnecessary re-renders.
 *  All tests should be written using Bun's native testing capabilities (`bun test`).  Avoid using Jest.
+* When using Next.js App Router, ensure that components using React hooks like `useRouter` and `useCallback` are marked with the `"use client"` directive to prevent errors in server components.  Split pages into server and client components as needed to accommodate hook usage.
 
 
 ## WORKFLOW & RELEASE RULES
 
-The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.  New features should be documented with clear acceptance criteria and implementation details in the relevant ticket.  Progress updates should be provided during task completion.
+The development workflow follows a ticket-based system.  Tickets are prioritized and assigned to developers.  Pull requests are required for all code changes, and code reviews are mandatory before merging.  Releases are managed through a version control system, and release notes are generated automatically.  All changes must be documented.  New features should be documented with clear acceptance criteria and implementation details in the relevant ticket.  Progress updates should be provided during task completion.  The AI assistant should review relevant TODO and README files before starting work on a ticket.  Server actions are preferred over API routes for handling PDF generation and related functionalities.
 
 
 ## DEBUGGING
 
-When debugging, utilize the browser's developer tools extensively.  Leverage logging statements and breakpoints effectively.  For complex issues, consider using a debugger.
+When debugging, utilize the browser's developer tools extensively.  Leverage logging statements and breakpoints effectively.  For complex issues, consider using a debugger.  Address type mismatches between data passed to components and component expectations.  Carefully review API responses and component data structures to ensure compatibility.  When encountering type mismatches, ensure data transformation aligns with component expectations (e.g., extracting arrays from nested objects).  Pay close attention to Next.js App Router component contexts ("use client" directive) to avoid errors related to React hook usage in server components.
 
 
 ## API INTEGRATION RULES
 
-The Intuit QuickBooks Online API is the primary source for purchase order data.  All interactions with this API should be carefully documented and tested.  Error handling must be implemented to gracefully manage API failures.  The `.mdc` files will serve as the central repository for API specifications and schemas.
+The Intuit QuickBooks Online API is the primary source for purchase order data.  All interactions with this API should be carefully documented and tested.  Error handling must be implemented to gracefully manage API failures.  The `.mdc` files will serve as the central repository for API specifications and schemas.  Route handlers for API endpoints should be placed in the `@api` directory.  For estimate PDF generation, download, email, and preview functionalities, server actions are now preferred over API routes.  A dashboard route is now used for handling these functionalities.
 
 
 ## UI DEVELOPMENT GUIDELINES

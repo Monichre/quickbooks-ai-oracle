@@ -1,0 +1,185 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+# QuickBooks Online API - Vendor Entity Documentation
+
+This is a comprehensive guide to the Vendor entity in the QuickBooks Online API, covering all aspects of working with vendor data.
+
+## Overview
+
+The Vendor object represents the seller from whom your company purchases any service or product. This guide covers all operations, attributes, and business rules for working with Vendor entities in the QuickBooks Online API.
+
+## Business Rules
+
+- DisplayName, Title, GivenName, MiddleName, FamilyName, Suffix, and PrintOnCheckName must not contain colon (:), tab (\t), or newline (\n) characters
+- DisplayName must be unique across all Customer, Employee, and Vendor objects
+- PrimaryEmailAddress must contain an @ and . characters
+- During creation, either DisplayName or at least one of Title, GivenName, MiddleName, FamilyName, or Suffix is required
+
+## API Operations
+
+### Create a Vendor
+```
+POST /v3/company/<realmID>/vendor
+Content-Type: application/json
+```
+
+Minimum required fields for creation:
+- DisplayName (or at least one name component: Title, GivenName, MiddleName, FamilyName, Suffix)
+
+### Read a Vendor
+```
+GET /v3/company/<realmID>/vendor/<vendorId>
+```
+
+### Query Vendors
+```
+GET /v3/company/<realmID>/query?query=<selectStatement>
+```
+
+Example query:
+```
+select * from vendor where MetaData.LastUpdatedTime > '2014-09-17T15:28:48-07:00'
+```
+
+### Update a Vendor (Full)
+```
+POST /v3/company/<realmID>/vendor
+Content-Type: application/json
+```
+Requires all fields, including the Id and SyncToken.
+
+## Key Attributes
+
+### Required for Updates
+- Id: Unique identifier
+- SyncToken: Version number for concurrency control
+
+### Conditionally Required
+- DisplayName: Displayed name (must be unique)
+- Title, GivenName, MiddleName, FamilyName, Suffix: Name components
+
+### Common Attributes
+- PrimaryEmailAddr: Main email address
+- PrimaryPhone: Main phone number
+- BillAddr: Billing address
+- CompanyName: Associated company
+- Active: Whether the vendor is active
+- Balance: Open balance amount (read-only except during creation)
+- AcctNum: Name or number of the account associated with this vendor
+- PrintOnCheckName: Name printed on checks
+- WebAddr: Website address
+
+### Special Attributes
+- Vendor1099: Whether this vendor is a 1099 contractor
+- TaxIdentifier: The tax ID of the Person or Organization (masked in responses)
+- CostRate: Pay rate of the vendor
+- BillRate: Hourly billing rate
+
+### Relationships and References
+- TermRef: Default payment terms reference
+- APAccountRef: Accounts payable account (for France)
+- CurrencyRef: Reference to the vendor's currency
+
+### Country-Specific Fields
+- GSTIN: GST registration number (India)
+- GSTRegistrationType: GST registration type (India)
+- BusinessNumber: PAN code (India)
+- HasTPAR: TPAR enabled flag (Australia)
+- T4AEligible: T4A eligibility flag (Canada)
+- T5018Eligible: T5018 eligibility flag (Canada)
+- TaxReportingBasis: Income tracking method (France)
+
+## Sample Usage
+
+### Creating a Basic Vendor
+```json
+{
+  "DisplayName": "Dianne's Auto Shop",
+  "GivenName": "Dianne",
+  "FamilyName": "Bradley",
+  "CompanyName": "Dianne's Auto Shop",
+  "PrimaryPhone": {
+    "FreeFormNumber": "(650) 555-2342"
+  },
+  "PrimaryEmailAddr": {
+    "Address": "dbradley@myemail.com"
+  },
+  "BillAddr": {
+    "Line1": "Dianne's Auto Shop",
+    "Line2": "Dianne Bradley",
+    "Line3": "29834 Mustang Ave.",
+    "City": "Millbrae",
+    "CountrySubDivisionCode": "CA",
+    "PostalCode": "94030",
+    "Country": "U.S.A"
+  },
+  "PrintOnCheckName": "Dianne's Auto Shop"
+}
+```
+
+## Sample Response
+
+```json
+{
+  "Vendor": {
+    "PrimaryEmailAddr": {
+      "Address": "dbradley@myemail.com"
+    },
+    "DisplayName": "Dianne's Auto Shop",
+    "CurrencyRef": {
+      "name": "United States Dollar",
+      "value": "USD"
+    },
+    "GivenName": "Dianne",
+    "Title": "Ms.",
+    "PrimaryPhone": {
+      "FreeFormNumber": "(650) 555-2342"
+    },
+    "Active": true,
+    "MetaData": {
+      "CreateTime": "2015-07-28T12:51:21-07:00",
+      "LastUpdatedTime": "2015-07-28T12:51:21-07:00"
+    },
+    "Vendor1099": false,
+    "BillAddr": {
+      "City": "Millbrae",
+      "Country": "U.S.A",
+      "Line3": "29834 Mustang Ave.",
+      "Line2": "Dianne Bradley",
+      "Line1": "Dianne's Auto Shop",
+      "PostalCode": "94030",
+      "CountrySubDivisionCode": "CA",
+      "Id": "423"
+    },
+    "Mobile": {
+      "FreeFormNumber": "(650) 555-2000"
+    },
+    "WebAddr": {
+      "URI": "http://DiannesAutoShop.com"
+    },
+    "Balance": 0,
+    "SyncToken": "0",
+    "Suffix": "Sr.",
+    "CompanyName": "Dianne's Auto Shop",
+    "FamilyName": "Bradley",
+    "TaxIdentifier": "99-5688293",
+    "AcctNum": "35372649",
+    "PrintOnCheckName": "Dianne's Auto Shop",
+    "sparse": false,
+    "Id": "137"
+  }
+}
+```
+
+## Additional Notes
+
+1. The PrintOnCheckName is populated from DisplayName if not provided
+2. When updating physical addresses, components flow differently into Line elements
+3. Balance is read-only except during the initial creation
+4. When referencing other entities (like Term or Account), use the Id and Name values from those objects for the corresponding Ref.value and Ref.name attributes
+
+This documentation covers all operations, attributes, and business rules for working with Vendor entities in the QuickBooks Online API.

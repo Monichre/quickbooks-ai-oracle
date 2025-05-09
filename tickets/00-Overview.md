@@ -19,7 +19,7 @@ Reference: _tickets/TODO.md_ (initial master ticket).
 | ID | Title | Depends On | Status |
 |----|-------|------------|--------|
 | 01 | UI – Add Dropdown Action Column | – | ✅ |
-| 02 | Utility – Map Estimate ➜ PurchaseOrder | – | ⏳ |
+| 02 | Utility – Map Estimate ➜ PurchaseOrder | ✅ | ⏳ |
 | 03 | Utility – Map Estimate ➜ Invoice | – | ⏳ |
 | 04 | API – Invoice Service Wrapper | – | ⏳ |
 | 05 | API – Bulk PurchaseOrder Support | 02 | ⏳ |
@@ -32,6 +32,7 @@ Reference: _tickets/TODO.md_ (initial master ticket).
 | 17 | Page – Create Purchase Order Form | 16,02,05 | ⏳ |
 | 18 | Validation & Mapping Enhancements | 17 | ⏳ |
 | 19 | Docs – Linking PO → Bills/Expenses Flow | – | ⏳ |
+| 20 | Integration – Midday Invoice Components | 03,04,07 | ⏳ |
 
 ---
 **Legend**: ⏳ pending · ✅ done · 🛑 blocked

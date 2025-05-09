@@ -1,0 +1,292 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Invoice
+
+An invoice is a form that itemizes and records a sales transaction that your business creates and sends to customers. When you create an invoice, QuickBooks Online decreases inventory, increases revenue, and records the customer's obligation to pay.
+
+## The invoice object
+
+```json
+{
+  "DocNumber": "1001",
+  "TxnDate": "2023-05-05",
+  "CurrencyRef": {
+    "value": "USD",
+    "name": "United States Dollar"
+  },
+  "ExchangeRate": 1.00,
+  "Line": [
+    {
+      "Id": "1",
+      "LineNum": 1,
+      "Description": "Rock Fountain",
+      "Amount": 275.00,
+      "DetailType": "SalesItemLineDetail",
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "5",
+          "name": "Rock Fountain"
+        },
+        "UnitPrice": 275.00,
+        "Qty": 1,
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    },
+    {
+      "Amount": 275.00,
+      "DetailType": "SubTotalLineDetail",
+      "SubTotalLineDetail": {}
+    }
+  ],
+  "CustomerRef": {
+    "value": "1",
+    "name": "Amy's Bird Sanctuary"
+  },
+  "BillAddr": {
+    "Id": "2",
+    "Line1": "4581 Finch St.",
+    "Line2": "Apt. 2",
+    "City": "Bayshore",
+    "CountrySubDivisionCode": "CA",
+    "PostalCode": "94326",
+    "Lat": "XXXXX",
+    "Long": "XXXXX"
+  },
+  "ShipAddr": {
+    "Id": "2",
+    "Line1": "4581 Finch St.",
+    "Line2": "Apt. 2",
+    "City": "Bayshore",
+    "CountrySubDivisionCode": "CA",
+    "PostalCode": "94326",
+    "Lat": "XXXXX",
+    "Long": "XXXXX"
+  },
+  "DueDate": "2023-06-04",
+  "TotalAmt": 275.00,
+  "ApplyTaxAfterDiscount": false,
+  "PrintStatus": "NeedToPrint",
+  "EmailStatus": "NotSet",
+  "Balance": 275.00,
+  "CustomerMemo": {
+    "value": "Thank you for your business and have a great day!"
+  },
+  "DeliveryInfo": {
+    "DeliveryType": "Email",
+    "DeliveryTime": "2023-05-05T08:05:12-08:00"
+  },
+  "Id": "123",
+  "SyncToken": "0",
+  "MetaData": {
+    "CreateTime": "2023-05-05T08:05:12-08:00",
+    "LastUpdatedTime": "2023-05-05T08:05:12-08:00"
+  }
+}
+```
+
+## Create an invoice
+
+### Request Body
+
+```json
+{
+  "Line": [
+    {
+      "DetailType": "SalesItemLineDetail",
+      "Amount": 275.00,
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "5",
+          "name": "Rock Fountain"
+        },
+        "UnitPrice": 275.00,
+        "Qty": 1
+      }
+    }
+  ],
+  "CustomerRef": {
+    "value": "1"
+  },
+  "BillEmail": {
+    "Address": "Cool_Cars@intuit.com"
+  },
+  "BillEmailCc": {
+    "Address": "Cool_Cars_us@intuit.com"
+  },
+  "BillEmailBcc": {
+    "Address": "Cool_Cars_info@intuit.com"
+  }
+}
+```
+
+## Query an invoice
+
+### Request
+
+```
+GET /v3/company/<realmId>/query?query=select * from Invoice where Id = '123'
+```
+
+## Read an invoice
+
+### Request
+
+```
+GET /v3/company/<realmId>/invoice/<id>
+```
+
+### Response
+
+```json
+{
+  "Invoice": {
+    "DocNumber": "1001",
+    "TxnDate": "2023-05-05",
+    "CurrencyRef": {
+      "value": "USD",
+      "name": "United States Dollar"
+    },
+    "ExchangeRate": 1.00,
+    "Line": [
+      {
+        "Id": "1",
+        "LineNum": 1,
+        "Description": "Rock Fountain",
+        "Amount": 275.00,
+        "DetailType": "SalesItemLineDetail",
+        "SalesItemLineDetail": {
+          "ItemRef": {
+            "value": "5",
+            "name": "Rock Fountain"
+          },
+          "UnitPrice": 275.00,
+          "Qty": 1,
+          "TaxCodeRef": {
+            "value": "NON"
+          }
+        }
+      },
+      {
+        "Amount": 275.00,
+        "DetailType": "SubTotalLineDetail",
+        "SubTotalLineDetail": {}
+      }
+    ],
+    "CustomerRef": {
+      "value": "1",
+      "name": "Amy's Bird Sanctuary"
+    },
+    "BillAddr": {
+      "Id": "2",
+      "Line1": "4581 Finch St.",
+      "Line2": "Apt. 2",
+      "City": "Bayshore",
+      "CountrySubDivisionCode": "CA",
+      "PostalCode": "94326",
+      "Lat": "XXXXX",
+      "Long": "XXXXX"
+    },
+    "ShipAddr": {
+      "Id": "2",
+      "Line1": "4581 Finch St.",
+      "Line2": "Apt. 2",
+      "City": "Bayshore",
+      "CountrySubDivisionCode": "CA",
+      "PostalCode": "94326",
+      "Lat": "XXXXX",
+      "Long": "XXXXX"
+    },
+    "DueDate": "2023-06-04",
+    "TotalAmt": 275.00,
+    "ApplyTaxAfterDiscount": false,
+    "PrintStatus": "NeedToPrint",
+    "EmailStatus": "NotSet",
+    "Balance": 275.00,
+    "CustomerMemo": {
+      "value": "Thank you for your business and have a great day!"
+    },
+    "DeliveryInfo": {
+      "DeliveryType": "Email",
+      "DeliveryTime": "2023-05-05T08:05:12-08:00"
+    },
+    "Id": "123",
+    "SyncToken": "0",
+    "MetaData": {
+      "CreateTime": "2023-05-05T08:05:12-08:00",
+      "LastUpdatedTime": "2023-05-05T08:05:12-08:00"
+    }
+  },
+  "time": "2023-05-05T08:05:12-08:00"
+}
+```
+
+## Full update an invoice
+
+### Request Body
+
+```json
+{
+  "Id": "123",
+  "SyncToken": "0",
+  "sparse": false,
+  "Line": [
+    {
+      "Id": "1",
+      "LineNum": 1,
+      "Description": "Rock Fountain",
+      "Amount": 275.00,
+      "DetailType": "SalesItemLineDetail",
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "value": "5",
+          "name": "Rock Fountain"
+        },
+        "UnitPrice": 275.00,
+        "Qty": 1,
+        "TaxCodeRef": {
+          "value": "NON"
+        }
+      }
+    },
+    {
+      "Amount": 275.00,
+      "DetailType": "SubTotalLineDetail",
+      "SubTotalLineDetail": {}
+    }
+  ],
+  "CustomerRef": {
+    "value": "1",
+    "name": "Amy's Bird Sanctuary"
+  }
+}
+```
+
+## Delete an invoice
+
+### Request
+
+```
+POST /v3/company/<realmId>/invoice?operation=delete
+```
+
+### Request Body
+
+```json
+{
+  "Id": "123",
+  "SyncToken": "0"
+}
+```
+
+## Email an invoice
+
+### Request
+
+```
+POST /v3/company/<realmId>/invoice/<id>/send?sendTo=someuser@intuit.com
+```

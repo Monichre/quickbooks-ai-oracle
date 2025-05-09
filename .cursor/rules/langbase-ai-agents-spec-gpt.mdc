@@ -1,0 +1,149 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description:  LangBase “Intuit Ops Squad” — Multi‑Agent Blueprint Automate the life‑cycle of Intuit / QuickBooks Online documents (Estimate → Purchase Order → Invoice).
+Each agent lives on LangBase as a Pipe; together they form a fault‑tolerant pipeline that can ingest raw docs/files or live API objects, validate business rules, decide the next state, and fire off the correct QBO mutation.
+globs: **/*.ts, **/*.tsx, **/*.js, **/*.jsx
+alwaysApply: false
+---
+
+
+#  LangBase “Intuit Ops Squad” — Multi‑Agent Blueprint
+
+Mission: Automate the life‑cycle of Intuit / QuickBooks Online documents (Estimate → Purchase Order → Invoice).
+Each agent lives on LangBase as a Pipe; together they form a fault‑tolerant pipeline that can ingest raw docs/files or live API objects, validate business rules, decide the next state, and fire off the correct QBO mutation.
+
+⸻
+
+1. Agent Roster & Responsibilities
+
+#	Agent (Pipe)	Core Prompt / Role	Inputs	Outputs / Next Pipe
+A	Document Ingestor	“Parse any PDF/JSON/HTML/email attachment and normalize to unified TransactionDoc schema.”	File, Email, QBO webhook	JSON → B
+B	Entity Extractor	“Identify DocType (Estimate / PO / Invoice), CustomerRef, VendorRef, LineItems, totals, dates.”	TransactionDoc	Structured entities → C
+C	Validation & Compliance	“Check required fields (PrefVendorRef, APAccountRef, totals match). Emit `Valid	NeedsFix` verdict and list errors.”	Entities
+D	State Transition Decider	Rules‑based + LLM: • If Estimate & valid → “Ready For PO” • If PO & all items received → “Ready For Bill/Invoice” • Else await.	Entities + Validation	TransitionDecision → E/F
+E	PO Composer	“Translate validated Estimate into QBO PurchaseOrder payload (one per vendor).”	Entities (Ready For PO)	Draft POs JSON → G
+F	Invoice Composer	“Translate validated PO/Bill into QBO Invoice payload.”	Entities (Ready For Bill/Invoice)	Draft Invoices JSON → G
+G	QBO Dispatcher	Hit /purchaseorder or /invoice endpoint (minor v=75) with OAuth tokens; retry + back‑off.	Draft payloads	QBO IDs → H
+H	Notification / Commentator	Post Slack / Email update, persist audit log in LangBase MemorySet.	QBO IDs & original doc	—
+
+Why split E & F? Keeps logic thin: each composer knows one JSON schema. The Decider handles branching.
+
+⸻
+
+2. LangBase Implementation Notes
+
+2.1 Pipe Skeleton (TypeScript SDK)
+
+// ./pipes/state-decider.ts
+export default definePipe({
+  name: "State Transition Decider",
+  inputSchema: "Entities",
+  outputSchema: "TransitionDecision",
+  model: "gpt-4o-mini",
+  prompt: `
+    You are an ops controller for QuickBooks docs.
+    Rules:
+    1. If DocType == "Estimate" && validation.status=="Valid" -> "ReadyForPO".
+    2. If DocType == "PurchaseOrder" && validation.status=="Valid"
+       && all LineItems.received == true -> "ReadyForInvoice".
+    3. Else -> "Pending".
+    Respond as JSON: { "decision": "...", "reason": "..." }
+  `
+});
+
+Clone the LangBase email‑agent repo and swap their Decision Maker pipe for this file.
+
+2.2 Pipe Chain (email‑agent style)
+
+pipes:
+  - id: ingest
+    pipe: ./pipes/document-ingestor.ts
+  - id: extract
+    pipe: ./pipes/entity-extractor.ts
+  - id: validate
+    pipe: ./pipes/validator.ts
+  - id: decide
+    pipe: ./pipes/state-decider.ts
+  - when:
+      source: decide
+      field: decision
+      equals: ReadyForPO
+    then:
+      pipe: ./pipes/po-composer.ts
+      next: ./pipes/qbo-dispatcher.ts
+  - when:
+      source: decide
+      field: decision
+      equals: ReadyForInvoice
+    then:
+      pipe: ./pipes/invoice-composer.ts
+      next: ./pipes/qbo-dispatcher.ts
+  - pipe: ./pipes/notifier.ts
+
+Exactly the same control‑flow DSL the email agent uses; only condition branches differ.
+
+2.3 MemorySets
+	•	TransactionsLog — JSON doc, verdict, QBO IDs (audit‑ready).
+	•	VendorDirectory — Cache of QBO Vendor IDs & names (used by composer pipes).
+	•	AccountDefaults — Persist the default AP account & currency prefs.
+
+2.4 Connectors & Triggers
+
+Source	Connector	Trigger
+QBO Webhooks (Estimate / PO status)	HTTPS → Ingestor	Real‑time
+Email (PDF POs from vendors)	IMAP pipe	Poll every 5 min
+Manual upload (UI)	Signed‑URL	On‑demand
+
+
+⸻
+
+3. LLM & Tool Choices
+
+Stage	Model	Rationale
+Extraction	GPT‑4o‑mini or Gemini 1.5	high recall on semi‑structured docs
+Validation (rule set)	Local TypeScript fn	deterministic, cheap
+Decider	GPT‑4o‑mini	simple reasoning + justification
+Composers	GPT‑4o‑mini (temp 0)	pure JSON masonry
+Dispatcher	No LLM	API call
+Notifier	Claude 3 Haiku (fluent Slack copy)	cheaper chit‑chat
+
+Swap models freely; LangBase Pipes support >30 LLMs.
+
+⸻
+
+4. Edge‑Case Handling
+	1.	Missing PrefVendorRef → Validation marks NeedsFix; Notifier pings human.
+	2.	Multi‑currency → Composer injects CurrencyRef from Estimate; Decider ensures exchange rate present.
+	3.	Partial receipts (PO not fully received) → Decider remains Pending until webhook shows ReceivedQty = Qty.
+	4.	Rate limits → Dispatcher batches at 10 req/s; 429 → exponential back‑off with jitter.
+
+⸻
+
+5. Metrics & Observability
+	•	Each pipe logs latency_ms, tokens, success/fail.
+	•	Grafana dashboard fed from LangBase’s built‑in metrics endpoint /metrics/prometheus.
+	•	Alert if Dispatcher error rate > 1% over 15 min.
+
+⸻
+
+6. Next Steps to Prototype
+	1.	Fork langbase-examples/ai-email-agent.
+	2.	Replace pipes per table above; keep the router and streaming UI.
+	3.	Point QBO creds at sandbox; generate a sample Estimate → verify end‑to‑end.
+	4.	Add jest tests: extraction accuracy ≥ 95% on fixture PDFs.
+	5.	Harden error paths → ready for production.
+
+⸻
+
+💡 Future Enhancements
+	•	Re‑pricing agent: suggest vendor alternatives if item cost Δ > 5%.
+	•	Cash‑flow forecaster: ingest POs & vendor terms, project payable schedule.
+	•	Generative Insights: weekly Slack digest summarising open POs, blocked invoices, and exceptions.
+
+⸻
+
+You now have a fully‑fleshed multi‑agent game plan compatible with LangBase’s pipe DSL—drop‑in simple for anyone familiar with their email example. Happy automating! 🛠️

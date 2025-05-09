@@ -1,0 +1,221 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# AccountListDetail Report
+
+The AccountListDetail report provides detailed information about all accounts in the Chart of Accounts. It includes the account ID, name, type, subtype, and current balance.
+
+## Query AccountListDetail report
+
+### Request
+
+```
+GET /v3/company/<realmId>/reports/AccountListDetail
+```
+
+### Request parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| start_date | String | Start date for the report data |
+| end_date | String | End date for the report data |
+| accounting_method | String | Either "Accrual" or "Cash" |
+| date_macro | String | A predefined date range (e.g., "This Month", "Last Month") |
+| minorversion | Number | The minor version of the API |
+
+### Response
+
+```json
+{
+  "Header": {
+    "Time": "2023-04-01T14:30:00-07:00",
+    "ReportName": "AccountListDetail",
+    "ReportBasis": "Accrual",
+    "StartPeriod": "2023-01-01",
+    "EndPeriod": "2023-04-01",
+    "Currency": "USD",
+    "Option": [
+      {
+        "Name": "NoReportData",
+        "Value": "false"
+      }
+    ]
+  },
+  "Columns": {
+    "Column": [
+      {
+        "ColTitle": "Name",
+        "ColType": "Account",
+        "MetaData": [
+          {
+            "Name": "Id",
+            "Value": "ColAcctNum"
+          }
+        ]
+      },
+      {
+        "ColTitle": "Type",
+        "ColType": "String"
+      },
+      {
+        "ColTitle": "Detail Type",
+        "ColType": "String"
+      },
+      {
+        "ColTitle": "Balance",
+        "ColType": "Amount"
+      }
+    ]
+  },
+  "Rows": {
+    "Row": [
+      {
+        "ColData": [
+          {
+            "value": "Checking",
+            "id": "35",
+            "href": "..."
+          },
+          {
+            "value": "Bank"
+          },
+          {
+            "value": "Checking"
+          },
+          {
+            "value": "1000.00"
+          }
+        ]
+      },
+      {
+        "ColData": [
+          {
+            "value": "Accounts Receivable (A/R)",
+            "id": "84",
+            "href": "..."
+          },
+          {
+            "value": "Accounts Receivable"
+          },
+          {
+            "value": "Accounts Receivable"
+          },
+          {
+            "value": "2500.00"
+          }
+        ]
+      },
+      {
+        "ColData": [
+          {
+            "value": "Inventory Asset",
+            "id": "81",
+            "href": "..."
+          },
+          {
+            "value": "Other Current Asset"
+          },
+          {
+            "value": "Inventory"
+          },
+          {
+            "value": "3500.00"
+          }
+        ]
+      },
+      {
+        "Header": {
+          "ColData": [
+            {
+              "value": "Total Assets"
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": "7000.00"
+            }
+          ]
+        }
+      },
+      {
+        "ColData": [
+          {
+            "value": "Accounts Payable (A/P)",
+            "id": "33",
+            "href": "..."
+          },
+          {
+            "value": "Accounts Payable"
+          },
+          {
+            "value": "Accounts Payable"
+          },
+          {
+            "value": "1500.00"
+          }
+        ]
+      },
+      {
+        "Header": {
+          "ColData": [
+            {
+              "value": "Total Liabilities"
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": "1500.00"
+            }
+          ]
+        }
+      },
+      {
+        "ColData": [
+          {
+            "value": "Owner's Equity",
+            "id": "95",
+            "href": "..."
+          },
+          {
+            "value": "Equity"
+          },
+          {
+            "value": "Owner's Equity"
+          },
+          {
+            "value": "5500.00"
+          }
+        ]
+      },
+      {
+        "Header": {
+          "ColData": [
+            {
+              "value": "Total Equity"
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": ""
+            },
+            {
+              "value": "5500.00"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
